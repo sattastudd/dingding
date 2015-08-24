@@ -1,0 +1,71 @@
+<div ng-controller="roastPageController">
+	<div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="row">
+                            <div class="row">
+                            <!-- need to fix its width -->
+                            	<div class="col-xs-12 roastTitle">Roast of Hakoona Matata</div>
+                            </div>
+                            <div class="row">
+	                            <div class="col-xs-12 roastBanner">
+	                                <div class="col-xs-12 tpad25">
+	                                    <p class="roastQoute">"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit..."</p>
+	                                    <p class="pull-right">-Saumya Maurya</p>
+	                                </div>
+	                            </div>
+	                        </div>
+                            <div class="col-xs-12 col-md-offset-1 col-lg-offset-1">
+                                <img src="http://qph.is.quoracdn.net/main-thumb-65424091-200-qfewjnaxxfuqpiqwdlmljcqfxobsefrf.jpeg" class="roastImage" />
+                            </div>
+                            <div class="col-xs-12 roastDiv" ng-repeat="roast in roasts">
+                                <div class="row">
+                                    <div class="col-xs-12" style="margin-bottom:15px">
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                                <img class="userIcon" src="../images/roastee.jpg" /><b>{{roast.name}}</b>
+
+                                            </div>
+                                            <div class="col-xs-6 roastTime"><p class="pull-right">11:11 PM 15 Oct 2015</p></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 roastText">{{roast.roast}}</div>
+                                    <div class="col-xs-12" style="font-size:12px;
+    margin-top:10px;">
+                                                <div>
+                                                    <div class="appreciateBtn hand pull-right" ng-class="appreciated?'appreciatedBtn':'appreciateBtn'" ng-click="appreciate(roast)">{{appriValue}}</div><span class="appriNo pull-right">123</span>
+                                                </div>
+                                            </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row"><div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 fixedTextBox">
+                                <div class="row">
+                                    <textarea type="text" ng-model="roast.comment" ng-focus="showTextArea()" ng-class="postBlockActive?'textAreaActive':'textAreaBox'" class="form-control textAreaBox" placeholder="slam your text here"></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12" ng-if="postBlockActive">
+                                        <div class="row">
+                                            <div class="col-xs-4">
+                                                <input type="checkbox" ng-click="anonyClicked(value)" value="Y" ng-model="roast.anonymous">Anonymous
+                                                <br>
+                                            </div>
+                                            <div class="col-xs-8 pull-right">
+                                                <button type="btn" ng-click="hideTextArea()" class="btn btn-default">Cancel</button>
+                                                <button type="btn" class="btn btn-default">Post</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+console.log("Preparing the Barbeque");
+
+var express 			= require('express'),
+		app 			= express(),
+		bodyParser		= require('body-parser'),
+		mongoose		= require('mongoose'),
+		fs 				= require('fs'),
+		http 			= require('http').Server(app),
+		roastController = require('./server/controllers/roastCreateController');
+
+mongoose.connect('mongodb://localhost:27017/roastDB');
+
+app.engine('html', require('ejs').renderFile); //TODO npm install ejs
+app.set('view engine', 'html');
+
+app.use('/', express.static(__dirname + '/client'));
+
+app.get('/', function(req, res){
+	res.sendFile(__dirname + '/client/index.html');
+});
+app.get('/roastPage', function(req, res){
+	res.sendFile(__dirname + '/client/index.html');
+});
+app.get('/create', function(req, res){
+	res.sendFile(__dirname + '/client/index.html');
+});
+app.get('/404', function(req, res){
+	res.sendFile(__dirname + '/client/index.html');
+});
+
+//this is for using js files
+app.use('/appResources', express.static(__dirname + '/client/appResources'));
+
+app.use(bodyParser());
+
+//this is for posting data
+app.post('/api/postData', roastController.create);
+
+
+app.listen(3000, function(){
+	console.log("Ready to Roast");
+})
+
