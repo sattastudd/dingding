@@ -1,15 +1,14 @@
 <div ng-controller="roastListController">
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-xs-12">
-				<div class="row">
+			<div class="row">
 	            <div class="col-xs-12">
 	            	<div class="row">
 		            	<div class="col-xs-12 trendingTitle">
-		            		Recent Roasts
+		            		Roast of Category Name
 		            	</div>
 		            </div>
-	                <div class="col-xs-12 trendBlock hand" ng-click="goToRoast()" ng-repeat="trends in trending">
+	                <div class="col-xs-12 trendBlock hand" ng-click="goToRoast()" ng-repeat="content in roastList">
 	                    <div class="row">
 	                        <div class="col-xs-4">
 	                            <img src="https://yt3.ggpht.com/-QSdUl6wilzo/AAAAAAAAAAI/AAAAAAAAAAA/BGrQrNGDA8U/s900-c-k-no/photo.jpg" class="roasteeImg" />
@@ -18,29 +17,29 @@
 	                            <div class="row">
 	                                <div class="col-xs-12 roasteeName">
 	                                    <p>
-	                                        "{{trends.quote}}"
+	                                        "{{content.quote}}"
 	                                    </p>
 	                                    <p class="f20">
-	                                        <strong>-{{trends.name}}</strong>
+	                                        <strong>-{{content.name}}</strong>
 	                                    </p>
 	                                </div>
 	                                <div class="col-xs-12 rpmText">
 	                                	<div class="row">
 		                                    <div class="col-xs-6 hidden-xs">
 		                                    	Total Roasts: 
-		                                    	<b style="font-size:18px;">{{trends.roastCounter}}</b>
+		                                    	<b style="font-size:18px;">{{content.roastCounter}}</b>
 		                                    </div>
 		                                    <div class="col-xs-6 hidden-sm hidden-md hidden-lg">
 		                                    	TR: 
-		                                    	<b style="font-size:18px;">{{trends.roastCounter}}</b>
+		                                    	<b style="font-size:18px;">{{content.roastCounter}}</b>
 		                                    </div>
 		                                    <div class="col-xs-6 hidden-xs pull-right">
 		                                    	Roasts per minute: 
-		                                    	<b style="font-size:18px;">{{trends.rpm}}</b>
+		                                    	<b style="font-size:18px;">{{content.rpm}}</b>
 		                                   	</div>
 		                                   	<div class="col-xs-6 hidden-sm hidden-md hidden-lg pull-right">
 		                                    	RPM: 
-		                                    	<b style="font-size:18px;">{{trends.rpm}}</b>
+		                                    	<b style="font-size:18px;">{{content.rpm}}</b>
 		                                   	</div>
 		                                </div>
 	                                </div>
@@ -50,7 +49,6 @@
 	                </div>
 	            </div>
 	        </div>
-			</div>
 		</div>
 	</div>
 </div>

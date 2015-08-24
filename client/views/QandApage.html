@@ -1,37 +1,63 @@
-<div ng-controller="roastPageController">
+<div ng-controller="QandApageController">
 	<div class="container-fluid">
         <div class="row">
             <div class="col-xs-12">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="row">
-                            <div class="row">
-                            <!-- need to fix its width -->
-                            	<div class="col-xs-12 roastTitle">Roast of Hakoona Matata</div>
+                            <div class="col-xs-12 borderBtm">
+                                <p class="qFont"><b>Q.</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ac sem sagittis, tristique mi a, sodales nibh. ?</p>
                             </div>
-                            <div class="row">
-	                            <div class="col-xs-12 roastBanner">
-	                                <div class="col-xs-12 tpad25">
-	                                    <p class="roastQoute">"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit..."</p>
-	                                    <p class="pull-right">-Saumya Maurya</p>
-	                                </div>
-	                            </div>
-	                        </div>
-                            <div class="col-xs-12 col-md-offset-1 col-lg-offset-1">
-                                <img src="http://qph.is.quoracdn.net/main-thumb-65424091-200-qfewjnaxxfuqpiqwdlmljcqfxobsefrf.jpeg" class="roastImage" />
+                            <div class="col-xs-12" ng-hide="showVotes" style="margin-bottom:60px;">
+                                <div class="col-xs-5 voteBtn" ng-click="votedY()">
+                                    Yes
+                                </div>
+                                <div class="col-xs-5 col-xs-offset-2 voteBtn" ng-click="votedN()" style="background-color:red">
+                                    No
+                                </div>
                             </div>
-                            <div class="col-xs-12 roastDiv" ng-repeat="roast in roasts">
+                            <div class="col-xs-12" ng-if="showVotes" style="margin-top:20px;margin-bottom:60px;">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        Yes
+                                    </div>
+                                    <div class="col-xs-7 barGraph">
+                                        <div class="row">
+                                            <div class="col-xs-12 barYes" style="width:{{yRoundOff}}%">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <b>{{yRoundOff}}%</b>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col-xs-2">
+                                        No
+                                    </div>
+                                    <div class="col-xs-7 barGraph">
+                                        <div class="row">
+                                            <div class="col-xs-12 barNo" style="width:{{nRoundOff}}%;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <b>{{nRoundOff}}%</b>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 roastDiv" ng-repeat="qna in QandA">
                                 <div class="row">
                                     <div class="col-xs-12" style="margin-bottom:15px">
                                         <div class="row">
                                             <div class="col-xs-6">
-                                                <img class="userIcon" src="../images/user.jpg" /><b>{{roast.name}}</b>
+                                                <img class="userIcon" src="../images/user.jpg" /><b>{{qna.name}}</b>
 
                                             </div>
                                             <div class="col-xs-6 roastTime"><p class="pull-right">11:11 PM 15 Oct 2015</p></div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-12 roastText">{{roast.roast}}</div>
+                                    <div class="col-xs-12 roastText">{{qna.comment}}</div>
                                     <div class="col-xs-12" style="font-size:12px;
     margin-top:10px;">
                                                 <div>

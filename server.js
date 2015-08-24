@@ -6,7 +6,7 @@ var express 			= require('express'),
 		mongoose		= require('mongoose'),
 		fs 				= require('fs'),
 		http 			= require('http').Server(app),
-		roastController = require('./server/controllers/roastCreateController');
+		roastController = require('./server/controllers/roastController');
 
 mongoose.connect('mongodb://localhost:27017/roastDB');
 
@@ -34,7 +34,7 @@ app.use('/appResources', express.static(__dirname + '/client/appResources'));
 app.use(bodyParser());
 
 //this is for posting data
-app.post('/api/postData', roastController.create);
+app.post('/postData', roastController.create);
 
 
 app.listen(3000, function(){

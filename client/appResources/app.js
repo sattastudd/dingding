@@ -22,6 +22,10 @@ app.config(function($routeProvider,$locationProvider) {
                 templateUrl : '../views/roastList.html',
                 controller  : 'roastListController'
             })
+            .when('/QandA', {
+                templateUrl : '../views/QandApage.html',
+                controller  : 'QandApageController'
+            })
             .when('/404', {
                 templateUrl : 'views/404.html',
                 controller  : 'errorController'
@@ -45,6 +49,14 @@ app.controller('roastIndexController', function($scope,$http,$location){
             };
             $scope.goToHome = function(){
                 $location.path('/home');
+                console.log('alpha to charlie');
+            }
+            $scope.goToRoastCategory = function(){
+                $location.path('/roastList');
+                console.log('alpha to charlie');
+            }
+            $scope.goToQnAPage = function(){
+                $location.path('/QandA');
                 console.log('alpha to charlie');
             }
 
@@ -109,7 +121,7 @@ app.controller('roastTrendingController', function($scope,$location){
 
     $scope.goToRoast = function(){
          window.scrollTo(0,0);
-        $location.path('/roastPage');
+        $location.path('/roast');
     }
     $scope.trending=[{image:'http://qph.is.quoracdn.net/main-thumb-65424091-200-qfewjnaxxfuqpiqwdlmljcqfxobsefrf.jpeg',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
                     {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},{image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
@@ -124,13 +136,13 @@ app.controller('roastCreateController', function($scope,$http){
 
     console.log("trending page");
 
-    $scope.name = {name:'save ho ja bhai'};
+    $scope.name = {name:'bhai'};
 
     $scope.postRoast = function(){
 
         $scope.waiting = true;
 
-        $http.get('/api/postData').success(function(data){
+        $http.post('/postData', $scope.name).success(function(data){
             console.log(data);
             $scope.waiting = false;
         }).error(function(data){
@@ -158,6 +170,94 @@ app.controller('roastCreateController', function($scope,$http){
 app.controller('roastListController', function($scope){
 
     console.log("inside roast list");
+
+    $scope.goToRoast = function(){
+         window.scrollTo(0,0);
+        $location.path('/roast');
+    }
+    $scope.roastList=[{image:'http://qph.is.quoracdn.net/main-thumb-65424091-200-qfewjnaxxfuqpiqwdlmljcqfxobsefrf.jpeg',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
+                    {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},{image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
+                    {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
+                    {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
+                    {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'}];
+});
+
+
+app.controller('QandApageController', function ($scope) {
+    
+    $scope.showVotes = false;
+    $scope.yesVotes = 8;
+    $scope.noVotes = 65;
+    $scope.TotalVotes = $scope.yesVotes + $scope.noVotes;
+    
+    var yPercent = ($scope.yesVotes/$scope.TotalVotes)*100,
+        nPercent = ($scope.noVotes/$scope.TotalVotes)*100;
+    $scope.yRoundOff = Math.round(yPercent);
+    $scope.nRoundOff = Math.round(nPercent);
+    
+    $scope.votedY = function(value){
+        $scope.showVotes = true;
+    }
+    $scope.votedN = function(value){
+        $scope.showVotes = true;
+    }
+
+    $scope.postBlockActive = false;
+    $scope.appreciated = false;
+    $scope.appriValue = 'Appreciate';
+    $scope.hideTextArea = function () {
+        $scope.postBlockActive = false;
+    }
+    $scope.showTextArea = function () {
+        $scope.postBlockActive = true;
+        console.log('show is working');
+    }
+    $scope.appreciate = function (roast) {
+        $scope.appreciated = true;
+        $scope.appriValue = 'Appreciated';
+        console.log(roast.name);
+    }
+    $scope.anonyClicked = function (value) {
+        console.log(value);
+    }
+
+    $scope.QandA = [{
+        name: 'Saumya',
+        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        appreciation: '2'
+    }, {
+        name: 'Gaurav',
+        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        appreciation: '3'
+    }, {
+        name: 'Mayank',
+        comment: 'Lorem ipsum dolor sit amet,',
+        appreciation: '3'
+    }, {
+        name: 'Magan',
+        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        appreciation: '5'
+    }, {
+        name: 'Ashish',
+        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        appreciation: '4'
+    }];
+
+    $scope.postBlockActive = false;
+    $scope.textFocus = function () {
+        $scope.postBlkActv = true;
+    }
+    
+    // this ection is for broadcast of loader gif
+    /* function firstCtrl($scope)
+    {
+        $scope.$emit('loader', true);
+    }
+
+    function secondCtrl($scope)
+    {
+        $scope.$on('loader', function(value) { console.log(value); });
+    } */
 });
 
 

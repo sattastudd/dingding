@@ -347,4 +347,42 @@ textarea.form-control.textAreaActive {
 
 /* styles for create roast page ends here */
 
+/* styles for QandA page starts */
+
+.qFont{
+    font-size:22px;
+}
+.borderBtm{
+    border-bottom:1px solid grey;
+}
+.voteBtn{
+    border: 1px solid grey;
+    height: 50px;
+    text-align: center;
+    font-size: 32px;
+    background-color: #42B9B0;
+    margin-top: 10px;
+    color:#fff;
+}
+.barGraph{
+    height: 20px;
+    border-radius: 2px;
+}
+
+.barYes{
+    height : 20px;
+    background-color : #42B9B0;
+}
+.barNo{
+    height : 20px;
+    background-color : red;
+}
+@media screen and (min-width: 992px) {
+    .qFont{
+        font-size:26px;
+    }
+}
+
+/* styles for QandA page ends here /*
+
 /*# sourceMappingURL=style.css.map */
