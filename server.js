@@ -24,6 +24,12 @@ app.get('/roast', function(req, res){
 app.get('/create', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
+app.get('/roastList', function(req, res){
+	res.sendFile(__dirname + '/client/index.html');
+});
+app.get('/QandA', function(req, res){
+	res.sendFile(__dirname + '/client/index.html');
+});
 app.get('/404', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });

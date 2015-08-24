@@ -356,7 +356,7 @@ textarea.form-control.textAreaActive {
     border-bottom:1px solid grey;
 }
 .voteBtn{
-    border: 1px solid grey;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
     height: 50px;
     text-align: center;
     font-size: 32px;
