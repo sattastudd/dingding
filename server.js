@@ -18,7 +18,7 @@ app.use('/', express.static(__dirname + '/client'));
 app.get('/', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
-app.get('/roastPage', function(req, res){
+app.get('/roast', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
 app.get('/create', function(req, res){

@@ -5,7 +5,7 @@ app.config(function($routeProvider,$locationProvider) {
         $routeProvider
 
             // route for the home page
-            .when('/roastPage', {
+            .when('/roast', {
                 templateUrl : '../views/roastPage.html',
                 controller  : 'roastPageController'
             })
@@ -17,6 +17,10 @@ app.config(function($routeProvider,$locationProvider) {
             .when('/create', {
                 templateUrl : '../views/roastCreate.html',
                 controller  : 'roastCreateController'
+            })
+            .when('/roastList', {
+                templateUrl : '../views/roastList.html',
+                controller  : 'roastListController'
             })
             .when('/404', {
                 templateUrl : 'views/404.html',
@@ -148,6 +152,12 @@ app.controller('roastCreateController', function($scope,$http){
                 };*/
     
 
+});
+
+
+app.controller('roastListController', function($scope){
+
+    console.log("inside roast list");
 });
 
 
