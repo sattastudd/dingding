@@ -22,9 +22,21 @@ app.config(function($routeProvider,$locationProvider) {
                 templateUrl : '../views/roastList.html',
                 controller  : 'roastListController'
             })
+            .when('/roastCategory', {
+                templateUrl : '../views/roastCategory.html',
+                controller  : 'roastCategoryController'
+            })
             .when('/QandA', {
                 templateUrl : '../views/QandApage.html',
                 controller  : 'QandApageController'
+            })
+            .when('/QandAcategory', {
+                templateUrl : '../views/QandAcategory.html',
+                controller  : 'QandAcategoryController'
+            })
+            .when('/QandAlist', {
+                templateUrl : '../views/QandAlist.html',
+                controller  : 'QandAlistController'
             })
             .when('/404', {
                 templateUrl : 'views/404.html',
@@ -117,18 +129,28 @@ app.controller('roastPageController', function ($scope){
 
 });
 
-app.controller('roastTrendingController', function($scope,$location){
+app.controller('roastTrendingController', function($scope,$location,$http,$routeParams){
 
     $scope.goToRoast = function(){
          window.scrollTo(0,0);
         $location.path('/roast');
     }
-    $scope.trending=[{image:'http://qph.is.quoracdn.net/main-thumb-65424091-200-qfewjnaxxfuqpiqwdlmljcqfxobsefrf.jpeg',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
-                    {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},{image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
-                    {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
-                    {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
-                    {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'}];
 
+    $http.get('/getTrending').success(function(data){
+        console.log(data[0]);
+        $scope.questions = data[0];
+
+    }).error(function(data){
+        console.log(data);
+    })
+
+    $scope.goToDebate = function(){
+
+        window.scrollTo(0,0);
+        $location.path('/QandA');
+
+       
+    }
 });
 
 
@@ -136,13 +158,30 @@ app.controller('roastCreateController', function($scope,$http){
 
     console.log("trending page");
 
-    $scope.name = {name:'bhai'};
+    $scope.roast = {};
+    $scope.debate = {};
+    $scope.debate.yes = 0;
+    $scope.debate.no = 0;
 
     $scope.postRoast = function(){
 
         $scope.waiting = true;
 
-        $http.post('/postData', $scope.name).success(function(data){
+        $http.post('/createRoast', $scope.roast).success(function(data){
+            console.log(data);
+            $scope.waiting = false;
+        }).error(function(data){
+            $scope.waiting = false;
+        })
+    }
+
+    $scope.postDebate = function(){
+
+        $scope.waiting = true;
+
+        console.log('adadad');
+
+        $http.post('/createDebate', $scope.debate).success(function(data){
             console.log(data);
             $scope.waiting = false;
         }).error(function(data){
@@ -183,24 +222,32 @@ app.controller('roastListController', function($scope){
 });
 
 
-app.controller('QandApageController', function ($scope) {
-    
-    $scope.showVotes = false;
-    $scope.yesVotes = 8;
-    $scope.noVotes = 65;
-    $scope.TotalVotes = $scope.yesVotes + $scope.noVotes;
-    
-    var yPercent = ($scope.yesVotes/$scope.TotalVotes)*100,
-        nPercent = ($scope.noVotes/$scope.TotalVotes)*100;
-    $scope.yRoundOff = Math.round(yPercent);
-    $scope.nRoundOff = Math.round(nPercent);
-    
-    $scope.votedY = function(value){
-        $scope.showVotes = true;
-    }
-    $scope.votedN = function(value){
-        $scope.showVotes = true;
-    }
+app.controller('QandApageController', function ($scope,$http,$routeParams) {
+
+    $http.get('/getTrending').success(function(data){
+        console.log(data);
+        $scope.questions = data[0];
+
+        $scope.showVotes = false;
+        $scope.yesVotes = $scope.questions.yes;
+        $scope.noVotes = $scope.questions.no;
+        $scope.TotalVotes = $scope.yesVotes + $scope.noVotes;
+        
+        var yPercent = ($scope.yesVotes/$scope.TotalVotes)*100,
+            nPercent = ($scope.noVotes/$scope.TotalVotes)*100;
+        $scope.yRoundOff = Math.round(yPercent);
+        $scope.nRoundOff = Math.round(nPercent);
+        
+        $scope.votedY = function(value){
+            $scope.showVotes = true;
+        }
+        $scope.votedN = function(value){
+            $scope.showVotes = true;
+        }
+
+    }).error(function(data){
+        console.log(data);
+    })
 
     $scope.postBlockActive = false;
     $scope.appreciated = false;
@@ -220,6 +267,14 @@ app.controller('QandApageController', function ($scope) {
     $scope.anonyClicked = function (value) {
         console.log(value);
     }
+
+    //var debateID = '/getDebate/' + $routeParams.id;
+
+     $http.get('/getDebate').success(function(data){
+            console.log(data);
+        }).error(function(data){
+            console.log(data);
+        })
 
     $scope.QandA = [{
         name: 'Saumya',
@@ -259,6 +314,19 @@ app.controller('QandApageController', function ($scope) {
         $scope.$on('loader', function(value) { console.log(value); });
     } */
 });
+
+
+app.controller('roastCategoryController', function(){
+
+})
+
+app.controller('QandAlistController', function(){
+    
+})
+
+app.controller('QandAcategoryController', function(){
+    
+})
 
 
 app.controller('errorController', function($scope){

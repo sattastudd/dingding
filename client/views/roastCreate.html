@@ -5,20 +5,20 @@
                 <div class="row">
                     <div class="row">
                         <div class="col-xs-12 trendingTitle">
-                            Create your Roast
+                            Create a Roast
                         </div>
                     </div>
                 </div>
                 <div class="col-xs-12">
                     <p><b>Name of the Roastee</b></p>
-                    <input type="text" class="form-control" placeholder="Name of the person/thing you want to Roast" />
+                    <input type="text" class="form-control" ng-model="roast.name" placeholder="Name of the person/thing you want to Roast" />
                 </div>
                 <div ng-if="waiting">
                     <img src="../images/loader.gif" class="loader" />
                 </div>
                 <div class="col-xs-12">
                     <p style="margin-top:10px;"><b>Describe it</b></p>
-                    <textarea type="text" style="width:100%;height:80px;" class="form-control" placeholder="Describe the person/thing you want to Roast in the most Sarcastic way"></textarea>
+                    <textarea type="text" style="width:100%;height:80px;" ng-model="roast.description" class="form-control" placeholder="Describe the person/thing you want to Roast in the most Sarcastic way"></textarea>
                 </div>
                 <div class="col-xs-12">
                     Choose category for the Roast
@@ -39,6 +39,25 @@
                 </div> -->
                 <div class="col-xs-12">
                     <button type="button" ng-click="postRoast()" class="btn btn-place-primary">Create Roast</button>
+                </div>
+            </div>
+            <div class="row broadRow">
+                <div class="row">
+                    <div class="row">
+                        <div class="col-xs-12 trendingTitle">
+                            Create a Debate
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <p><b>Enter the Debatable question</b></p>
+                    <input type="text" class="form-control" ng-model="debate.name" placeholder="Write a question you want to Debate" />
+                </div>
+                <div ng-if="waiting">
+                    <img src="../images/loader.gif" class="loader" />
+                </div>
+                <div class="col-xs-12">
+                    <button type="button" ng-click="postDebate()" class="btn btn-place-primary">Create Debate</button>
                 </div>
             </div>
         </div>

@@ -1,12 +1,14 @@
 console.log("Preparing the Barbeque");
 
-var express 			= require('express'),
-		app 			= express(),
-		bodyParser		= require('body-parser'),
-		mongoose		= require('mongoose'),
-		fs 				= require('fs'),
-		http 			= require('http').Server(app),
-		roastController = require('./server/controllers/roastController');
+var express 				= require('express'),
+		app 				= express(),
+		bodyParser			= require('body-parser'),
+		mongoose			= require('mongoose'),
+		fs 					= require('fs'),
+		http 				= require('http').Server(app),
+		roastController 	= require('./server/controllers/roastController');
+		debateController	= require('./server/controllers/debateController');
+		trendingController 	= require('./server/controllers/trendingController');
 
 mongoose.connect('mongodb://localhost:27017/roastDB');
 
@@ -34,13 +36,22 @@ app.get('/404', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
 
-//this is for using js files
 app.use('/appResources', express.static(__dirname + '/client/appResources'));
 
 app.use(bodyParser());
 
 //this is for posting data
-app.post('/postData', roastController.create);
+app.post('/createRoast', roastController.createRoast);
+
+app.post('/debateComment', debateController.debateComment);
+
+app.get('/getTrending', trendingController.getTrending);
+
+app.post('/createDebate', trendingController.createDebate);
+
+//app.post('/vote', trendingController.vote);
+
+//app.get('/getDebate', debateController.getDebate);
 
 
 app.listen(3000, function(){
