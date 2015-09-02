@@ -1,6 +1,44 @@
-var trending = require('../models/trendingModel');
+var trendingDebate = require('../models/debateModel');
 
-module.exports.getTrending = function  (req, res) {
+
+module.exports.getDebates = function(req, res){
+	
+	var trends = trendingDebate.getDebateModel();
+	
+	trends.find({}, function (err, result) {
+        res.json(result);
+        console.log(result);
+	});
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*module.exports.getTrending = function  (req, res) {
 	
 
 	var trends = trending.getTrendingModel();
@@ -21,6 +59,8 @@ module.exports.createDebate = function(req, res){
 
 	var newDebate = new trends(req.body);
 
+	getTheName = req.body.name;
+
 	newDebate.save(function(err, result){
 		if (!err) {
 			res.json(result);
@@ -39,4 +79,4 @@ module.exports.vote = function(req, res){
 			res.json(result);
 		};
 	});
-};
+};*/

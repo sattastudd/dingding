@@ -29,27 +29,30 @@ app.get('/create', function(req, res){
 app.get('/roastList', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
-app.get('/QandA', function(req, res){
+app.get('/QandA/:id', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
 app.get('/404', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
 
-app.use('/appResources', express.static(__dirname + '/client/appResources'));
 
 app.use(bodyParser());
 
 //this is for posting data
 app.post('/createRoast', roastController.createRoast);
 
+app.post('/createDebate', debateController.createDebate);
+
+app.get('/trendingDebates', trendingController.getDebates);
+
+app.get('/debateTitle/:id', debateController.getDebate);
+
 app.post('/debateComment', debateController.debateComment);
 
-app.get('/getTrending', trendingController.getTrending);
+app.get('/debateComments/:id', debateController.debateComments);
 
-app.post('/createDebate', trendingController.createDebate);
-
-//app.post('/vote', trendingController.vote);
+app.post('/vote', debateController.vote);
 
 //app.get('/getDebate', debateController.getDebate);
 

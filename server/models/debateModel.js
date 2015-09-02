@@ -1,24 +1,43 @@
 var mongoose 		= require('mongoose');
 
 
-//console.log(req.body);
+var debateSchema = new mongoose.Schema({
+	question	: String,
+	yes			: String,
+	no			: String,
+	createdBy	: String,
+	createdOn	: Date
+});
 
-var debateModel = mongoose.model('debate',{
-name: String, date: String, comment: String
-}) ; 
+var debateModel = mongoose.model('debates', debateSchema);
 
-/*var debateVoteModel = mongoose.model('debateList',{
-name: String, id: String
-}) ;*/ 
-
-
-var  getDebateModel = function(){
+var getDebateModel = function(){
 	return debateModel;
+};
+
+exports.getDebateModel 	= getDebateModel;
+
+
+
+// for comment in denbates
+
+var commentSchema = new mongoose.Schema({
+	name		: String,
+	comment 	: String,
+	createdOn	: Date
+});
+
+var getCommentModel = function(collectionName){
+
+	var commentModel = mongoose.model(collectionName, commentSchema);
+	return commentModel; 
 }
 
-/*var  getDebateVotetModel = function(){
-	return debateListModel;
-}*/
+exports.getCommentModel = getCommentModel;
 
-exports.getDebateModel 		= getDebateModel;
-//exports.getDebateListModel 	= getDebateListModel;
+
+
+
+
+
+

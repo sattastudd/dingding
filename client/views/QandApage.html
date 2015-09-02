@@ -6,7 +6,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="row">
                             <div class="col-xs-12 borderBtm">
-                                <p class="qFont"><b>Q.</b> {{questions.name}} ?</p>
+                                <p class="qFont"><b>Q.</b> {{questions.question}} ?</p>
                             </div>
                             <div class="col-xs-12" ng-hide="showVotes" style="margin-bottom:60px;">
                                 <div class="col-xs-5 voteBtn" ng-click="votedY()">
@@ -46,7 +46,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-12 roastDiv" ng-repeat="qna in QandA">
+                            <div class="col-xs-12 roastDiv" ng-repeat="qna in QandA.slice().reverse()">
                                 <div class="row">
                                     <div class="col-xs-12" style="margin-bottom:15px">
                                         <div class="row">
@@ -54,7 +54,7 @@
                                                 <img class="userIcon" src="../images/user.jpg" /><b>{{qna.name}}</b>
 
                                             </div>
-                                            <div class="col-xs-6 roastTime"><p class="pull-right">11:11 PM 15 Oct 2015</p></div>
+                                            <div class="col-xs-6 roastTime"><p class="pull-right">{{qna.createdOn | date:'medium'}}</p></div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 roastText">{{qna.comment}}</div>
@@ -71,7 +71,7 @@
                         <div class="row"><div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 fixedTextBox">
                                 <div class="row">
-                                    <textarea type="text" ng-model="roast.comment" ng-focus="showTextArea()" ng-class="postBlockActive?'textAreaActive':'textAreaBox'" class="form-control textAreaBox" placeholder="slam your text here"></textarea>
+                                    <textarea type="text" ng-model="comment.comment" ng-focus="showTextArea()" ng-class="postBlockActive?'textAreaActive':'textAreaBox'" class="form-control textAreaBox" placeholder="slam your text here"></textarea>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12" ng-if="postBlockActive">
@@ -82,7 +82,7 @@
                                             </div>
                                             <div class="col-xs-8 pull-right">
                                                 <button type="btn" ng-click="hideTextArea()" class="btn btn-default">Cancel</button>
-                                                <button type="btn" class="btn btn-default">Post</button>
+                                                <button type="btn" class="btn btn-default" ng-click="post()">Post</button>
                                             </div>
                                         </div>
                                     </div>
