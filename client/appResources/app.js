@@ -54,22 +54,27 @@ app.controller('roastIndexController', function($scope,$http,$location){
             $scope.goToCreate = function(){
                 $location.path('/create');
                 window.scrollTo(0,0);
+                $scope.showToolBox();
             };
             $scope.goToTrending = function(){
                 $location.path('/');
                 window.scrollTo(0,0);
+                $scope.showToolBox();
             };
             $scope.goToHome = function(){
                 $location.path('/home');
-                console.log('alpha to charlie');
+                window.scrollTo(0,0);
+                $scope.showToolBox();
             }
             $scope.goToRoastCategory = function(){
                 $location.path('/roastList');
-                console.log('alpha to charlie');
+                window.scrollTo(0,0);
+                $scope.showToolBox();
             }
             $scope.goToQnAPage = function(){
                 $location.path('/QandA');
-                console.log('alpha to charlie');
+                window.scrollTo(0,0);
+                $scope.showToolBox();
             }
 
             $scope.toolBoxActive = true;
@@ -170,6 +175,7 @@ app.controller('roastCreateController', function($scope,$http){
         $http.post('/createDebate', $scope.debate).success(function(data){
             console.log(data);
             $scope.waiting = false;
+            $scope.debate  = null;
         }).error(function(data){
             $scope.waiting = false;
         })
