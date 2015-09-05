@@ -63,6 +63,16 @@ module.exports.debateComments = function(req, res){
 
 };
 
+module.exports.getDebates = function(req, res){
+	
+	var debates = debateHandler.getDebateModel();
+	
+	debates.find({}, function (err, result) {
+        res.json(result);
+        console.log(result);
+	});
+};
+
 
 module.exports.vote = function(req, res){
 

@@ -20,7 +20,7 @@ app.use('/', express.static(__dirname + '/client'));
 app.get('/', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
-app.get('/roast', function(req, res){
+app.get('/roast/:id', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
 app.get('/create', function(req, res){
@@ -30,6 +30,9 @@ app.get('/roastList', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
 app.get('/QandA/:id', function(req, res){
+	res.sendFile(__dirname + '/client/index.html');
+});
+app.get('/QandAlist', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
 app.get('/404', function(req, res){
@@ -48,11 +51,21 @@ app.get('/trendingDebates', trendingController.getDebates);
 
 app.get('/debateTitle/:id', debateController.getDebate);
 
+app.get('/roastTitle/:id', roastController.getRoast);
+
 app.post('/debateComment', debateController.debateComment);
+
+app.post('/roastComment', roastController.roastComment);
+
+app.get('/roastComments/:id', roastController.roastComments);
 
 app.get('/debateComments/:id', debateController.debateComments);
 
 app.post('/vote', debateController.vote);
+
+app.get('/allDebates', debateController.getDebates);
+
+app.get('/allRoasts', roastController.getRoasts);
 
 //app.get('/getDebate', debateController.getDebate);
 

@@ -25,6 +25,7 @@ exports.getDebateModel 	= getDebateModel;
 var commentSchema = new mongoose.Schema({
 	name		: String,
 	comment 	: String,
+	createdBy	: String,
 	createdOn	: Date
 });
 

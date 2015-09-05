@@ -5,7 +5,7 @@ app.config(function($routeProvider,$locationProvider) {
         $routeProvider
 
             // route for the home page
-            .when('/roast', {
+            .when('/roast/:id', {
                 templateUrl : '../views/roastPage.html',
                 controller  : 'roastPageController'
             })
@@ -22,17 +22,9 @@ app.config(function($routeProvider,$locationProvider) {
                 templateUrl : '../views/roastList.html',
                 controller  : 'roastListController'
             })
-            .when('/roastCategory', {
-                templateUrl : '../views/roastCategory.html',
-                controller  : 'roastCategoryController'
-            })
             .when('/QandA/:id', {
                 templateUrl : '../views/QandApage.html',
                 controller  : 'QandApageController'
-            })
-            .when('/QandAcategory', {
-                templateUrl : '../views/QandAcategory.html',
-                controller  : 'QandAcategoryController'
             })
             .when('/QandAlist', {
                 templateUrl : '../views/QandAlist.html',
@@ -66,13 +58,13 @@ app.controller('roastIndexController', function($scope,$http,$location){
                 window.scrollTo(0,0);
                 $scope.showToolBox();
             }
-            $scope.goToRoastCategory = function(){
+            $scope.goToRoasts = function(){
                 $location.path('/roastList');
                 window.scrollTo(0,0);
                 $scope.showToolBox();
             }
             $scope.goToQnAPage = function(){
-                $location.path('/QandA');
+                $location.path('/QandAlist');
                 window.scrollTo(0,0);
                 $scope.showToolBox();
             }
@@ -83,7 +75,17 @@ app.controller('roastIndexController', function($scope,$http,$location){
             }
     });
 
-app.controller('roastPageController', function ($scope){
+app.controller('roastPageController', function ($scope,$http,$location,$routeParams){
+
+
+
+    var roastID = '/roastTitle/' + $routeParams.id;
+
+    $http.get(roastID).success(function(data){
+        $scope.roastTitle = data[0];
+    }).error(function(data){
+        console.log(data);
+    });
 
     $scope.roast = {};
     $scope.postBlockActive = false;
@@ -105,16 +107,43 @@ app.controller('roastPageController', function ($scope){
         console.log(value);
     }
 
-    $scope.roasts = [{
-        name: 'Saumya',
-        roast: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        appreciation: '2'
-    }];
-
     $scope.postBlockActive = false;
     $scope.textFocus = function () {
         $scope.postBlkActv = true;
-    }
+    };
+
+    var commentID = '/roastComments/' + $routeParams.id;
+
+    $scope.fetchRComments = function(){
+        $http.get(commentID).success(function(data){
+
+            console.log(data);
+            $scope.roasts = data;
+        }).error(function(data){
+
+        });
+    };
+
+    $scope.fetchRComments();
+
+    $scope.rComment = {};
+    $scope.rComment.name = 'Anonymous';
+    $scope.rComment.id = $routeParams.id;
+
+    $scope.postRComment = function(){
+    
+        console.log('i posted raosted');
+
+        $http.post('/roastComment', $scope.rComment).success(function(data){
+
+            $scope.fetchRComments();
+            $scope.hideTextArea();
+            $scope.rComment.comment = null;
+
+        }).error(function(data){
+
+        })
+    };
 
 });
 
@@ -160,6 +189,7 @@ app.controller('roastCreateController', function($scope,$http){
 
         $http.post('/createRoast', $scope.roast).success(function(data){
             console.log(data);
+            $scope.roast = null;
             $scope.waiting = false;
         }).error(function(data){
             $scope.waiting = false;
@@ -314,28 +344,42 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
 });
 
 
-app.controller('roastListController', function($scope){
+app.controller('roastListController', function($scope,$http,$location,$routeParams){
 
-    console.log("inside roast list");
+    $http.get('/allRoasts').success(function(data){
+        console.log("inside roast list");
+        $scope.roastList = data;
+    }).error(function(data){
+        //console.log(data);
+    })
 
-    $scope.goToRoast = function(){
+    $scope.goToRoast = function(content){
          window.scrollTo(0,0);
-        $location.path('/roast');
+         var roastID = '/roast/' + content._id;
+        $location.path(roastID);
     }
-    $scope.roastList=[{image:'http://qph.is.quoracdn.net/main-thumb-65424091-200-qfewjnaxxfuqpiqwdlmljcqfxobsefrf.jpeg',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
-                    {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},{image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
-                    {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
-                    {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'},
-                    {image:'',quote:'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,consectetur, adipisci velit...',name:'Satish Mishra',roastCounter:'2.1K',rpm:'12'}];
+    
 });
 
 
-app.controller('roastCategoryController', function(){
 
-})
+app.controller('QandAlistController', function($http,$scope,$location,$routeParams){
 
-app.controller('QandAlistController', function(){
-    
+    $http.get('/allDebates').success(function(data){
+        console.log(data[0]);
+        $scope.questions = data;
+
+    }).error(function(data){
+        console.log(data);
+    })
+
+    $scope.goToDebate = function(question){
+
+        window.scrollTo(0,0);
+        var debateID = '/QandA/' + question._id;
+        
+        $location.path(debateID);
+    }
 })
 
 app.controller('QandAcategoryController', function(){

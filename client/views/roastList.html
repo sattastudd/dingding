@@ -2,14 +2,14 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="row">
-	            <div class="col-xs-12">
+	            <div class="col-xs-12" style="min-height:556px">
 	            	<div class="row">
 		            	<div class="col-xs-12 trendingTitle">
-		            		Roast of Category Name
+		            		Latest Roasts
 		            	</div>
 		            </div>
-	                <div class="col-xs-12 trendBlock hand" ng-click="goToRoast()" ng-repeat="content in roastList">
-	                    <div class="row">
+	                <div class="col-xs-12 trendBlock hand" ng-repeat="content in roastList.slice().reverse()">
+	                    <div class="row" ng-click="goToRoast(content)">
 	                        <div class="col-xs-4">
 	                            <img src="https://yt3.ggpht.com/-QSdUl6wilzo/AAAAAAAAAAI/AAAAAAAAAAA/BGrQrNGDA8U/s900-c-k-no/photo.jpg" class="roasteeImg" />
 	                        </div>

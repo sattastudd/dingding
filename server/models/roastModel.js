@@ -1,13 +1,17 @@
-var mongoose 		= require('mongoose'),
-	collectionName 	= require('../controllers/roastController')
+var mongoose 		= require('mongoose');
 
-var roastName = collectionName.createRoast;
 
-//console.log(req.body);
+//creating roast
 
-var roastModel = mongoose.model('roast',{
-name: String, description: String
-}) ;
+var roastSchema = new mongoose.Schema({
+	name		: String,
+	quote 		: String,
+	image		: String,
+	createdOn	: Date,
+	createdBy	: String,
+});
+
+var roastModel = mongoose.model('roasts', roastSchema);
 
 
 var  getRoastModel = function(){
@@ -15,3 +19,21 @@ var  getRoastModel = function(){
 }
 
 exports.getRoastModel = getRoastModel;
+
+
+// comments for roast
+
+var commentSchema = new mongoose.Schema({
+	name		: String,
+	comment 	: String,
+	createdBy	: String,
+	createdOn	: Date
+});
+
+var getCommentModel = function(collectionName){
+
+	var commentModel = mongoose.model(collectionName, commentSchema, collectionName);
+	return commentModel; 
+}
+
+exports.getCommentModel = getCommentModel;
