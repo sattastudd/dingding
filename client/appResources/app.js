@@ -150,8 +150,8 @@ app.controller('roastCreateController', function($scope,$http){
 
     $scope.roast = {};
     $scope.debate = {};
-    $scope.debate.yes = 0;
-    $scope.debate.no = 0;
+    $scope.debate.yes = 1;
+    $scope.debate.no = 1;
     $scope.debate.createdOn = new Date();
 
     $scope.postRoast = function(){
@@ -185,7 +185,7 @@ app.controller('roastCreateController', function($scope,$http){
 
 
 
-app.controller('QandApageController', function ($scope,$http,$routeParams) {
+app.controller('QandApageController', function ($scope,$http,$routeParams,$location) {
 
 
     $scope.postBlockActive = false;
@@ -210,7 +210,21 @@ app.controller('QandApageController', function ($scope,$http,$routeParams) {
         $scope.postBlkActv = true;
     }*/
 
+    $scope.calcVote = function(){
+
+        $scope.yesVotes = $scope.questions.yes;
+        $scope.noVotes = $scope.questions.no;
+        $scope.TotalVotes = $scope.yesVotes + $scope.noVotes;
+            
+        var yPercent = ($scope.yesVotes/$scope.TotalVotes)*100,
+            nPercent = ($scope.noVotes/$scope.TotalVotes)*100;
+        $scope.yRoundOff = Math.round(yPercent);
+        $scope.nRoundOff = Math.round(nPercent);
+    }
+
     // for getting debate title
+
+    $scope.showVoteBlock = true;
 
     var debateID = '/debateTitle/' + $routeParams.id;
 
@@ -218,19 +232,19 @@ app.controller('QandApageController', function ($scope,$http,$routeParams) {
         console.log(data[0]);
         $scope.questions = data[0];
 
-        $scope.showVotes = false;
-        $scope.yesVotes = $scope.questions.yes;
-        $scope.noVotes = $scope.questions.no;
-        $scope.TotalVotes = $scope.yesVotes + $scope.noVotes;
-        
-        var yPercent = ($scope.yesVotes/$scope.TotalVotes)*100,
-            nPercent = ($scope.noVotes/$scope.TotalVotes)*100;
-        $scope.yRoundOff = Math.round(yPercent);
-        $scope.nRoundOff = Math.round(nPercent);
+        if ($scope.questions.debate === "Y") {
+            $scope.calcVote();
+        }
+        else{$scope.showVoteBlock = false;}
 
     }).error(function(data){
         console.log(data);
     });
+
+    $scope.goToCreateQ = function(){
+        $location.path('/create');
+        window.scrollTo(500,500);
+    }
 
     $scope.voteObject = {};
     $scope.voteObject.id = $routeParams.id;
@@ -245,12 +259,18 @@ app.controller('QandApageController', function ($scope,$http,$routeParams) {
 
         $scope.votedY = function(value){
             $scope.showVotes = true;
-            $scope.voteObject.yValue = $scope.questions.yes + 1;
+            $scope.voteObject.value = 'Y';
+            $scope.yesVotes = $scope.questions.yes + 1;
+            $scope.calcVote();
             $scope.vote();
-        }
+        };
         $scope.votedN = function(value){
             $scope.showVotes = true;
-        }
+            $scope.voteObject.value = 'N';
+            $scope.noVotes = $scope.questions.no + 1;
+            $scope.calcVote();
+            $scope.vote();
+        };
 
 
     $scope.comment = {};

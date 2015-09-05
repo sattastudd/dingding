@@ -68,26 +68,29 @@ module.exports.vote = function(req, res){
 
 	var id = req.body.id;
 
-	var voteIt = debateHandler.getDebateModel();
+	var vote = debateHandler.getDebateModel();
 
-	var newVote = new voteIt(req.body);
+	//var newVote = new vote('debates');
 
-	console.log(req.body.yes);
+	console.log(req.body);
 
-	newVote.find({'_id':id} , function(err, result) {
-		if(err){
-			res.json('failed');
-		}
-		else{
-			result.modified = new Date();
-
-			result.save(function(err) {
-		      if (err)
-		        console.log('error')
-		      else
-		        console.log('success')
-		    });
-		}
-	});
-
-}
+	if(req.body.value === 'Y'){
+		vote.update(
+				   { "_id": id },
+				   { "$inc": { "yes": 1 } },
+				   function(err, result) {
+					   res.json(result);
+				   }
+				);
+	};
+	
+	if(req.body.value === 'N'){
+		vote.update(
+				   { "_id": id },
+				   { "$inc": { "no": 1 } },
+				   function(err, result) {
+						res.json(result);
+				   }
+				);
+	};
+};

@@ -192,10 +192,16 @@ a, .dropdown-menu {
     height:45px;
     width:45px;
     display: inline;
+    border-radius: 5px;
     margin: 0 auto;
     text-align: center;
-    border-radius: 24px;
     margin-right: 5px;
+}
+.replyBtn{
+    margin-top: 5px;
+    color: gray;
+    margin-right:15px;
+    cursor: pointer;
 }
 .roastDiv {
     border-bottom: 1px solid gainsboro;
@@ -249,11 +255,11 @@ textarea.form-control.textAreaActive {
 }
 .roastTime{
     font-size: 11px;
-    margin-top: 15px;
+    margin-top: 4px;
     color: #988E8E;
 }
 .roastText{
-  font-size: 15px;
+  font-size: 17px;
 }
 @media screen and (min-width: 992px) {
     textarea.form-control {
@@ -364,6 +370,18 @@ textarea.form-control.textAreaActive {
     margin-top: 10px;
     color:#fff;
 }
+.Qbtn{
+    border: 1px solid gainsboro;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    height: 45px;
+    padding-top: 6px;
+    color: #fff;
+    background-color: #009688;
+    border-radius: 4px;
+    font-size: 12px;
+    text-align: center;
+}
 .barGraph{
     height: 20px;
     border-radius: 2px;
@@ -380,6 +398,9 @@ textarea.form-control.textAreaActive {
 @media screen and (min-width: 992px) {
     .qFont{
         font-size:26px;
+    }
+    .Qbtn{
+        font-size: 20px
     }
 }
 

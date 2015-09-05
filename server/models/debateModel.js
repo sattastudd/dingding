@@ -3,9 +3,10 @@ var mongoose 		= require('mongoose');
 
 var debateSchema = new mongoose.Schema({
 	question	: String,
-	yes			: String,
-	no			: String,
+	yes			: Number,
+	no			: Number,
 	createdBy	: String,
+	debate 		: String,
 	createdOn	: Date
 });
 
@@ -29,7 +30,7 @@ var commentSchema = new mongoose.Schema({
 
 var getCommentModel = function(collectionName){
 
-	var commentModel = mongoose.model(collectionName, commentSchema);
+	var commentModel = mongoose.model(collectionName, commentSchema, collectionName);
 	return commentModel; 
 }
 
