@@ -10,7 +10,7 @@ module.exports.createRoast = function(req, res){
 
 	newRoast.save(function(err, result){
 		if (!err) {
-			res.json("success");
+			res.json(result);
 		};
 	});
 };

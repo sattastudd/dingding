@@ -130,19 +130,36 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
     $scope.rComment.name = 'Anonymous';
     $scope.rComment.id = $routeParams.id;
 
+    $scope.rCommentChar = 2000;
+
+    $scope.$watch('rComment.comment', function() {
+        if(angular.isDefined($scope.rComment.comment)){
+           $scope.rCommentChar = 2000 - $scope.rComment.comment.length;
+           if ($scope.rCommentChar === 0) {
+                $scope.rCommentChar = 0;
+           };
+       };
+    });
+
+    var valid = null;
+
     $scope.postRComment = function(){
     
-        console.log('i posted raosted');
+        if ($scope.rComment.comment === null || $scope.rComment.comment === "" || angular.isUndefined($scope.rComment.comment)) {
+                valid = false
+        }else{valid = true};
 
-        $http.post('/roastComment', $scope.rComment).success(function(data){
+        if (valid === true){
+            $http.post('/roastComment', $scope.rComment).success(function(data){
 
-            $scope.fetchRComments();
-            $scope.hideTextArea();
-            $scope.rComment.comment = null;
+                $scope.fetchRComments();
+                $scope.hideTextArea();
+                $scope.rComment.comment = null;
 
-        }).error(function(data){
+            }).error(function(data){
 
-        })
+            });
+        };
     };
 
 });
@@ -173,7 +190,7 @@ app.controller('roastTrendingController', function($scope,$location,$http,$route
 });
 
 
-app.controller('roastCreateController', function($scope,$http){
+app.controller('roastCreateController', function($scope,$http,$location,$routeParams){
 
     console.log("trending page");
 
@@ -182,34 +199,77 @@ app.controller('roastCreateController', function($scope,$http){
     $scope.debate.yes = 1;
     $scope.debate.no = 1;
     $scope.debate.createdOn = new Date();
+    $scope.nameChar = 50;
+    $scope.descChar = 150;
+    $scope.qChar = 150;
+
+    /*$scope.$watch('roast.name', function() {
+        if(angular.isDefined($scope.roast.name)){
+           $scope.nameChar = 50 - $scope.roast.name.length;
+           if ($scope.nameChar === 0) {
+                $scope.nameChar = 0;
+           };
+       };
+    });
+    $scope.$watch('roast.quote', function() {
+        if(angular.isDefined($scope.roast.quote)){
+           $scope.descChar = 150 - $scope.roast.quote.length;
+           if ($scope.descChar === 0) {
+                $scope.descChar = 0;
+           };
+       };
+    });*/
+    $scope.$watch('debate.question', function() {
+        if(angular.isDefined($scope.debate.question)){
+            $scope.qChar = 150 - $scope.debate.question.length;
+            if ($scope.qChar === 0) {
+                $scope.qChar = 0;
+            };
+        };
+    });
+
+    var valid  = null;
 
     $scope.postRoast = function(){
 
-        $scope.waiting = true;
+            if ($scope.roast.name === null || $scope.roast.name === "" || angular.isUndefined($scope.roast.name)) {
+                valid = false;
+            }else 
+            if ($scope.roast.quote === null || $scope.roast.quote === "" || angular.isUndefined($scope.roast.quote)) {
+                valid = false
+            }else{valid = true};
 
-        $http.post('/createRoast', $scope.roast).success(function(data){
-            console.log(data);
-            $scope.roast = null;
-            $scope.waiting = false;
-        }).error(function(data){
-            $scope.waiting = false;
-        })
-    }
+        if (valid === true) {
+            $scope.waiting = true;
+            $http.post('/createRoast', $scope.roast).success(function(data){
+                $scope.waiting = false;
+                var roastID = '/roast/' + data._id;
+                $location.path(roastID);
+            }).error(function(data){
+                $scope.waiting = false;
+            })
+        };
+    };
+
+    var validQ = null;
 
     $scope.postDebate = function(){
 
-        $scope.waiting = true;
+         if ($scope.debate.question === null || $scope.debate.question === "" || angular.isUndefined($scope.debate.question)) {
+                validQ = false
+        }else{validQ = true};
 
-        console.log('adadad');
-
-        $http.post('/createDebate', $scope.debate).success(function(data){
-            console.log(data);
-            $scope.waiting = false;
-            $scope.debate  = null;
-        }).error(function(data){
-            $scope.waiting = false;
-        })
-    }    
+        if(validQ === true){
+            $scope.waiting = true;
+            $http.post('/createDebate', $scope.debate).success(function(data){
+                $scope.waiting = false;
+                var debateID = '/QandA/' + data._id;
+                $location.path(debateID);
+            }).error(function(data){
+                $scope.waiting = false;
+            })
+        };
+    };
 
 });
 
@@ -221,6 +281,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.postBlockActive = false;
     $scope.appreciated = false;
     $scope.appriValue = 'Appreciate';
+    $scope.appri = {};
     $scope.hideTextArea = function () {
         $scope.postBlockActive = false;
     }
@@ -228,10 +289,18 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         $scope.postBlockActive = true;
         console.log('show is working');
     }
-    $scope.appreciate = function (roast) {
-        $scope.appreciated = true;
-        $scope.appriValue = 'Appreciated';
-        console.log(roast.name);
+    $scope.appreciate = function (qna) {
+        //$scope.appreciated = true;
+        //$scope.appriValue = 'Appreciated';
+
+        $scope.appri.commentID = qna._id;
+        $scope.appri.qnaID = $routeParams.id;
+
+        $http.post('/appriQnA', $scope.appri).success(function(data){
+            console.log(data);
+        }).error(function(data){
+
+        });
     }
     $scope.anonyClicked = function (value) {
         console.log(value);
@@ -272,8 +341,8 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     });
 
     $scope.goToCreateQ = function(){
+        window.scrollTo(1000,1000);
         $location.path('/create');
-        window.scrollTo(500,500);
     }
 
     $scope.voteObject = {};
@@ -326,19 +395,36 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
 
     // for posting comment
 
+    $scope.qCommentChar = 2000;
+
+    $scope.$watch('comment.comment', function() {
+        if(angular.isDefined($scope.comment.comment)){
+           $scope.qCommentChar = 2000 - $scope.comment.comment.length;
+           if ($scope.qCommentChar === 0) {
+                $scope.qCommentChar = 0;
+           };
+       };
+    });
+
+    var valid = null;
+
     $scope.post = function(){
-    
-        console.log('i posted');
 
-        $http.post('/debateComment', $scope.comment).success(function(data){
+        if ($scope.comment.comment === null || $scope.comment.comment === "" || angular.isUndefined($scope.comment.comment)) {
+                valid = false
+            }else{valid = true};
 
-            $scope.fetchComments();
-            $scope.hideTextArea();
-            $scope.comment.comment = null;
+        if(valid === true){
+            $http.post('/debateComment', $scope.comment).success(function(data){
 
-        }).error(function(data){
+                $scope.fetchComments();
+                $scope.hideTextArea();
+                $scope.comment.comment = null;
 
-        })
+            }).error(function(data){
+
+            });
+        };
     }   
    
 });
@@ -389,4 +475,28 @@ app.controller('QandAcategoryController', function(){
 
 app.controller('errorController', function($scope){
 
+});
+
+
+
+// directives start here 
+
+
+app.directive('myMaxlength', function() {
+  return {
+    require: 'ngModel',
+    link: function (scope, element, attrs, ngModelCtrl) {
+      var maxlength = Number(attrs.myMaxlength);
+      function fromUser(text) {
+          if (text.length > maxlength) {
+            var transformedInput = text.substring(0, maxlength);
+            ngModelCtrl.$setViewValue(transformedInput);
+            ngModelCtrl.$render();
+            return transformedInput;
+          } 
+          return text;
+      }
+      ngModelCtrl.$parsers.push(fromUser);
+    }
+  }; 
 });
