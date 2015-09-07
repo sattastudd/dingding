@@ -68,10 +68,19 @@ app.controller('roastIndexController', function($scope,$http,$location){
                 window.scrollTo(0,0);
                 $scope.showToolBox();
             }
-
             $scope.toolBoxActive = true;
             $scope.showToolBox = function () {
                 $scope.toolBoxActive = !$scope.toolBoxActive;
+            }
+
+            // code for custom modal
+            $scope.modalOpen = false;
+            
+            $scope.loginModal = function(){
+                   $scope.modalOpen = !$scope.modalOpen;
+            }
+            $scope.cancelModal = function(){
+                $scope.modalOpen = false;
             }
     });
 

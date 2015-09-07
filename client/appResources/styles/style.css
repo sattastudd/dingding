@@ -35,13 +35,26 @@ a, .dropdown-menu {
     margin-top: -3px;
     margin-left: -45px;
 }
-
 .loader{
     position: fixed;
     margin-top: 200px;
     margin-left: -400px;
     z-index: 10;
     width: 2%;
+}
+.modalWindow{
+    margin-top: 80px;
+    border: solid 1px gainsboro;
+    min-height: 200px;
+    z-index:5000;
+    background-color: #fff;
+}
+.mBottom20{
+    margin-bottom:20px;
+}
+.darker {
+    background-color: rgba(0, 0, 0, .4);
+    height: 600px;
 }
 
 /* NavBar CSS End */
@@ -125,6 +138,7 @@ a, .dropdown-menu {
     background-color: #fff;
     margin-right: 50px;
     margin-top: 7px;
+    box-shadow: 0px 2px 20px #7D7878;
 }
 .profilePic{
     width: 100%;
@@ -163,6 +177,7 @@ a, .dropdown-menu {
     }
     .ngViewBG{
         background-color: #fff;
+        box-shadow: 0px 2px 7px #7D7878;
     }
     .titleRoast{
         margin-left: 155px;
