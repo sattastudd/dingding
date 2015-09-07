@@ -5,6 +5,7 @@ var express 				= require('express'),
 		bodyParser			= require('body-parser'),
 		mongoose			= require('mongoose'),
 		fs 					= require('fs'),
+		path	    		= require('path'),
 		http 				= require('http').Server(app),
 		roastController 	= require('./server/controllers/roastController');
 		debateController	= require('./server/controllers/debateController');
@@ -67,7 +68,19 @@ app.get('/allDebates', debateController.getDebates);
 
 app.get('/allRoasts', roastController.getRoasts);
 
-//app.get('/getDebate', debateController.getDebate);
+app.post('/upload', function(req, res) {
+    var image =  req.files.image;
+    var newImageLocation = path.join(__dirname, 'public/images', image.name);
+    
+    fs.readFile(image.path, function(err, data) {
+        fs.writeFile(newImageLocation, data, function(err) {
+            res.json(200, { 
+                src: 'images/' + image.name,
+                size: image.size
+            });
+        });
+    });
+});
 
 
 app.listen(3000, function(){
