@@ -7,8 +7,8 @@ var express 				= require('express'),
 		fs 					= require('fs'),
 		path	    		= require('path'),
 		http 				= require('http').Server(app),
-		roastController 	= require('./server/controllers/roastController');
-		debateController	= require('./server/controllers/debateController');
+		roastController 	= require('./server/controllers/roastController'),
+		debateController	= require('./server/controllers/debateController'),
 		trendingController 	= require('./server/controllers/trendingController');
 
 mongoose.connect('mongodb://localhost:27017/roastDB');
@@ -67,6 +67,10 @@ app.post('/vote', debateController.vote);
 app.get('/allDebates', debateController.getDebates);
 
 app.get('/allRoasts', roastController.getRoasts);
+
+app.post('/newRcomments', roastController.getNewRcomments);
+
+app.post('/newQcomments', debateController.getNewQcomments);
 
 app.post('/upload', function(req, res) {
     var image =  req.files.image;

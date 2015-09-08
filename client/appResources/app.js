@@ -1,4 +1,4 @@
-var app = angular.module('roast',['ngRoute']);
+var app = angular.module('roast',['ngRoute','ngStorage']);
 
 
 app.config(function($routeProvider,$locationProvider) {
@@ -84,7 +84,7 @@ app.controller('roastIndexController', function($scope,$http,$location){
             }
     });
 
-app.controller('roastPageController', function ($scope,$http,$location,$routeParams){
+app.controller('roastPageController', function ($scope,$http,$location,$routeParams,$interval){
 
 
 
@@ -97,6 +97,7 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
     });
 
     $scope.roast = {};
+    $scope.newDataR = {};
     $scope.postBlockActive = false;
     $scope.appreciated = false;
     $scope.appriValue = 'Appreciate';
@@ -126,7 +127,16 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
     $scope.fetchRComments = function(){
         $http.get(commentID).success(function(data){
 
-            console.log(data);
+            if (data.length === 1){
+                $scope.newDataR.oldDate = data[0].createdOn;
+            }else if (data.length > 1){
+                $scope.newDataR.oldDate = data[data.length - 1].createdOn;
+            }else{
+                //$scope.newDataR.oldDate = new Date();
+            }
+            console.log($scope.newDataR.oldDate);
+
+
             $scope.roasts = data;
         }).error(function(data){
 
@@ -134,6 +144,29 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
     };
 
     $scope.fetchRComments();
+
+    // for fetching comments on regular intervals
+
+    $interval($scope.newCommentsR, 30000);
+
+    $scope.newCommentsR = function (){
+        console.log('new comments');
+        $scope.newDataR.id = $routeParams.id;
+        $http.post('/newRcomments', $scope.newDataR).success(function(data){
+            console.log(data);
+
+            if (data.length === 1){
+                $scope.newDataR.oldDate = data[0].createdOn;
+            }else if (data.length > 1){
+                $scope.newDataR.oldDate = data[data.length - 1].createdOn;
+            }
+            console.log($scope.newDataR.oldDate);
+            data.push.apply($scope.roasts);
+        }).error(function(data){
+
+        })
+    };
+
 
     $scope.rComment = {};
     $scope.rComment.name = 'Anonymous';
@@ -150,6 +183,7 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
        };
     });
 
+
     var valid = null;
 
     $scope.postRComment = function(){
@@ -161,7 +195,7 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
         if (valid === true){
             $http.post('/roastComment', $scope.rComment).success(function(data){
 
-                $scope.fetchRComments();
+                $scope.newCommentsR();
                 $scope.hideTextArea();
                 $scope.rComment.comment = null;
 
@@ -179,6 +213,7 @@ app.controller('roastTrendingController', function($scope,$location,$http,$route
          window.scrollTo(0,0);
         $location.path('/roast');
     }
+
 
     $http.get('/trendingDebates').success(function(data){
         console.log(data[0]);
@@ -238,11 +273,9 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
     });
 
     $scope.single = function(image) {
-        console.log('image uploading');
                     var formData = new FormData();
                     formData.append('image', image, image.name);
-                    console.log(formData);
-                    $http.post('/upload', formData, {
+                    $http.post('upload', formData, {
                         headers: { 'Content-Type': false },
                         transformRequest: angular.identity
                     }).success(function(result) {
@@ -298,7 +331,7 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
 
 
 
-app.controller('QandApageController', function ($scope,$http,$routeParams,$location) {
+app.controller('QandApageController', function ($scope,$http,$routeParams,$location,$interval,$localStorage) {
 
 
     $scope.postBlockActive = false;
@@ -372,6 +405,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.voteObject.id = $routeParams.id;
 
     $scope.vote = function(){
+
         $http.post('/vote', $scope.voteObject).success(function(data){
             console.log(data);
         }).error(function(data){
@@ -379,16 +413,20 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         })
     };
 
+        /*$scope.$storage = $localStorage.$default({
+                showVotes: false
+        });*/
+
         $scope.votedY = function(value){
-            $scope.showVotes = true;
             $scope.voteObject.value = 'Y';
+            $scope.showVotes = true;
             $scope.yesVotes = $scope.questions.yes + 1;
             $scope.calcVote();
             $scope.vote();
         };
         $scope.votedN = function(value){
-            $scope.showVotes = true;
             $scope.voteObject.value = 'N';
+            $scope.showVotes = true;
             $scope.noVotes = $scope.questions.no + 1;
             $scope.calcVote();
             $scope.vote();
@@ -396,6 +434,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
 
 
     $scope.comment = {};
+    $scope.newDataQ = {};
 
     $scope.comment.id = $routeParams.id; 
     $scope.comment.name = 'Anonymous';
@@ -406,7 +445,13 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.fetchComments = function(){
         $http.get(commentID).success(function(data){
 
-            console.log(data);
+            if (data.length === 1){
+                $scope.newDataQ.oldDate = data[0].createdOn;
+            }else if (data.length > 1){
+                $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
+            }else{
+                //$scope.newDataQ.oldDate = new Date();
+            }
             $scope.QandA = data;
         }).error(function(data){
 
@@ -414,6 +459,28 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     };
 
     $scope.fetchComments();
+
+    // for fetching comments on regular intervals
+
+    $interval($scope.newCommentsQ, 30000);
+
+    $scope.newCommentsQ = function (){
+        console.log('new comments');
+        $scope.newDataQ.id = $routeParams.id;
+        $http.post('/newQcomments', $scope.newDataQ).success(function(data){
+            console.log(data);
+
+            if (data.length === 1){
+                $scope.newDataQ.oldDate = data[0].createdOn;
+            }else if (data.length > 1){
+                $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
+            }
+            console.log($scope.newDataQ.oldDate);
+            data.push.apply($scope.QandA);
+        }).error(function(data){
+
+        })
+    };
     
 
     // for posting comment
@@ -440,7 +507,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         if(valid === true){
             $http.post('/debateComment', $scope.comment).success(function(data){
 
-                $scope.fetchComments();
+                $scope.newCommentsQ();
                 $scope.hideTextArea();
                 $scope.comment.comment = null;
 

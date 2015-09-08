@@ -4,8 +4,16 @@ var debateHandler = require('../models/debateModel');
 module.exports.createDebate = function(req, res){
 	
 	var debateCreate = debateHandler.getDebateModel();
+
+	var debateInfo = {
+		question	: req.body.question,
+		yes			: req.body.yes,
+		no			: req.body.no,
+		debate 		: req.body.debate,
+		createdOn	: new Date()
+	}
 	
-	var newDebate = new debateCreate(req.body);
+	var newDebate = new debateCreate(debateInfo);
 	
 	newDebate.save(function(err, result){
 		if (!err) {
@@ -35,11 +43,15 @@ module.exports.debateComment = function(req, res){
 
 	var collectionName = req.body.id;
 
-	//console.log(collectionName);
-
 	var comment = debateHandler.getCommentModel(collectionName);
 
-	var newComment = new comment(req.body);
+	var commentInfo = {
+		name		: req.body.name,
+		comment 	: req.body.comment,
+		createdOn	: new Date()
+	}
+
+	var newComment = new comment(commentInfo);
 
 	newComment.save(function(err, result){
 		if (!err) {
@@ -62,6 +74,20 @@ module.exports.debateComments = function(req, res){
 	});
 
 };
+
+
+module.exports.getNewQcomments = function (req, res){
+
+	var collectionName = req.body.id;
+
+	var newComments = debateHandler.getCommentModel(collectionName);
+
+	newComments.find({createdOn: { $gt: req.body.oldDate }}, function (err, result){
+		res.json(result);
+	});
+}
+
+
 
 module.exports.getDebates = function(req, res){
 	

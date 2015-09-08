@@ -1,4 +1,50 @@
-module.exports = function(app, passport) {
+/*var roastController     = require('../controllers/roastController');
+var debateController    = require('../controllers/debateController');
+var trendingController  = require('../controllers/trendingController');
+var express                 = require('express');
+var router = module.exports = express();
+
+
+module.exports = function(router, passport) {
+
+    
+router.post('/createRoast', roastController.createRoast);
+
+router.post('/createDebate', debateController.createDebate);
+
+router.get('/trendingDebates', trendingController.getDebates);
+
+router.get('/debateTitle/:id', debateController.getDebate);
+
+router.get('/roastTitle/:id', roastController.getRoast);
+
+router.post('/debateComment', debateController.debateComment);
+
+router.post('/roastComment', roastController.roastComment);
+
+router.get('/roastComments/:id', roastController.roastComments);
+
+router.get('/debateComments/:id', debateController.debateComments);
+
+router.post('/vote', debateController.vote);
+
+router.get('/allDebates', debateController.getDebates);
+
+router.get('/allRoasts', roastController.getRoasts);
+
+router.post('/newRcomments', roastController.getNewRcomments);
+
+router.post('/newQcomments', debateController.getNewQcomments);
+
+};*/
+
+
+
+
+
+/*
+
+
 
     // route for login form
     // route for processing the login form
@@ -47,4 +93,4 @@ function isLoggedIn(req, res, next) {
 
     // if they aren't redirect them to the home page
     res.redirect('/');
-}
+}*/

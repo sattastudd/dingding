@@ -8,7 +8,7 @@ var roastSchema = new mongoose.Schema({
 	quote 		: String,
 	image		: String,
 	createdOn	: Date,
-	createdBy	: String,
+	createdBy	: String
 });
 
 var roastModel = mongoose.model('roasts', roastSchema);

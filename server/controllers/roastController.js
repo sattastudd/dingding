@@ -3,10 +3,14 @@ var roastHandler = require('../models/roastModel');
 module.exports.createRoast = function(req, res){
 
 	var Roast = roastHandler.getRoastModel();
+
+	var roastInfo = {
+		name		: req.body.name,
+		quote 		: req.body.quote,
+		createdOn	: new Date()
+	}
 	
 	var newRoast = new Roast(req.body);
-
-	console.log(req.body);
 
 	newRoast.save(function(err, result){
 		if (!err) {
@@ -57,9 +61,15 @@ module.exports.roastComment = function(req, res){
 
 	var comment = roastHandler.getCommentModel(collectionName);
 
-	var newComment = new comment(req.body);
+	var commentInfo = {
+		name		: req.body.name,
+		comment		: req.body.comment,
+		createdOn	: new Date()
+	}
 
-	newComment.save(function(err, result){
+	var newComment = new comment(commentInfo);
+
+	newComment.save( commentInfo, function(err, result){
 		if (!err) {
 			res.json(result);
 		}
@@ -80,3 +90,15 @@ module.exports.roastComments = function(req, res){
 	});
 
 };
+
+
+module.exports.getNewRcomments = function(req, res){
+
+	var collectionName = req.body.id;
+
+	var newComments = roastHandler.getCommentModel(collectionName);
+
+	newComments.find({createdOn: { $gt: req.body.oldDate }}, function (err, result){
+		res.json(result);
+	});
+}
