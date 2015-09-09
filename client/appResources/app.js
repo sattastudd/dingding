@@ -161,7 +161,9 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
                 $scope.newDataR.oldDate = data[data.length - 1].createdOn;
             }
             console.log($scope.newDataR.oldDate);
-            data.push.apply($scope.roasts);
+            angular.forEach( data, function( item ) {
+        	$scope.roasts.push( item )
+        });
         }).error(function(data){
 
         })
@@ -476,7 +478,9 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
                 $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
             }
             console.log($scope.newDataQ.oldDate);
-            data.push.apply($scope.QandA);
+             angular.forEach( data, function( item ) {
+        	$scope.QandA.push( item )
+        });
         }).error(function(data){
 
         })
