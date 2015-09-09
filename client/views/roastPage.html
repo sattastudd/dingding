@@ -23,13 +23,12 @@
                             <div class="row" style="background-color:#fff">
                                 <div class="col-xs-12 roastDiv" ng-repeat="roast in roasts.slice().reverse()">
                                     <div class="row">
-                                        <div class="col-xs-12" style="margin-bottom:25px">
+                                        <div class="col-xs-12" style="margin-bottom:10px">
                                             <div class="row">
-                                                <div class="col-xs-6">
-                                                    <img class="userIcon" src="../images/user.jpg" /><b>{{roast.name}}</b>
-
+                                                <div class="col-xs-12">
+                                                    <img class="userIcon" src="{{roast.imgUrl}}" /><b>{{roast.name}}</b>
+                                                    <p class="roastTime">{{roast.createdOn | date:'d MMM h:m a'}}</p>
                                                 </div>
-                                                <div class="col-xs-6 roastTime"><p class="pull-right">{{roast.createdOn}}</p></div>
                                             </div>
                                         </div>
                                         <div class="col-xs-12 roastText">{{roast.comment}}</div>

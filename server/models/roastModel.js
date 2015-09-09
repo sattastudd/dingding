@@ -26,7 +26,7 @@ exports.getRoastModel = getRoastModel;
 var commentSchema = new mongoose.Schema({
 	name		: String,
 	comment 	: String,
-	createdBy	: String,
+	imgUrl		: String,
 	createdOn	: Date
 });
 

@@ -32,8 +32,6 @@ module.exports.getDebate = function(req, res){
 	
 	debate.find({'_id' : id}, function (err, doc) {
         res.json(doc);
-        console.log('value above doc');
-        console.log(doc);
 	});
 };
 
@@ -43,21 +41,31 @@ module.exports.debateComment = function(req, res){
 
 	var collectionName = req.body.id;
 
-	var comment = debateHandler.getCommentModel(collectionName);
+	var debate = debateHandler.getDebateModel(req.params);
 
-	var commentInfo = {
-		name		: req.body.name,
-		comment 	: req.body.comment,
-		createdOn	: new Date()
-	}
+	debate.find({'_id' : collectionName}, function (err, doc) {
 
-	var newComment = new comment(commentInfo);
+        if(doc.length !== 0){
+        	var comment = debateHandler.getCommentModel(collectionName);
 
-	newComment.save(function(err, result){
-		if (!err) {
-			res.json(result);
+			var commentInfo = {
+				name		: req.body.name,
+				comment 	: req.body.comment,
+				imgUrl		: '../images/user.jpg',
+				createdOn	: new Date()
+			}
+
+			var newComment = new comment(commentInfo);
+
+			newComment.save(function(err, result){
+				if (!err) {
+					res.json(result);
+				}
+			})
+		}else{
+			res.json('failure');
 		}
-	})
+	});
 
 };
 
@@ -66,12 +74,42 @@ module.exports.debateComments = function(req, res){
 
 	var collectionName = req.params.id;
 
-	var comments = debateHandler.getCommentModel(collectionName);
+	var debate = debateHandler.getDebateModel(req.params);
 
-	comments.find({}, function (err, result) {
-        res.json(result);
-        console.log(result);
+	debate.find({'_id' : collectionName}, function (err, doc) {
+
+		if(doc.length !== 0){
+
+			var comments = debateHandler.getCommentModel(collectionName);
+
+			comments.find({}, function (err, result) {
+
+			    if (result.length === 0) {
+			        var firstComment = {
+						name		: 'IndiaRoasts@offcial',
+						comment 	: 'Share with your friends to get more and more answers',
+						imgUrl		: '../images/logo.jpg',
+						createdOn	: new Date()
+					}
+
+					var firstCommentCreate = debateHandler.getCommentModel(collectionName);
+
+					var first = new firstCommentCreate(firstComment);
+
+					first.save(function(err, value){
+						res.json(value);
+						console.log('inserted 1st comment');
+					})
+				};
+				if (result.length !== 0) {
+					res.json(result);
+				};
+			});
+		}
+
 	});
+
+	
 
 };
 
@@ -95,7 +133,6 @@ module.exports.getDebates = function(req, res){
 	
 	debates.find({}, function (err, result) {
         res.json(result);
-        console.log(result);
 	});
 };
 
@@ -105,10 +142,6 @@ module.exports.vote = function(req, res){
 	var id = req.body.id;
 
 	var vote = debateHandler.getDebateModel();
-
-	//var newVote = new vote('debates');
-
-	console.log(req.body);
 
 	if(req.body.value === 'Y'){
 		vote.update(
