@@ -43,29 +43,33 @@ module.exports.debateComment = function(req, res){
 
 	var debate = debateHandler.getDebateModel(req.params);
 
-	debate.find({'_id' : collectionName}, function (err, doc) {
+	if(collectionName.length === 24){
+		debate.find({'_id' : collectionName}, function (err, doc) {
 
-        if(doc.length !== 0){
-        	var comment = debateHandler.getCommentModel(collectionName);
+	        if(doc.length !== 0){
+	        	var comment = debateHandler.getCommentModel(collectionName);
 
-			var commentInfo = {
-				name		: req.body.name,
-				comment 	: req.body.comment,
-				imgUrl		: '../images/user.jpg',
-				createdOn	: new Date()
-			}
-
-			var newComment = new comment(commentInfo);
-
-			newComment.save(function(err, result){
-				if (!err) {
-					res.json(result);
+				var commentInfo = {
+					name		: req.body.name,
+					comment 	: req.body.comment,
+					imgUrl		: '../images/user.jpg',
+					createdOn	: new Date()
 				}
-			})
-		}else{
-			res.json('failure');
-		}
-	});
+
+				var newComment = new comment(commentInfo);
+
+				newComment.save(function(err, result){
+					if (!err) {
+						res.json(result);
+					}
+				})
+			}else{
+				res.json('failure');
+			}
+		});
+	}else{
+		res.json('failure');
+	}
 
 };
 
@@ -76,38 +80,43 @@ module.exports.debateComments = function(req, res){
 
 	var debate = debateHandler.getDebateModel(req.params);
 
-	debate.find({'_id' : collectionName}, function (err, doc) {
 
-		if(doc.length !== 0){
+	if(collectionName.length === 24){
+		debate.find({'_id' : collectionName}, function (err, doc) {
 
-			var comments = debateHandler.getCommentModel(collectionName);
+			if(doc.length !== 0){
 
-			comments.find({}, function (err, result) {
+				var comments = debateHandler.getCommentModel(collectionName);
 
-			    if (result.length === 0) {
-			        var firstComment = {
-						name		: 'IndiaRoasts@offcial',
-						comment 	: 'Share with your friends to get more and more answers',
-						imgUrl		: '../images/logo.jpg',
-						createdOn	: new Date()
-					}
+				comments.find({}, function (err, result) {
 
-					var firstCommentCreate = debateHandler.getCommentModel(collectionName);
+				    if (result.length === 0) {
+				        var firstComment = {
+							name		: 'IndiaRoasts@offcial',
+							comment 	: 'Share with your friends to get more and more answers',
+							imgUrl		: '../images/logo.jpg',
+							createdOn	: new Date()
+						}
 
-					var first = new firstCommentCreate(firstComment);
+						var firstCommentCreate = debateHandler.getCommentModel(collectionName);
 
-					first.save(function(err, value){
-						res.json(value);
-						console.log('inserted 1st comment');
-					})
-				};
-				if (result.length !== 0) {
-					res.json(result);
-				};
-			});
-		}
+						var first = new firstCommentCreate(firstComment);
 
-	});
+						first.save(function(err, value){
+							res.json(value);
+							console.log('inserted 1st comment');
+						})
+					};
+					if (result.length !== 0) {
+						res.json(result);
+					};
+				});
+			}
+
+		});
+	}else{
+		res.json('failure');
+	}
 
 	
 

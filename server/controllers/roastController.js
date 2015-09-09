@@ -47,30 +47,34 @@ module.exports.roastComment = function(req, res){
 
 	var roast = roastHandler.getRoastModel(req.params);
 	
-	roast.find({'_id' : collectionName}, function (err, doc) {
-        
-        if(doc.length !== 0 ){
+	if(collectionName.length === 24){
+		roast.find({'_id' : collectionName}, function (err, doc) {
+	        
+	        if(doc.length !== 0 ){
 
-			var comment = roastHandler.getCommentModel(collectionName);
+				var comment = roastHandler.getCommentModel(collectionName);
 
-			var commentInfo = {
-				name		: req.body.name,
-				comment		: req.body.comment,
-				imgUrl		: '../images/user.jpg',
-				createdOn	: new Date()
-			}
-
-			var newComment = new comment(commentInfo);
-
-			newComment.save( commentInfo, function(err, result){
-				if (!err) {
-					res.json(result);
+				var commentInfo = {
+					name		: req.body.name,
+					comment		: req.body.comment,
+					imgUrl		: '../images/user.jpg',
+					createdOn	: new Date()
 				}
-			});
-		}else{
-			res.json('failure');
-		}
-	});
+
+				var newComment = new comment(commentInfo);
+
+				newComment.save( commentInfo, function(err, result){
+					if (!err) {
+						res.json(result);
+					}
+				});
+			}else{
+				res.json('failure');
+			}
+		});
+	}else{
+		res.json('failure');
+	}
 
 };
 
@@ -80,40 +84,43 @@ module.exports.roastComments = function(req, res){
 
 	var roast = roastHandler.getRoastModel(req.params);
 
-	var id = req.params.id;
-	
-	roast.find({'_id' : id}, function (err, doc) {
-        
-        if(doc.length !== 0 ){
+	var collectionName = req.params.id;
 
-        	var collectionName = req.params.id;
 
-			var comments = roastHandler.getCommentModel(collectionName);
+	if(collectionName.length === 24){
+		roast.find({'_id' : collectionName}, function (err, doc) {
+	        
+	        if(doc.length !== 0 ){
 
-			comments.find({}, function (err, result) {
+				var comments = roastHandler.getCommentModel(collectionName);
 
-		        if (result.length === 0) {
-			        var firstComment = {
-						name		: 'IndiaRoasts@offcial',
-						comment 	: 'We recommend a clean Roast. Naah Fuck it, make it dirty.',
-						imgUrl		: '../images/logo.jpg',
-						createdOn	: new Date()
-					}
+				comments.find({}, function (err, result) {
 
-					var firstCommentCreate = roastHandler.getCommentModel(collectionName);
+			        if (result.length === 0) {
+				        var firstComment = {
+							name		: 'IndiaRoasts@offcial',
+							comment 	: 'We recommend a clean Roast. Naah Fuck it, make it dirty.',
+							imgUrl		: '../images/logo.jpg',
+							createdOn	: new Date()
+						}
 
-					var first = new firstCommentCreate(firstComment);
+						var firstCommentCreate = roastHandler.getCommentModel(collectionName);
 
-					first.save(function(err, value){
-						res.json(value);
-					})
-				};
-				if (result.length !== 0) {
-					res.json(result);
-				};
-			});
-		};
-	});
+						var first = new firstCommentCreate(firstComment);
+
+						first.save(function(err, value){
+							res.json(value);
+						})
+					};
+					if (result.length !== 0) {
+						res.json(result);
+					};
+				});
+			};
+		});
+	}else{
+		res.json('failure');
+	}
 
 };
 
