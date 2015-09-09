@@ -1,4 +1,4 @@
-var app = angular.module('roast',['ngRoute','ngStorage']);
+var app = angular.module('roast',['ngRoute']);
 
 
 app.config(function($routeProvider,$locationProvider) {
@@ -147,7 +147,7 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
 
     // for fetching comments on regular intervals
 
-    $interval($scope.newCommentsR, 30000);
+    /*$interval($scope.newCommentsR, 30000);
 
     $scope.newCommentsR = function (){
         console.log('new comments');
@@ -162,12 +162,14 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
             }
             console.log($scope.newDataR.oldDate);
             angular.forEach( data, function( item ) {
+                $scope.roasts.push( item )
+            });
         	$scope.roasts.push( item )
         });
         }).error(function(data){
 
         })
-    };
+    };*/
 
 
     $scope.rComment = {};
@@ -197,12 +199,18 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
         if (valid === true){
             $http.post('/roastComment', $scope.rComment).success(function(data){
 
-                $scope.newCommentsR();
-                $scope.hideTextArea();
-                $scope.rComment.comment = null;
+                if(data === '"failure"'){
+                    window.alert('Bakchodi Nahi');
+                }else{
+                    $scope.fetchRComments();
+                    $scope.hideTextArea();
+                    $scope.rComment.comment = null;
+                };
 
             }).error(function(data){
-
+                if(data === '"failure"'){
+                    window.alert('Bakchodi Nahi');
+                }
             });
         };
     };
@@ -333,7 +341,7 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
 
 
 
-app.controller('QandApageController', function ($scope,$http,$routeParams,$location,$interval,$localStorage) {
+app.controller('QandApageController', function ($scope,$http,$routeParams,$location,$interval) {
 
 
     $scope.postBlockActive = false;
@@ -415,24 +423,30 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         })
     };
 
-        /*$scope.$storage = $localStorage.$default({
-                showVotes: false
-        });*/
+        var questionID = $routeParams.id;
 
         $scope.votedY = function(value){
             $scope.voteObject.value = 'Y';
             $scope.showVotes = true;
+            window.localStorage[ questionID ] = 'true';
             $scope.yesVotes = $scope.questions.yes + 1;
             $scope.calcVote();
             $scope.vote();
+            console.log()
         };
         $scope.votedN = function(value){
             $scope.voteObject.value = 'N';
             $scope.showVotes = true;
+            window.localStorage[ questionID ] = 'true';
             $scope.noVotes = $scope.questions.no + 1;
             $scope.calcVote();
             $scope.vote();
         };
+
+        if(window.localStorage[ questionID ] === 'true'){
+            $scope.showVotes = true;
+            console.log("its true localstorage")
+        }
 
 
     $scope.comment = {};
@@ -446,14 +460,6 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
 
     $scope.fetchComments = function(){
         $http.get(commentID).success(function(data){
-
-            if (data.length === 1){
-                $scope.newDataQ.oldDate = data[0].createdOn;
-            }else if (data.length > 1){
-                $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
-            }else{
-                //$scope.newDataQ.oldDate = new Date();
-            }
             $scope.QandA = data;
         }).error(function(data){
 
@@ -462,9 +468,11 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
 
     $scope.fetchComments();
 
+    //$interval($scope.fetchComments, 10000);
+
     // for fetching comments on regular intervals
 
-    $interval($scope.newCommentsQ, 30000);
+    /*$interval($scope.newCommentsQ, 10000);
 
     $scope.newCommentsQ = function (){
         console.log('new comments');
@@ -472,11 +480,17 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         $http.post('/newQcomments', $scope.newDataQ).success(function(data){
             console.log(data);
 
+            angular.forEach( data, function( item ) {
+                $scope.QandA.push( item );
+                //$scope.$apply($scope.QandA);
+            });
+
             if (data.length === 1){
                 $scope.newDataQ.oldDate = data[0].createdOn;
             }else if (data.length > 1){
                 $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
             }
+             console.log('new comments called')
             console.log($scope.newDataQ.oldDate);
              angular.forEach( data, function( item ) {
         	$scope.QandA.push( item )
@@ -484,7 +498,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         }).error(function(data){
 
         })
-    };
+    };*/
     
 
     // for posting comment
@@ -511,12 +525,18 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         if(valid === true){
             $http.post('/debateComment', $scope.comment).success(function(data){
 
-                $scope.newCommentsQ();
-                $scope.hideTextArea();
-                $scope.comment.comment = null;
+                if(data === '"failure"'){
+                    window.alert('Bakchodi Nahi');
+                }else{
+                    $scope.fetchComments();
+                    $scope.hideTextArea();
+                    $scope.comment.comment = null;
+                }
 
             }).error(function(data){
-
+                if(data === '"failure"'){
+                    window.alert('Bakchodi Nahi');
+                }
             });
         };
     }   
