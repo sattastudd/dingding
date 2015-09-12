@@ -90,6 +90,11 @@ app.controller('roastIndexController', function($scope,$http,$location){
             $scope.cancelModal = function(){
                 $scope.modalOpen = false;
             }
+
+            $scope.GoToGoogleLogin = function () {
+                var googleLoginForm = document.forms.googleLogin;
+                googleLoginForm.submit();
+            }
     });
 
 
@@ -253,6 +258,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.stopPromise = $interval($scope.newCommentsQ, 10000);
     
     $scope.$on('$routeChangeStart', function(){
+        console.log( 'Route Change Start' );
         $interval.cancel($scope.stopPromise);
    })
 
