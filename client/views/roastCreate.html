@@ -43,7 +43,7 @@
                         <div class="addImage">Add Image</div>
                     </div>
                     <div class="col-xs-12">
-                        <button type="button" ng-click="postRoast()" class="btn btn-place-primary">Create Roast</button>
+                        <button type="button" ng-click="postRoast()" class="btn btn-place-primary" ng-disabled="btnDisable">Create Roast</button>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 trendingTitle" style="margin-top:40px;background-color:#2ECBDE;">
@@ -63,7 +63,7 @@
                         <img src="../images/loader.gif" class="loader" />
                     </div>
                     <div class="col-xs-12" style="margin-bottom:60px;">
-                        <button type="button" ng-click="postDebate()" class="btn btn-place-primary">Create Debate</button>
+                        <button type="button" ng-click="postDebate()" class="btn btn-place-primary" ng-disabled="btnDisable">Create Debate</button>
                     </div>
                </div>
             </div>

@@ -103,8 +103,12 @@ module.exports.debateComments = function(req, res){
 						var first = new firstCommentCreate(firstComment);
 
 						first.save(function(err, value){
-							res.json(value);
-							console.log('inserted 1st comment');
+							var arrOfObjs = value;
+							var arrOfVals = [];
+							
+							    arrOfVals.push( arrOfObjs );
+							
+							res.json(arrOfVals);
 						})
 					};
 					if (result.length !== 0) {

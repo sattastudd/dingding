@@ -1,4 +1,4 @@
-<div ng-controller="roastTrendingController">
+<div>
 	<div class="container-fluid">
 		<div class="row">
 	        <div class="row">
@@ -8,11 +8,8 @@
 		            		Trending Now
 		            	</div>
 		            </div>
-		            <!-- <body ng-controller="Ctrl">
-    <button ng-click="$storage.x = $storage.x + 1">{{$storage.x}}</button> + <button ng-click="$storage.y = $storage.y + 1">{{$storage.y}}</button> = {{$storage.x + $storage.y}}
-  </body> -->
-	                <div class="col-xs-12 trendBlock hand" ng-click="goToRoast()" ng-repeat="trends in trending.slice().reverse()">
-	                    <div class="row">
+	                <div class="col-xs-12 trendBlock hand" ng-repeat="trends in trending.slice().reverse()">
+	                    <div class="row" ng-click="goToRoast(trends)">
 	                        <div class="col-xs-4">
 	                            <img src="https://yt3.ggpht.com/-QSdUl6wilzo/AAAAAAAAAAI/AAAAAAAAAAA/BGrQrNGDA8U/s900-c-k-no/photo.jpg" class="roasteeImg" />
 	                        </div>
@@ -26,7 +23,7 @@
 	                                        <strong>-{{trends.name}}</strong>
 	                                    </p>
 	                                </div>
-	                                <div class="col-xs-12 rpmText">
+	                                <!-- <div class="col-xs-12 rpmText">
 	                                	<div class="row">
 		                                    <div class="col-xs-6 hidden-xs">
 		                                    	Total Roasts: 
@@ -45,7 +42,7 @@
 		                                    	<b style="font-size:18px;">{{trends.rpm}}</b>
 		                                   	</div>
 		                                </div>
-	                                </div>
+	                                </div> -->
 	                            </div>
 	                        </div>
 	                    </div>

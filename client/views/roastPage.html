@@ -1,4 +1,4 @@
-<div ng-controller="roastPageController">
+<div>
 	<div class="container-fluid">
         <div class="row">
             <div class="col-xs-12">
@@ -20,7 +20,14 @@
                             <div class="col-xs-12 col-md-offset-1 col-lg-offset-1" style="margin-bottom:35px">
                                 <img src="http://qph.is.quoracdn.net/main-thumb-65424091-200-qfewjnaxxfuqpiqwdlmljcqfxobsefrf.jpeg" class="roastImage" />
                             </div>
-                            <div class="row" style="background-color:#fff">
+                            <div class="col-xs-12">
+                                <p class="pull-right">
+                                    <img class="hand" social-facebook src="../images/facebook.png"/>
+                                    <img class="hand" social-twitter src="../images/twitter.png"/>
+                                    <img class="hand" social-gplus src="../images/googleplus.png"/>
+                                </p>
+                            </div>
+                            <div class="row" style="background-color:#fff;min-height:500px;">
                                 <div class="col-xs-12 roastDiv" ng-repeat="roast in roasts.slice().reverse()">
                                     <div class="row">
                                         <div class="col-xs-12" style="margin-bottom:10px">
@@ -62,7 +69,7 @@
                                             </div>
                                             <div class="col-xs-8">
                                                 <div class="col-xs-12 col-sm-10 col-md-4 col-lg-3 mLeft48">
-                                                    <button type="btn" style="background-color:#009688;color:#fff" class="btn btn-default pull-right" ng-click="postRComment()">Post</button>
+                                                    <button type="btn" style="background-color:#009688;color:#fff" class="btn btn-default pull-right" ng-click="postRComment()" ng-disabled="btnDisable">Post</button>
                                                     <button type="btn" style="margin-right:10px" ng-click="hideTextArea()" class="btn btn-default pull-right">Cancel</button>
                                             </div>
                                         </div>

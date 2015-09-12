@@ -360,11 +360,14 @@ textarea.form-control.textAreaActive {
       width: 125px;
       height: 125px;
       border-radius: 63px;
-      margin-bottom: 30px;
-      margin-left: 28px;
+      margin-bottom: 5px;
+      margin-top: -10px;
       display: block;
       margin-left: auto;
       margin-right: auto;
+    }
+    .roasteeName{
+        margin-top: -15px;
     }
     .trendBlock{
         background-color: #f1f1f1;
@@ -411,6 +414,7 @@ textarea.form-control.textAreaActive {
 
 .qFont{
     font-size:20px;
+    margin-top: -15px;
 }
 .borderBtm{
     border-bottom:1px solid grey;
@@ -452,8 +456,16 @@ textarea.form-control.textAreaActive {
 .mTop0{
     margin-top: 0px;
 }
+.titleQ{
+        margin-top:32px;
+        font-size:24px;
+    }
 @media screen and (min-width: 992px) {
     .qFont{
+        font-size:22px;
+        font-weight: bold;
+    }
+    .titleQ{
         font-size:26px;
     }
     .Qbtn{

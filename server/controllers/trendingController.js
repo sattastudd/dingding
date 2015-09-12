@@ -1,9 +1,21 @@
-var trendingDebate = require('../models/debateModel');
+var trending 		= require('../models/debateModel');
+
+var trendingRoast 	= require('../models/roastModel');
 
 
 module.exports.getDebates = function(req, res){
 	
-	var trends = trendingDebate.getDebateModel();
+	var trends = trending.getDebateModel();
+	
+	trends.find({}, function (err, result) {
+        res.json(result);
+        console.log(result);
+	});
+};
+
+module.exports.getRoasts = function(req, res){
+	
+	var trends = trendingRoast.getRoastModel();
 	
 	trends.find({}, function (err, result) {
         res.json(result);

@@ -50,6 +50,8 @@ app.post('/createDebate', debateController.createDebate);
 
 app.get('/trendingDebates', trendingController.getDebates);
 
+app.get('/trendingRoasts', trendingController.getRoasts);
+
 app.get('/debateTitle/:id', debateController.getDebate);
 
 app.get('/roastTitle/:id', roastController.getRoast);

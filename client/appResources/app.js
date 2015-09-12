@@ -73,6 +73,14 @@ app.controller('roastIndexController', function($scope,$http,$location){
                 $scope.toolBoxActive = !$scope.toolBoxActive;
             }
 
+            // code for social sharing
+
+            me = this;
+            me.coolWord = 'shizzlemnah';
+            me.alert = function (message) {
+                window.alert(message);
+            };
+
             // code for custom modal
             $scope.modalOpen = false;
             
@@ -84,263 +92,6 @@ app.controller('roastIndexController', function($scope,$http,$location){
             }
     });
 
-app.controller('roastPageController', function ($scope,$http,$location,$routeParams,$interval){
-
-
-
-    var roastID = '/roastTitle/' + $routeParams.id;
-
-    $http.get(roastID).success(function(data){
-        $scope.roastTitle = data[0];
-    }).error(function(data){
-        console.log(data);
-    });
-
-    $scope.roast = {};
-    $scope.newDataR = {};
-    $scope.postBlockActive = false;
-    $scope.appreciated = false;
-    $scope.appriValue = 'Appreciate';
-    $scope.hideTextArea = function () {
-        $scope.postBlockActive = false;
-    }
-    $scope.showTextArea = function () {
-        $scope.postBlockActive = true;
-        console.log('show is working');
-    }
-    $scope.appreciate = function (roast) {
-        $scope.appreciated = true;
-        $scope.appriValue = 'Appreciated';
-        console.log(roast.name);
-    }
-    $scope.anonyClicked = function (value) {
-        console.log(value);
-    }
-
-    $scope.postBlockActive = false;
-    $scope.textFocus = function () {
-        $scope.postBlkActv = true;
-    };
-
-    var commentID = '/roastComments/' + $routeParams.id;
-
-    $scope.fetchRComments = function(){
-        $http.get(commentID).success(function(data){
-
-            if (data.length === 1){
-                $scope.newDataR.oldDate = data[0].createdOn;
-            }else if (data.length > 1){
-                $scope.newDataR.oldDate = data[data.length - 1].createdOn;
-            }else{
-                //$scope.newDataR.oldDate = new Date();
-            }
-            console.log($scope.newDataR.oldDate);
-
-
-            $scope.roasts = data;
-        }).error(function(data){
-
-        });
-    };
-
-    $scope.fetchRComments();
-
-    // for fetching comments on regular intervals
-
-    /*$interval($scope.newCommentsR, 30000);
-
-    $scope.newCommentsR = function (){
-        console.log('new comments');
-        $scope.newDataR.id = $routeParams.id;
-        $http.post('/newRcomments', $scope.newDataR).success(function(data){
-            console.log(data);
-
-            if (data.length === 1){
-                $scope.newDataR.oldDate = data[0].createdOn;
-            }else if (data.length > 1){
-                $scope.newDataR.oldDate = data[data.length - 1].createdOn;
-            }
-            console.log($scope.newDataR.oldDate);
-            angular.forEach( data, function( item ) {
-                $scope.roasts.push( item )
-            });
-<<<<<<< HEAD
-=======
-        	$scope.roasts.push( item )
-        });
->>>>>>> origin/master
-        }).error(function(data){
-
-        })
-    };*/
-
-
-    $scope.rComment = {};
-    $scope.rComment.name = 'Anonymous';
-    $scope.rComment.id = $routeParams.id;
-
-    $scope.rCommentChar = 2000;
-
-    $scope.$watch('rComment.comment', function() {
-        if(angular.isDefined($scope.rComment.comment)){
-           $scope.rCommentChar = 2000 - $scope.rComment.comment.length;
-           if ($scope.rCommentChar === 0) {
-                $scope.rCommentChar = 0;
-           };
-       };
-    });
-
-
-    var valid = null;
-
-    $scope.postRComment = function(){
-    
-        if ($scope.rComment.comment === null || $scope.rComment.comment === "" || angular.isUndefined($scope.rComment.comment)) {
-                valid = false
-        }else{valid = true};
-
-        if (valid === true){
-            $http.post('/roastComment', $scope.rComment).success(function(data){
-
-                if(data === '"failure"'){
-                    window.alert('Bakchodi Nahi');
-                }else{
-                    $scope.fetchRComments();
-                    $scope.hideTextArea();
-                    $scope.rComment.comment = null;
-                };
-
-            }).error(function(data){
-                if(data === '"failure"'){
-                    window.alert('Bakchodi Nahi');
-                }
-            });
-        };
-    };
-
-});
-
-app.controller('roastTrendingController', function($scope,$location,$http,$routeParams){
-
-    $scope.goToRoast = function(){
-         window.scrollTo(0,0);
-        $location.path('/roast');
-    }
-
-
-    $http.get('/trendingDebates').success(function(data){
-        console.log(data[0]);
-        $scope.questions = data;
-
-    }).error(function(data){
-        console.log(data);
-    })
-
-    $scope.goToDebate = function(question){
-
-        window.scrollTo(0,0);
-        var debateID = '/QandA/' + question._id;
-        
-        $location.path(debateID);
-    }
-
-});
-
-
-app.controller('roastCreateController', function($scope,$http,$location,$routeParams){
-
-    console.log("trending page");
-
-    $scope.roast = {};
-    $scope.debate = {};
-    $scope.debate.yes = 1;
-    $scope.debate.no = 1;
-    $scope.debate.createdOn = new Date();
-    $scope.nameChar = 50;
-    $scope.descChar = 150;
-    $scope.qChar = 150;
-
-    $scope.$watch('roast.name', function() {
-        if(angular.isDefined($scope.roast.name)){
-           $scope.nameChar = 50 - $scope.roast.name.length;
-           if ($scope.nameChar === 0) {
-                $scope.nameChar = 0;
-           };
-       };
-    });
-    $scope.$watch('roast.quote', function() {
-        if(angular.isDefined($scope.roast.quote)){
-           $scope.descChar = 150 - $scope.roast.quote.length;
-           if ($scope.descChar === 0) {
-                $scope.descChar = 0;
-           };
-       };
-    });
-    $scope.$watch('debate.question', function() {
-        if(angular.isDefined($scope.debate.question)){
-            $scope.qChar = 150 - $scope.debate.question.length;
-            if ($scope.qChar === 0) {
-                $scope.qChar = 0;
-            };
-        };
-    });
-
-    $scope.single = function(image) {
-                    var formData = new FormData();
-                    formData.append('image', image, image.name);
-                    $http.post('upload', formData, {
-                        headers: { 'Content-Type': false },
-                        transformRequest: angular.identity
-                    }).success(function(result) {
-                        $scope.uploadedImgSrc = result.src;
-                        $scope.sizeInBytes = result.size;
-                    });
-                };
-
-    var valid  = null;
-
-    $scope.postRoast = function(){
-
-            if ($scope.roast.name === null || $scope.roast.name === "" || angular.isUndefined($scope.roast.name)) {
-                valid = false;
-            }else 
-            if ($scope.roast.quote === null || $scope.roast.quote === "" || angular.isUndefined($scope.roast.quote)) {
-                valid = false
-            }else{valid = true};
-
-        if (valid === true) {
-            $scope.waiting = true;
-            $http.post('/createRoast', $scope.roast).success(function(data){
-                $scope.waiting = false;
-                var roastID = '/roast/' + data._id;
-                $location.path(roastID);
-            }).error(function(data){
-                $scope.waiting = false;
-            })
-        };
-    };
-
-    var validQ = null;
-
-    $scope.postDebate = function(){
-
-         if ($scope.debate.question === null || $scope.debate.question === "" || angular.isUndefined($scope.debate.question)) {
-                validQ = false
-        }else{validQ = true};
-
-        if(validQ === true){
-            $scope.waiting = true;
-            $http.post('/createDebate', $scope.debate).success(function(data){
-                $scope.waiting = false;
-                var debateID = '/QandA/' + data._id;
-                $location.path(debateID);
-            }).error(function(data){
-                $scope.waiting = false;
-            })
-        };
-    };
-
-});
 
 
 
@@ -462,52 +213,48 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     var commentID = '/debateComments/' + $routeParams.id;
 
     $scope.fetchComments = function(){
-        $http.get(commentID).success(function(data){
-            $scope.QandA = data;
-        }).error(function(data){
+        console.log('intervals running');
 
-        });
+            $http.get(commentID).success(function(data){
+                $scope.QandA = data;
+                if (data.length === 1){
+                    $scope.newDataQ.oldDate = data[0].createdOn;
+                }else if (data.length > 1){
+                    $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
+                }
+            }).error(function(data){
+
+            });
     };
 
     $scope.fetchComments();
 
-    //$interval($scope.fetchComments, 10000);
-
     // for fetching comments on regular intervals
-
-    /*$interval($scope.newCommentsQ, 10000);
 
     $scope.newCommentsQ = function (){
         console.log('new comments');
         $scope.newDataQ.id = $routeParams.id;
         $http.post('/newQcomments', $scope.newDataQ).success(function(data){
-            console.log(data);
-
-            angular.forEach( data, function( item ) {
-                $scope.QandA.push( item );
-                //$scope.$apply($scope.QandA);
-            });
 
             if (data.length === 1){
                 $scope.newDataQ.oldDate = data[0].createdOn;
             }else if (data.length > 1){
                 $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
             }
-<<<<<<< HEAD
-             
-             console.log('new comments called')
-=======
-             console.log('new comments called')
-            console.log($scope.newDataQ.oldDate);
+
              angular.forEach( data, function( item ) {
-        	$scope.QandA.push( item )
-        });
->>>>>>> origin/master
+                $scope.QandA.push( item )
+            });
         }).error(function(data){
 
         })
-    };*/
+    };
     
+    $scope.stopPromise = $interval($scope.newCommentsQ, 10000);
+    
+    $scope.$on('$routeChangeStart', function(){
+        $interval.cancel($scope.stopPromise);
+   })
 
     // for posting comment
 
@@ -531,6 +278,9 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
             }else{valid = true};
 
         if(valid === true){
+            
+            $scope.btnDisable = true;
+
             $http.post('/debateComment', $scope.comment).success(function(data){
 
                 if(data === '"failure"'){
@@ -539,6 +289,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
                     $scope.fetchComments();
                     $scope.hideTextArea();
                     $scope.comment.comment = null;
+                    $scope.btnDisable = false;
                 }
 
             }).error(function(data){
@@ -550,6 +301,275 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     }   
    
 });
+
+
+
+
+app.controller('roastPageController', function ($scope,$http,$location,$routeParams,$interval){
+
+    var roastID = '/roastTitle/' + $routeParams.id;
+
+    $http.get(roastID).success(function(data){
+        $scope.roastTitle = data[0];
+    }).error(function(data){
+        console.log(data);
+    });
+
+    $scope.roast = {};
+    $scope.newDataR = {};
+    $scope.postBlockActive = false;
+    $scope.appreciated = false;
+    $scope.appriValue = 'Appreciate';
+    $scope.hideTextArea = function () {
+        $scope.postBlockActive = false;
+    }
+    $scope.showTextArea = function () {
+        $scope.postBlockActive = true;
+        console.log('show is working');
+    }
+    $scope.appreciate = function (roast) {
+        $scope.appreciated = true;
+        $scope.appriValue = 'Appreciated';
+        console.log(roast.name);
+    }
+    $scope.anonyClicked = function (value) {
+        console.log(value);
+    }
+
+    $scope.postBlockActive = false;
+    $scope.textFocus = function () {
+        $scope.postBlkActv = true;
+    };
+
+    var commentID = '/roastComments/' + $routeParams.id;
+
+    $scope.fetchRComments = function(){
+        $http.get(commentID).success(function(data){
+            
+            $scope.roasts = data;
+
+            if (data.length === 1){
+                $scope.newDataR.oldDate = data[0].createdOn;
+            }else if (data.length > 1){
+                $scope.newDataR.oldDate = data[data.length - 1].createdOn;
+            }
+
+        }).error(function(data){
+
+        });
+    };
+
+    $scope.fetchRComments();
+
+    // for fetching comments on regular intervals
+
+    var newCommentsR = function (){
+        console.log('new comments');
+        $scope.newDataR.id = $routeParams.id;
+        $http.post('/newRcomments', $scope.newDataR).success(function(data){
+
+            if (data.length === 1){
+                $scope.newDataR.oldDate = data[0].createdOn;
+            }else if (data.length > 1){
+                $scope.newDataR.oldDate = data[data.length - 1].createdOn;
+            }
+
+            angular.forEach( data, function( item ) {
+                $scope.roasts.push( item )
+            });
+        }).error(function(data){
+
+        })
+    };
+
+   $scope.stopPromise = $interval(newCommentsR, 10000);
+
+   $scope.$on('$routeChangeStart', function(){
+        $interval.cancel($scope.stopPromise);
+   })
+
+
+    $scope.rComment = {};
+    $scope.rComment.name = 'Anonymous';
+    $scope.rComment.id = $routeParams.id;
+
+    $scope.rCommentChar = 2000;
+
+    $scope.$watch('rComment.comment', function() {
+        if(angular.isDefined($scope.rComment.comment)){
+           $scope.rCommentChar = 2000 - $scope.rComment.comment.length;
+           if ($scope.rCommentChar === 0) {
+                $scope.rCommentChar = 0;
+           };
+       };
+    });
+
+
+    var valid = null;
+
+    $scope.postRComment = function(){
+    
+        if ($scope.rComment.comment === null || $scope.rComment.comment === "" || angular.isUndefined($scope.rComment.comment)) {
+                valid = false
+        }else{valid = true};
+
+        if (valid === true){
+
+            $scope.btnDisable = true;
+            $http.post('/roastComment', $scope.rComment).success(function(data){
+
+                if(data === '"failure"'){
+                    window.alert('Bakchodi Nahi');
+                }else{
+                    newCommentsR();
+                    $scope.hideTextArea();
+                    $scope.rComment.comment = null;
+                    $scope.btnDisable = false;
+                };
+
+            }).error(function(data){
+                if(data === '"failure"'){
+                    window.alert('Bakchodi Nahi');
+                }
+            });
+        };
+    };
+
+});
+
+app.controller('roastTrendingController', function($scope,$location,$http,$routeParams){
+
+    $http.get('/trendingDebates').success(function(data){
+        console.log(data[0]);
+        $scope.questions = data;
+
+    }).error(function(data){
+        console.log(data);
+    })
+
+    $http.get('/trendingRoasts').success(function(data){
+        console.log(data[0]);
+        $scope.trending = data;
+
+    }).error(function(data){
+        console.log(data);
+    });
+
+    $scope.goToRoast = function(trends){
+         window.scrollTo(0,0);
+         var roastID = '/roast/' + trends._id; 
+        $location.path(roastID);
+    }
+
+    $scope.goToDebate = function(question){
+
+        window.scrollTo(0,0);
+        var debateID = '/QandA/' + question._id;
+        
+        $location.path(debateID);
+    }
+
+});
+
+
+app.controller('roastCreateController', function($scope,$http,$location,$routeParams){
+
+    console.log("trending page");
+
+    $scope.roast = {};
+    $scope.debate = {};
+    $scope.debate.yes = 1;
+    $scope.debate.no = 1;
+    $scope.debate.createdOn = new Date();
+    $scope.nameChar = 50;
+    $scope.descChar = 150;
+    $scope.qChar = 150;
+    $scope.btnDisable = false;
+
+    $scope.$watch('roast.name', function() {
+        if(angular.isDefined($scope.roast.name)){
+           $scope.nameChar = 50 - $scope.roast.name.length;
+           if ($scope.nameChar === 0) {
+                $scope.nameChar = 0;
+           };
+       };
+    });
+    $scope.$watch('roast.quote', function() {
+        if(angular.isDefined($scope.roast.quote)){
+           $scope.descChar = 150 - $scope.roast.quote.length;
+           if ($scope.descChar === 0) {
+                $scope.descChar = 0;
+           };
+       };
+    });
+    $scope.$watch('debate.question', function() {
+        if(angular.isDefined($scope.debate.question)){
+            $scope.qChar = 150 - $scope.debate.question.length;
+            if ($scope.qChar === 0) {
+                $scope.qChar = 0;
+            };
+        };
+    });
+
+    $scope.single = function(image) {
+                    var formData = new FormData();
+                    formData.append('image', image, image.name);
+                    $http.post('upload', formData, {
+                        headers: { 'Content-Type': false },
+                        transformRequest: angular.identity
+                    }).success(function(result) {
+                        $scope.uploadedImgSrc = result.src;
+                        $scope.sizeInBytes = result.size;
+                    });
+                };
+
+    var valid  = null;
+
+    $scope.postRoast = function(){
+
+            if ($scope.roast.name === null || $scope.roast.name === "" || angular.isUndefined($scope.roast.name)) {
+                valid = false;
+            }else 
+            if ($scope.roast.quote === null || $scope.roast.quote === "" || angular.isUndefined($scope.roast.quote)) {
+                valid = false
+            }else{valid = true};
+
+        if (valid === true) {
+            $scope.btnDisable = true;
+            $scope.waiting = true;
+            $http.post('/createRoast', $scope.roast).success(function(data){
+                $scope.waiting = false;
+                var roastID = '/roast/' + data._id;
+                $location.path(roastID);
+            }).error(function(data){
+                $scope.waiting = false;
+            })
+        };
+    };
+
+    var validQ = null;
+
+    $scope.postDebate = function(){
+
+         if ($scope.debate.question === null || $scope.debate.question === "" || angular.isUndefined($scope.debate.question)) {
+                validQ = false
+        }else{validQ = true};
+
+        if(validQ === true){
+            $scope.btnDisable = true;
+            $scope.waiting = true;
+            $http.post('/createDebate', $scope.debate).success(function(data){
+                $scope.waiting = false;
+                var debateID = '/QandA/' + data._id;
+                $location.path(debateID);
+            }).error(function(data){
+                $scope.waiting = false;
+            })
+        };
+    };
+
+});
+
 
 
 app.controller('roastListController', function($scope,$http,$location,$routeParams){
@@ -763,3 +783,90 @@ app.directive('image', function($q) {
             }
         };
     });
+
+
+// this for social sharing
+
+app.factory('socialLinker', [
+        '$window', '$location', function ($window, $location) {
+        return function (urlFactory) {
+            return function (scope, element, attrs) {
+                var getCurrentUrl, handler, popupWinAttrs;
+                popupWinAttrs = "status=no, width=" + (scope.socialWidth || 640) + ", height=" + (scope.socialWidth || 480) + ", resizable=yes, toolbar=no, menubar=no, scrollbars=no, location=no, directories=no";
+                getCurrentUrl = function () {
+                    return attrs.customUrl || $location.absUrl();
+                };
+                attrs.$observe('customUrl', function () {
+                    var url;
+                    url = urlFactory(scope, getCurrentUrl());
+                    if (element[0].nodeName === 'A' && ((attrs.href == null) || attrs.href === '')) {
+                        return element.attr('href', url);
+                    }
+                });
+                element.attr('rel', 'nofollow');
+                handler = function (e) {
+                    var url, win;
+                    e.preventDefault();
+                    url = urlFactory(scope, getCurrentUrl());
+                    return win = $window.open(url, 'popupwindow', popupWinAttrs).focus();
+                };
+                if (attrs.customHandler != null) {
+                    element.on('click', handler = function (event) {
+                        var url;
+                        url = urlFactory(scope, getCurrentUrl());
+                        element.attr('href', url);
+                        return scope.handler({
+                            $event: event,
+                            $url: url
+                        });
+                    });
+                } else {
+                    element.on('click', handler);
+                }
+                return scope.$on('$destroy', function () {
+                    return element.off('click', handler);
+                });
+            };
+        };
+    }]);
+
+        app.directive('socialFacebook', [
+        'socialLinker', function (linker) {
+        return {
+            restrict: 'ACEM',
+            scope: {
+                handler: '&customHandler'
+            },
+            link: linker(function (scope, url) {
+                var shareUrl;
+                shareUrl = ["https://facebook.com/sharer.php?"];
+                shareUrl.push("u=" + (encodeURIComponent(url)));
+                return shareUrl.join('');
+            })
+        };
+    }]).directive('socialTwitter', [
+        'socialLinker', function (linker) {
+        return {
+            restrict: 'ACEM',
+            scope: angular.extend({
+                status: '@status'
+            },{
+                handler: '&customHandler'
+            }),
+            link: linker(function (scope, url) {
+                scope.status || (scope.status = "India Roasts, an Online Debate and celeb Roasting! - " + url);
+                return "https://twitter.com/intent/tweet?text=" + (encodeURIComponent(scope.status));
+            })
+        };
+    }]).directive('socialGplus', [
+        'socialLinker', function (linker) {
+        return {
+            restrict: 'ACEM',
+            scope:{
+                handler: '&customHandler'
+            },
+            link: linker(function (scope, url) {
+                return "https://plus.google.com/share?url=" + (encodeURIComponent(url));
+            })
+        };
+    }])
