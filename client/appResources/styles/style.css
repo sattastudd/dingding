@@ -176,7 +176,7 @@ a, .dropdown-menu {
         margin-right: 15px;
     }
     .ngViewBG{
-        background-color: #fff;
+        background-color: #f1f1f1;
         box-shadow: 0px 2px 7px #7D7878;
     }
     .titleRoast{
@@ -370,7 +370,7 @@ textarea.form-control.textAreaActive {
         margin-top: -15px;
     }
     .trendBlock{
-        background-color: #f1f1f1;
+        background-color: #fff;
     }
 }
 @media screen and (max-width: 992px) {
