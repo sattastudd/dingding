@@ -30,6 +30,10 @@ app.config(function($routeProvider,$locationProvider) {
                 templateUrl : '../views/QandAlist.html',
                 controller  : 'QandAlistController'
             })
+            .when('/replies', {
+                templateUrl : '../views/replyComments.html',
+                controller  : 'replyCommentController'
+            })
             .when('/404', {
                 templateUrl : 'views/404.html',
                 controller  : 'errorController'
@@ -67,6 +71,10 @@ app.controller('roastIndexController', function($scope,$http,$location){
                 $location.path('/QandAlist');
                 window.scrollTo(0,0);
                 $scope.showToolBox();
+            }
+            $scope.goToReplies = function(){
+                $location.path('/replies');
+                window.scrollTo(0,0);
             }
             $scope.toolBoxActive = true;
             $scope.showToolBox = function () {
@@ -106,9 +114,12 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.postBlockActive = false;
     $scope.appreciated = false;
     $scope.appriValue = 'Appreciate';
+    $scope.postAreply = false;
     $scope.appri = {};
     $scope.hideTextArea = function () {
         $scope.postBlockActive = false;
+        $scope.postAreply = false;
+        $scope.comment.comment = null;
     }
     $scope.showTextArea = function () {
         $scope.postBlockActive = true;
@@ -118,7 +129,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         //$scope.appreciated = true;
         //$scope.appriValue = 'Appreciated';
 
-        $scope.appri.commentID = qna._id;
+        $scope.appri.commentID = qna.slug;
         $scope.appri.qnaID = $routeParams.id;
 
         $http.post('/appriQnA', $scope.appri).success(function(data){
@@ -127,12 +138,14 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
 
         });
     }
-    $scope.anonyClicked = function (value) {
-        console.log(value);
+    
+    $scope.replyQ = function(qna){
+        $scope.postBlockActive = true;
+        $scope.postAreply = true;
+        $scope.repliesQ = {};
+        $scope.repliesQ.id = qna._id;
+        $scope.repliesQ.name = 'Anonymous';
     }
-    /*$scope.textFocus = function () {
-        $scope.postBlkActv = true;
-    }*/
 
     $scope.calcVote = function(){
 
@@ -211,14 +224,18 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.comment = {};
     $scope.newDataQ = {};
 
-    $scope.comment.id = $routeParams.id; 
-    $scope.comment.name = 'Anonymous';
-    $scope.comment.createdOn = new Date();
-
-    var commentID = '/debateComments/' + $routeParams.id;
-
     $scope.fetchComments = function(){
         console.log('intervals running');
+
+        $scope.comment.id = $routeParams.id;
+        if($scope.Qanonymous === "Y"){
+            $scope.comment.name = 'Anonymous';
+        }
+        else{
+             $scope.comment.name = 'User';
+        }
+
+        var commentID = '/debateComments/' + $routeParams.id;
 
             $http.get(commentID).success(function(data){
                 $scope.QandA = data;
@@ -286,23 +303,39 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         if(valid === true){
             
             $scope.btnDisable = true;
+            if ($scope.postAreply === false){
+                $http.post('/debateComment', $scope.comment).success(function(data){
 
-            $http.post('/debateComment', $scope.comment).success(function(data){
+                    if(data === '"failure"'){
+                        window.alert('Bakchodi Nahi');
+                    }else{
+                        $scope.fetchComments();
+                        $scope.hideTextArea();
+                        $scope.comment.comment = null;
+                        $scope.btnDisable = false;
+                    }
 
-                if(data === '"failure"'){
-                    window.alert('Bakchodi Nahi');
-                }else{
-                    $scope.fetchComments();
-                    $scope.hideTextArea();
-                    $scope.comment.comment = null;
-                    $scope.btnDisable = false;
-                }
+                }).error(function(data){
+                    if(data === '"failure"'){
+                        window.alert('Bakchodi Nahi');
+                    }
+                });
+            }else{
+                $scope.repliesQ.comment = $scope.comment.comment;
+                $http.post('/debateReply', $scope.repliesQ).success(function(data){
+                    
+                    if(data === '"failure"'){
+                        window.alert('Bakchodi Nahi');
+                    }else{
+                        $location.path('/replies');
+                    }
 
-            }).error(function(data){
-                if(data === '"failure"'){
-                    window.alert('Bakchodi Nahi');
-                }
-            });
+                }).error(function(data){
+                    if(data === '"failure"'){
+                        window.alert('Bakchodi Nahi');
+                    }
+                });
+            }
         };
     }   
    
@@ -463,14 +496,15 @@ app.controller('roastTrendingController', function($scope,$location,$http,$route
 
     $scope.goToRoast = function(trends){
          window.scrollTo(0,0);
-         var roastID = '/roast/' + trends._id; 
+         console.log(trends);
+         var roastID = '/roast/' + trends.slug; 
         $location.path(roastID);
     }
 
     $scope.goToDebate = function(question){
 
         window.scrollTo(0,0);
-        var debateID = '/QandA/' + question._id;
+        var debateID = '/QandA/' + question.slug;
         
         $location.path(debateID);
     }
@@ -489,8 +523,10 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
     $scope.debate.createdOn = new Date();
     $scope.nameChar = 50;
     $scope.descChar = 150;
-    $scope.qChar = 150;
-    $scope.btnDisable = false;
+    $scope.qChar1 = 150;
+    $scope.qChar2 = 150;
+    $scope.btnDisable1 = false;
+    $scope.btnDisable2 = false;
 
     $scope.$watch('roast.name', function() {
         if(angular.isDefined($scope.roast.name)){
@@ -508,14 +544,54 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
            };
        };
     });
-    $scope.$watch('debate.question', function() {
-        if(angular.isDefined($scope.debate.question)){
-            $scope.qChar = 150 - $scope.debate.question.length;
-            if ($scope.qChar === 0) {
-                $scope.qChar = 0;
+    $scope.$watch('debate.question1', function() {
+        if(angular.isDefined($scope.debate.question1)){
+            $scope.qChar1 = 150 - $scope.debate.question1.length;
+            if ($scope.qChar1 === 0) {
+                $scope.qChar1 = 0;
             };
         };
     });
+    $scope.$watch('debate.question2', function() {
+        if(angular.isDefined($scope.debate.question2)){
+            $scope.qChar2 = 150 - $scope.debate.question2.length;
+            if ($scope.qChar2 === 0) {
+                $scope.qChar2 = 0;
+            };
+        };
+    });
+
+    $scope.yChar = 10;
+    $scope.nChar = 10;
+
+    $scope.$watch('debate.yBtnValue', function() {
+        if(angular.isDefined($scope.debate.yBtnValue)){
+            $scope.yChar = 10 - $scope.debate.yBtnValue.length;
+            if ($scope.yChar === 0) {
+                $scope.yChar = 0;
+            };
+        };
+    });
+
+    $scope.$watch('debate.nBtnValue', function() {
+        if(angular.isDefined($scope.debate.nBtnValue)){
+            $scope.nChar = 10 - $scope.debate.nBtnValue.length;
+            if ($scope.nChar === 0) {
+                $scope.nChar = 0;
+            };
+        };
+    });
+
+    $scope.showtext = false;
+    $scope.debate.yBtnValue = "Yes";
+    $scope.debate.nBtnValue = "No";
+
+    $scope.editY = function(){
+        $scope.showtext = true;
+    }
+    $scope.doneBtn = function(){
+        $scope.showtext = false;
+    }
 
     $scope.single = function(image) {
                     var formData = new FormData();
@@ -541,11 +617,12 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
             }else{valid = true};
 
         if (valid === true) {
+            $scope.roast.slug = $scope.roast.name.replace(/ /g, '_');
             $scope.btnDisable = true;
             $scope.waiting = true;
             $http.post('/createRoast', $scope.roast).success(function(data){
                 $scope.waiting = false;
-                var roastID = '/roast/' + data._id;
+                var roastID = '/roast/' + data.slug;
                 $location.path(roastID);
             }).error(function(data){
                 $scope.waiting = false;
@@ -554,24 +631,41 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
     };
 
     var validQ = null;
+    $scope.duplicateQ = false;
 
-    $scope.postDebate = function(){
+    $scope.postQuestion = function(){
 
          if ($scope.debate.question === null || $scope.debate.question === "" || angular.isUndefined($scope.debate.question)) {
                 validQ = false
         }else{validQ = true};
 
         if(validQ === true){
+            $scope.debate.slug = $scope.debate.question.replace(/ /g, '_');
             $scope.btnDisable = true;
             $scope.waiting = true;
             $http.post('/createDebate', $scope.debate).success(function(data){
                 $scope.waiting = false;
-                var debateID = '/QandA/' + data._id;
-                $location.path(debateID);
+                console.log(data);
+                if (angular.isDefined(data[0])) {
+                    var debateID = '/QandA/' + data[0].slug;
+                }else{
+                    var debateID = '/QandA/' + data.slug;
+                    $location.path(debateID);
+                }
             }).error(function(data){
                 $scope.waiting = false;
             })
         };
+    };
+
+    $scope.postQuestion1 = function(){
+        $scope.debate.question = $scope.debate.question1;
+        $scope.postQuestion();
+    };
+    $scope.postQuestion2 = function(){
+        $scope.debate.question = $scope.debate.question2;
+        $scope.debate.debate = "Y";
+        $scope.postQuestion();
     };
 
 });
@@ -589,7 +683,7 @@ app.controller('roastListController', function($scope,$http,$location,$routePara
 
     $scope.goToRoast = function(content){
          window.scrollTo(0,0);
-         var roastID = '/roast/' + content._id;
+         var roastID = '/roast/' + content.slug;
         $location.path(roastID);
     }
     
@@ -610,13 +704,13 @@ app.controller('QandAlistController', function($http,$scope,$location,$routePara
     $scope.goToDebate = function(question){
 
         window.scrollTo(0,0);
-        var debateID = '/QandA/' + question._id;
+        var debateID = '/QandA/' + question.slug;
         
         $location.path(debateID);
     }
 })
 
-app.controller('QandAcategoryController', function(){
+app.controller('replyCommentController', function(){
     
 })
 

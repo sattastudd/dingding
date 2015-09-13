@@ -253,7 +253,7 @@ a, .dropdown-menu {
     border-bottom: 1px solid gray;
     resize:none;
     border:1px;
-    background-color: #F3F3F3;
+    background-color: #D6D6D6;
 }
 textarea.form-control {
     height: 40px;
@@ -407,6 +407,32 @@ textarea.form-control.textAreaActive {
     text-align: center;
     margin-top: 20px;
 }
+.editVoteBtn{
+    font-size: 12px;
+    color: black;
+    border: 1px solid gray;
+    margin-top: 7px;
+    margin-left: -15px;
+    padding-top: 3px;
+    min-height: 25px;
+    margin-right: -15px;
+}
+.done{
+    margin-top: 25px;
+    border-radius: 3px;
+    background-color: #009688;
+    font-size: 25px;
+    height: 40px;
+    color: white;
+}
+.duplicateErr{
+    font-size: 20px;
+    background-color: #FE9104;
+    color: #fff;
+    height: 45px;
+    text-align: center;
+    padding-top: 6px;
+}
 
 /* styles for create roast page ends here */
 
@@ -421,12 +447,13 @@ textarea.form-control.textAreaActive {
 }
 .voteBtn{
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-    height: 50px;
     text-align: center;
-    font-size: 32px;
     background-color: #42B9B0;
     margin-top: 10px;
     color:#fff;
+    padding-top: 5px;
+    height: 40px;
+    font-size: 20px;
 }
 .Qbtn{
     border: 1px solid gainsboro;
@@ -464,6 +491,11 @@ textarea.form-control.textAreaActive {
     .qFont{
         font-size:22px;
         font-weight: bold;
+    }
+    .voteBtn{
+        padding-top: 0px;
+        height: 50px;
+        font-size: 32px;
     }
     .titleQ{
         font-size:26px;

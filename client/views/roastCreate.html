@@ -52,18 +52,61 @@
                     </div>
                     <div class="col-xs-12" style="margin-bottom:30px;">
                         <p><b>Write Your Question</b></p>
-                        <input type="text" class="form-control" my-maxlength="150" ng-trim="false" ng-model="debate.question" placeholder="Write your question" />
-                        <p class="pull-right mTop0" style="color:grey;margin-bottom:10px;">{{qChar}} words left</p>
-                        <div style="margin-top:30px">
+                        <input type="text" class="form-control" my-maxlength="150" ng-trim="false" ng-model="debate.question1" placeholder="Write your question" />
+                        <p class="pull-right mTop0" style="color:grey;margin-bottom:10px;">{{qChar1}} words left</p>
+                        <!-- <div style="margin-top:30px">
                             <input type="checkbox" ng-model="debate.debate"
                             ng-true-value="Y" ng-false-value="N" style="margin-right:15px">I want people to <b>Vote</b>for this Question.
-                        </div>
+                        </div> -->
                     </div>
                     <div ng-if="waiting">
                         <img src="../images/loader.gif" class="loader" />
                     </div>
                     <div class="col-xs-12" style="margin-bottom:60px;">
-                        <button type="button" ng-click="postDebate()" class="btn btn-place-primary" ng-disabled="btnDisable">Create Debate</button>
+                        <button type="button" ng-click="postQuestion1()" class="btn btn-place-primary" ng-disabled="btnDisable1">Ask Question</button>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 trendingTitle" style="margin-top:4px;background-color:#2ECBDE;">
+                            Create a Debate
+                        </div>
+                    </div>
+                    <div class="col-xs-12" style="margin-bottom:30px;">
+                        <p><b>Write Your Debatable Question</b></p>
+                        <input type="text" class="form-control" my-maxlength="150" ng-trim="false" ng-model="debate.question2" placeholder="Write your Debatable question" />
+                        <p class="pull-right mTop0" style="color:grey;margin-bottom:10px;">{{qChar2}} words left</p>
+                    </div>
+                    <div class="col-xs-12" style="margin-bottom:60px;" ng-hide="showtext">
+                        <div class="col-xs-5 voteBtn hand" ng-click="editY()">
+                            {{debate.yBtnValue}}
+                            <p align="center" class="editVoteBtn">click to Customize</p>
+                        </div>
+                        <div class="col-xs-5 col-xs-offset-2 voteBtn hand" ng-click="editY()" style="background-color:red">
+                            {{debate.nBtnValue}}
+                            <p align="center" class="editVoteBtn">Click to Customize</p>
+                        </div>
+                   </div>
+                   <div class="col-xs-12" style="margin-bottom:60px;">
+                        <div class="col-xs-5" ng-if="showtext">
+                            <div class="row">
+                                <input type="text" class="form-control" my-maxlength="10" ng-trim="false" ng-model="debate.yBtnValue" placeholder="Text for Vote Button">
+                                <p class="pull-right mTop0" style="color:grey;margin-bottom:10px;">{{yChar}} words left</p>
+                            </div>
+                        </div>
+                        <div class="col-xs-5 col-xs-offset-2" ng-if="showtext">
+                            <div class="row">
+                                <input type="text" class="form-control" my-maxlength="10" ng-trim="false" ng-model="debate.nBtnValue" placeholder="Text for Vote Button">
+                                <p class="pull-right mTop0" style="color:grey;margin-bottom:10px;">{{nChar}} words left</p>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-xs-offset-3" ng-if="showtext">
+                            <p align="center" class="done hand" ng-click="doneBtn()">Done</p>
+                        </div>
+                   </div>
+                    <div ng-if="waiting">
+                        <img src="../images/loader.gif" class="loader" />
+                    </div>
+                    <div class="col-xs-12" style="margin-bottom:60px;" ng-hide="showtext">
+                        <button type="button" ng-click="postQuestion2()" class="btn btn-place-primary" ng-disabled="btnDisable2">Create Debate</button>
                     </div>
                </div>
             </div>

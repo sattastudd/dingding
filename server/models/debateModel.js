@@ -5,8 +5,11 @@ var debateSchema = new mongoose.Schema({
 	question	: String,
 	yes			: Number,
 	no			: Number,
+	yBtnValue	: String,
+	nBtnValue	: String,
 	createdBy	: String,
 	debate 		: String,
+	slug		: String,
 	createdOn	: Date
 });
 
@@ -26,7 +29,8 @@ var commentSchema = new mongoose.Schema({
 	name		: String,
 	comment 	: String,
 	imgUrl		: String,
-	createdOn	: Date
+	createdOn	: Date,
+	replies		: String
 });
 
 var getCommentModel = function(collectionName){

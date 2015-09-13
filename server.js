@@ -50,6 +50,9 @@ app.get('/QandA/:id', function(req, res){
 app.get('/QandAlist', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
+app.get('/replies', function(req, res){
+	res.sendFile(__dirname + '/client/index.html');
+});
 app.get('/404', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
@@ -95,6 +98,8 @@ app.get('/allRoasts', roastController.getRoasts);
 app.post('/newRcomments', roastController.getNewRcomments);
 
 app.post('/newQcomments', debateController.getNewQcomments);
+
+app.post('/debateReply', debateController.debateReplies);
 
 app.post('/upload', function(req, res) {
     var image =  req.files.image;

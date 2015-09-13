@@ -1,7 +1,7 @@
 <div>
     <div class="container-fluid">
         <div class="row"><div class="row" style="background-color:#fff"><div class="col-xs-12">
-            <div class="col-xs-12" style="min-height:561px">
+            <div class="col-xs-12" style="min-height:600px">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="row">
@@ -17,40 +17,42 @@
                             </div>
                             <div ng-if="showVoteBlock">
                                 <div class="col-xs-12" ng-hide="showVotes" style="margin-bottom:60px;">
-                                    <div class="col-xs-5 voteBtn" ng-click="votedY()">
-                                        Yes
+                                    <div class="col-xs-5 voteBtn hand" ng-click="votedY()">
+                                        {{questions.yBtnValue}}
                                     </div>
-                                    <div class="col-xs-5 col-xs-offset-2 voteBtn" ng-click="votedN()" style="background-color:red">
-                                        No
+                                    <div class="col-xs-5 col-xs-offset-2 voteBtn hand" ng-click="votedN()" style="background-color:red">
+                                        {{questions.nBtnValue}}
                                     </div>
                                 </div>
                                 <div class="col-xs-12" ng-if="showVotes" style="margin-top:20px;margin-bottom:60px;">
                                     <div class="row">
-                                        <div class="col-xs-2">
-                                            Yes
-                                        </div>
-                                        <div class="col-xs-7 barGraph">
-                                            <div class="row">
-                                                <div class="col-xs-12 barYes" style="width:{{yRoundOff}}%">
+                                        <div class="row">
+                                            <div class="col-xs-3">
+                                                {{questions.yBtnValue}}
+                                            </div>
+                                            <div class="col-xs-7 barGraph">
+                                                <div class="row">
+                                                    <div class="col-xs-12 barYes" style="width:{{yRoundOff}}%">
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-xs-3">
-                                            <b>{{yRoundOff}}%</b>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="margin-top:10px;">
-                                        <div class="col-xs-2">
-                                            No
-                                        </div>
-                                        <div class="col-xs-7 barGraph">
-                                            <div class="row">
-                                                <div class="col-xs-12 barNo" style="width:{{nRoundOff}}%;">
-                                                </div>
+                                            <div class="col-xs-2">
+                                                <b>{{yRoundOff}}%</b>
                                             </div>
                                         </div>
-                                        <div class="col-xs-3">
-                                            <b>{{nRoundOff}}%</b>
+                                        <div class="row" style="margin-top:10px;">
+                                            <div class="col-xs-3">
+                                                {{questions.nBtnValue}}
+                                            </div>
+                                            <div class="col-xs-7 barGraph">
+                                                <div class="row">
+                                                    <div class="col-xs-12 barNo" style="width:{{nRoundOff}}%;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <b>{{nRoundOff}}%</b>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row" style="margin-top:20px;border-bottom:1px solid gainsboro">
@@ -87,7 +89,7 @@
                                         <div class="col-xs-12" style="font-size:12px;
         margin-top:20px;">
                                                     <div>
-                                                        <span class="pull-left replyBtn">Reply</span><span class="pull-left replyBtn">Comments</span>
+                                                        <span class="pull-left replyBtn" ng-click="replyQ(qna)">Reply</span><span class="pull-left replyBtn" ng-click="goToReplies()">Comments</span>
                                                         <div class="appreciateBtn hand pull-right" ng-class="appreciated?'appreciatedBtn':'appreciateBtn'" ng-click="appreciate(qna)">{{appriValue}}</div><span class="appriNo pull-right">123</span>
                                                     </div>
                                                 </div>
@@ -111,7 +113,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-xs-4">
-                                                    <input type="checkbox" ng-click="anonyClicked(value)" ng-checked="true" ng-true-value="Y" ng-false-value="N" ng-model="roast.anonymous" ng-disabled="true">Anonymous
+                                                    <input type="checkbox" ng-click="anonyClicked(value)" ng-checked="true" ng-true-value="Y" ng-false-value="N" ng-model="Qanonymous" ng-disabled="true">Anonymous
                                                     <br>
                                                 </div>
                                                 <div class="col-xs-8">

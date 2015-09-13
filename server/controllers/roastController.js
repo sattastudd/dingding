@@ -4,19 +4,41 @@ module.exports.createRoast = function(req, res){
 
 	var Roast = roastHandler.getRoastModel();
 
-	var roastInfo = {
-		name		: req.body.name,
-		quote 		: req.body.quote,
-		createdOn	: new Date()
-	}
-	
-	var newRoast = new Roast(req.body);
+	Roast.find({'slug' : req.body.slug}, function (err, doc) {
+		var docLength = doc.length;
+        if (doc.length !== 0) {
+        	//console.log('its two');
+        	var roastInfoDuplicate = {
+						name		: req.body.name,
+						quote 		: req.body.quote,
+						slug		: req.body.slug + docLength,
+						createdOn	: new Date()
+					}
+			var newRoast = new Roast(roastInfoDuplicate);
+			newRoast.save(function(err, result){
+				if (!err) {
+					res.json(result);
+				};
+			});
+        }else{
+        	var roastInfo = {
+				name		: req.body.name,
+				quote 		: req.body.quote,
+				slug		: req.body.slug,
+				createdOn	: new Date()
+			}
 
-	newRoast.save(function(err, result){
-		if (!err) {
-			res.json(result);
-		};
+        	var newRoast = new Roast(roastInfo);
+        	//console.log(roastInfo);
+
+			newRoast.save(function(err, result){
+				if (!err) {
+					res.json(result);
+				};
+			});
+        };
 	});
+	
 };
 
 
@@ -26,8 +48,9 @@ module.exports.getRoast = function(req, res){
 
 	var id = req.params.id;
 	
-	roast.find({'_id' : id}, function (err, doc) {
+	roast.find({'slug' : id}, function (err, doc) {
         res.json(doc);
+        //console.log(doc);
 	});
 };
 
@@ -45,12 +68,15 @@ module.exports.roastComment = function(req, res){
 
 	var collectionName = req.body.id;
 
-	var roast = roastHandler.getRoastModel(req.params);
+	var roast = roastHandler.getRoastModel();
+
+	console.log(req.body);
 	
-	if(collectionName.length === 24){
-		roast.find({'_id' : collectionName}, function (err, doc) {
+	//if(collectionName.length === 24){
+		roast.find({'slug' : collectionName}, function (err, doc) {
+			console.log(doc);
 	        
-	        if(doc.length !== 0 ){
+	        if(doc[0].slug === collectionName ){
 
 				var comment = roastHandler.getCommentModel(collectionName);
 
@@ -72,9 +98,6 @@ module.exports.roastComment = function(req, res){
 				res.json('failure');
 			}
 		});
-	}else{
-		res.json('failure');
-	}
 
 };
 
@@ -87,8 +110,9 @@ module.exports.roastComments = function(req, res){
 	var collectionName = req.params.id;
 
 
-	if(collectionName.length === 24){
-		roast.find({'_id' : collectionName}, function (err, doc) {
+	//if(collectionName.length === 24){
+		roast.find({'slug' : collectionName}, function (err, doc) {
+			//console.log(doc);
 	        
 	        if(doc.length !== 0 ){
 
@@ -123,11 +147,14 @@ module.exports.roastComments = function(req, res){
 						res.json(result);
 					};
 				});
-			};
+			}else{
+				res.json('failure');
+				//console.log(doc);
+			}
 		});
-	}else{
+	/*}else{
 		res.json('failure');
-	}
+	}*/
 
 };
 
