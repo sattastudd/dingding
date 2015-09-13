@@ -187,7 +187,9 @@ module.exports.debateReplies = function(req, res){
 
 	var commentName = req.body.id;
 
-	var debate = debateHandler.getCommentModel();
+	console.log(commentName);
+
+	var debate = debateHandler.getDebateModel();
 
 	debate.update(
 					{"_id"		: commentName},
