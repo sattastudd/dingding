@@ -25,12 +25,19 @@ exports.getDebateModel 	= getDebateModel;
 
 // for comment in denbates
 
+var replySchema = new mongoose.Schema({
+	name : String,
+	comment : String,
+	imgUrl : String,
+	creatdOn : Date
+});
+
 var commentSchema = new mongoose.Schema({
 	name		: String,
 	comment 	: String,
 	imgUrl		: String,
 	createdOn	: Date,
-	replies		: String
+	replies		: [replySchema]
 });
 
 var getCommentModel = function(collectionName){

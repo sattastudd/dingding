@@ -30,7 +30,7 @@ app.config(function($routeProvider,$locationProvider) {
                 templateUrl : '../views/QandAlist.html',
                 controller  : 'QandAlistController'
             })
-            .when('/replies', {
+            .when('/replies/:id', {
                 templateUrl : '../views/replyComments.html',
                 controller  : 'replyCommentController'
             })
@@ -72,13 +72,12 @@ app.controller('roastIndexController', function($scope,$http,$location){
                 window.scrollTo(0,0);
                 $scope.showToolBox();
             }
-            $scope.goToReplies = function(){
-                $location.path('/replies');
-                window.scrollTo(0,0);
-            }
             $scope.toolBoxActive = true;
             $scope.showToolBox = function () {
                 $scope.toolBoxActive = !$scope.toolBoxActive;
+            }
+            $scope.hideToolBox = function(){
+                $scope.toolBoxActive = true;
             }
 
             // code for social sharing
@@ -120,10 +119,11 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         $scope.postBlockActive = false;
         $scope.postAreply = false;
         $scope.comment.comment = null;
+        $scope.editBox = false;
+        $scope.editBoxQ = false;
     }
     $scope.showTextArea = function () {
         $scope.postBlockActive = true;
-        console.log('show is working');
     }
     $scope.appreciate = function (qna) {
         //$scope.appreciated = true;
@@ -138,6 +138,11 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
 
         });
     }
+
+    $scope.goToRepliesQ = function(qna){
+        $location.path('/replies/' + qna._id);
+        window.scrollTo(0,0);
+    }
     
     $scope.replyQ = function(qna){
         $scope.postBlockActive = true;
@@ -145,6 +150,50 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         $scope.repliesQ = {};
         $scope.repliesQ.id = qna._id;
         $scope.repliesQ.name = 'Anonymous';
+    }
+
+    $scope.editBox = false;
+    $scope.editBoxQ = false;
+    $scope.commentObj = {};
+    $scope.questionObj = {};
+    $scope.editQComment = function(value){
+        $scope.editBox = true;
+        $scope.showTextArea();
+        $scope.comment.comment = value.comment;
+        console.log(value);
+        $scope.commentObj.id = value._id;
+    };
+
+    $scope.updateQcomment = function(){
+        $scope.commentObj.comment = $scope.comment.comment;
+        var commentID = '/editQComment/' + $routeParams.id;
+        $http.post(commentID, $scope.commentObj).success(function(data){
+            $scope.hideTextArea();
+            $scope.fetchComments();
+        }).error(function(data){
+
+        })
+    }
+
+    $scope.editQuestion = function(){
+        $scope.editBoxQ = true;
+        $scope.showTextArea();
+        $scope.comment.comment = $scope.questions.question;
+        $scope.questionObj.slug = $scope.questions.slug;
+        $scope.questionObj.id = $scope.questions._id;
+        $scope.questionObj.debate = $scope.questions.debate;
+    };
+
+    $scope.updateQuestion = function(){
+        $scope.questionObj.question = $scope.comment.comment;
+        var questionID = '/editQuestion/' + $routeParams.id;
+        $http.post(questionID, $scope.questionObj).success(function(data){
+            $scope.hideTextArea();
+            console.log(data);
+            $scope.getQuestion();
+        }).error(function(data){
+
+        })
     }
 
     $scope.calcVote = function(){
@@ -164,19 +213,21 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.showVoteBlock = true;
 
     var debateID = '/debateTitle/' + $routeParams.id;
+    $scope.getQuestion = function(){
+        $http.get(debateID).success(function(data){
+            console.log(data[0]);
+            $scope.questions = data[0];
 
-    $http.get(debateID).success(function(data){
-        console.log(data[0]);
-        $scope.questions = data[0];
+            if ($scope.questions.debate === "Y") {
+                $scope.calcVote();
+            }
+            else{$scope.showVoteBlock = false;}
 
-        if ($scope.questions.debate === "Y") {
-            $scope.calcVote();
-        }
-        else{$scope.showVoteBlock = false;}
-
-    }).error(function(data){
-        console.log(data);
-    });
+        }).error(function(data){
+            console.log(data);
+        });
+    };
+    $scope.getQuestion();
 
     $scope.goToCreateQ = function(){
         window.scrollTo(1000,1000);
@@ -322,12 +373,13 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
                 });
             }else{
                 $scope.repliesQ.comment = $scope.comment.comment;
-                $http.post('/debateReply', $scope.repliesQ).success(function(data){
+                var debateID = '/debateReply/' + $routeParams.id;
+                $http.post(debateID, $scope.repliesQ).success(function(data){
                     
                     if(data === '"failure"'){
                         window.alert('Bakchodi Nahi');
                     }else{
-                        $location.path('/replies');
+                        $location.path('/replies/' + $scope.repliesQ.id);
                     }
 
                 }).error(function(data){
@@ -617,7 +669,6 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
             }else{valid = true};
 
         if (valid === true) {
-            $scope.roast.slug = $scope.roast.name.replace(/ /g, '_');
             $scope.btnDisable = true;
             $scope.waiting = true;
             $http.post('/createRoast', $scope.roast).success(function(data){
@@ -640,18 +691,18 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
         }else{validQ = true};
 
         if(validQ === true){
-            $scope.debate.slug = $scope.debate.question.replace(/ /g, '_');
             $scope.btnDisable = true;
             $scope.waiting = true;
             $http.post('/createDebate', $scope.debate).success(function(data){
                 $scope.waiting = false;
-                console.log(data);
-                if (angular.isDefined(data[0])) {
-                    var debateID = '/QandA/' + data[0].slug;
-                }else{
-                    var debateID = '/QandA/' + data.slug;
-                    $location.path(debateID);
-                }
+                console.log(data)
+                    if (angular.isDefined(data[0])) {
+                        var debateID = '/QandA/' + data[0].slug;
+                        $location.path(debateID);
+                    }else{
+                        var debateID = '/QandA/' + data.slug;
+                        $location.path(debateID);
+                    }
             }).error(function(data){
                 $scope.waiting = false;
             })

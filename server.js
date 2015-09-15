@@ -50,7 +50,7 @@ app.get('/QandA/:id', function(req, res){
 app.get('/QandAlist', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
-app.get('/replies', function(req, res){
+app.get('/replies/:id', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
 app.get('/404', function(req, res){
@@ -99,7 +99,11 @@ app.post('/newRcomments', roastController.getNewRcomments);
 
 app.post('/newQcomments', debateController.getNewQcomments);
 
-app.post('/debateReply', debateController.debateReplies);
+app.post('/editQcomment/:debateID', debateController.editQcomment);
+
+app.post('/editQuestion/:debateID', debateController.editQuestion);
+
+app.post('/debateReply/:debateID', debateController.debateReplies);
 
 app.post('/upload', function(req, res) {
     var image =  req.files.image;

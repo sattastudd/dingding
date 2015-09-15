@@ -85,8 +85,8 @@
                             <p align="center" class="editVoteBtn">Click to Customize</p>
                         </div>
                    </div>
-                   <div class="col-xs-12" style="margin-bottom:60px;">
-                        <div class="col-xs-5" ng-if="showtext">
+                   <div class="col-xs-12" style="margin-bottom:60px;" ng-if="showtext">
+                        <div class="col-xs-5">
                             <div class="row">
                                 <input type="text" class="form-control" my-maxlength="10" ng-trim="false" ng-model="debate.yBtnValue" placeholder="Text for Vote Button">
                                 <p class="pull-right mTop0" style="color:grey;margin-bottom:10px;">{{yChar}} words left</p>
@@ -105,7 +105,7 @@
                     <div ng-if="waiting">
                         <img src="../images/loader.gif" class="loader" />
                     </div>
-                    <div class="col-xs-12" style="margin-bottom:60px;" ng-hide="showtext">
+                    <div class="col-xs-12" style="margin-bottom:60px;margin-top:15px;" ng-hide="showtext">
                         <button type="button" ng-click="postQuestion2()" class="btn btn-place-primary" ng-disabled="btnDisable2">Create Debate</button>
                     </div>
                </div>

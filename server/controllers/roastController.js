@@ -4,14 +4,16 @@ module.exports.createRoast = function(req, res){
 
 	var Roast = roastHandler.getRoastModel();
 
-	Roast.find({'slug' : req.body.slug}, function (err, doc) {
+	var slugReal = req.body.name.replace(/ /g, '_').toLowerCase();
+
+	Roast.find({'slug' : slugReal}, function (err, doc) {
 		var docLength = doc.length;
         if (doc.length !== 0) {
         	//console.log('its two');
         	var roastInfoDuplicate = {
 						name		: req.body.name,
 						quote 		: req.body.quote,
-						slug		: req.body.slug + docLength,
+						slug		: slugReal + docLength,
 						createdOn	: new Date()
 					}
 			var newRoast = new Roast(roastInfoDuplicate);
@@ -24,7 +26,7 @@ module.exports.createRoast = function(req, res){
         	var roastInfo = {
 				name		: req.body.name,
 				quote 		: req.body.quote,
-				slug		: req.body.slug,
+				slug		: slugReal,
 				createdOn	: new Date()
 			}
 

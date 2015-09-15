@@ -28,7 +28,7 @@
                                 </p>
                             </div>
                             <div class="row" style="background-color:#fff;min-height:560px;">
-                                <div class="col-xs-12 roastDiv" ng-repeat="roast in roasts.slice().reverse()">
+                                <div class="col-xs-12 roastDiv" ng-repeat="roast in roasts | orderBy:'-createdOn'">
                                     <div class="row">
                                         <div class="col-xs-12" style="margin-bottom:10px">
                                             <div class="row">

@@ -1,11 +1,22 @@
 var debateHandler = require('../models/debateModel');
 
+var mongoose = require( 'mongoose' );
+
 
 module.exports.createDebate = function(req, res){
 	
 	var debateCreate = debateHandler.getDebateModel();
 
-	debateCreate.find({'slug' : req.body.slug}, function (err, doc) {
+	var slugReal = null;
+
+	if(req.body.debate === "Y"){
+		var slugValue = req.body.question.replace(/ /g, '_');
+			slugReal =  (slugValue + '_options_' + req.body.yBtnValue + '_' + req.body.nBtnValue).toLowerCase();
+	}else{
+		slugReal = req.body.question.replace(/ /g, '_').toLowerCase();
+	}
+
+	debateCreate.find({'slug' : slugReal}, function (err, doc) {
 
         if (doc.length !== 0) {
         	res.json(doc);
@@ -18,9 +29,11 @@ module.exports.createDebate = function(req, res){
 				yBtnValue	: req.body.yBtnValue,
 				nBtnValue	: req.body.nBtnValue,
 				debate 		: req.body.debate,
-				slug		: req.body.slug,
+				slug		: slugReal,
 				createdOn	: new Date()
 			}
+
+			console.log(debateInfo);
 
 			var newDebate = new debateCreate(debateInfo);
 	
@@ -59,6 +72,9 @@ module.exports.debateComment = function(req, res){
 
 	        if(doc.length !== 0){
 	        	var comment = debateHandler.getCommentModel(collectionName);
+
+	        	var sortedComment = req.body.comment.replace(/\r?\n/g, '<br>');
+	        	console.log(sortedComment);
 
 				var commentInfo = {
 					name		: req.body.name,
@@ -121,6 +137,10 @@ module.exports.debateComments = function(req, res){
 					};
 					if (result.length !== 0) {
 						res.json(result);
+
+						/*for (var i = result.length - 1; i >= 0; i--) {
+							var realComment = result[i].comment.replace(/<br>/g, '\r?\n');
+						};*/
 					};
 				});
 			}else{
@@ -163,7 +183,7 @@ module.exports.vote = function(req, res){
 
 	if(req.body.value === 'Y'){
 		vote.update(
-				   { "_id": id },
+				   { "slug": id },
 				   { "$inc": { "yes": 1 } },
 				   function(err, result) {
 					   res.json(result);
@@ -173,7 +193,7 @@ module.exports.vote = function(req, res){
 	
 	if(req.body.value === 'N'){
 		vote.update(
-				   { "_id": id },
+				   { "slug": id },
 				   { "$inc": { "no": 1 } },
 				   function(err, result) {
 						res.json(result);
@@ -185,11 +205,11 @@ module.exports.vote = function(req, res){
 
 module.exports.debateReplies = function(req, res){
 
+	var collectionName = req.params.debateID;
+
 	var commentName = req.body.id;
 
-	console.log(commentName);
-
-	var debate = debateHandler.getDebateModel();
+	var debate = debateHandler.getCommentModel(collectionName);
 
 	debate.update(
 					{"_id"		: commentName},
@@ -203,6 +223,49 @@ module.exports.debateReplies = function(req, res){
 					},
 					function(err, result) {
 						res.json(result);
+						console.log(result);
 				   }
 	);
+};
+
+
+module.exports.editQcomment = function(req, res){
+
+	var collectionName = req.params.debateID;
+
+	var commentName = req.body.id;
+
+	var debate = debateHandler.getCommentModel(collectionName);
+
+	debate.update({'_id': commentName},{'comment':req.body.comment}, function(err, result){
+						
+						res.json(result);
+					});
+};
+
+
+
+module.exports.editQuestion = function(req, res){
+
+	var collectionName = req.params.debateID;
+
+	var debateName = req.body.id;
+
+	var debateTitle = debateHandler.getDebateModel();
+
+	console.log(req.body.question);
+
+	debateTitle.update({'_id':debateName},{'question':req.body.question}, function(err, result){
+		res.json(result);
+		console.log(result);
+	})
+
+
+	//var debate = debateHandler.getCommentModel(collectionName);
+
+	/*debate.update({'_id': commentName},{'comment':req.body.comment}, function(err, result){
+						
+						res.json(result);
+						console.log(result);
+					});*/
 };
