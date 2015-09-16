@@ -1,96 +1,125 @@
-/*var roastController     = require('../controllers/roastController');
-var debateController    = require('../controllers/debateController');
-var trendingController  = require('../controllers/trendingController');
-var express                 = require('express');
-var router = module.exports = express();
+var bodyParser          = require('body-parser');
 
+var roastController     = require('../../server/controllers/roastController'),
+    debateController    = require('../../server/controllers/debateController'),
+    trendingController  = require('../../server/controllers/trendingController');
 
-module.exports = function(router, passport) {
+module.exports = function( app, passport, express ) {
 
-    
-router.post('/createRoast', roastController.createRoast);
+    // route middleware to make sure a user is logged in
+    function isLoggedIn(req, res, next) {
 
-router.post('/createDebate', debateController.createDebate);
+        // if user is authenticated in the session, carry on
+        if (req.isAuthenticated())
+            return next();
 
-router.get('/trendingDebates', trendingController.getDebates);
+        // if they aren't redirect them to the home page
+        res.redirect('/');
+    }
 
-router.get('/debateTitle/:id', debateController.getDebate);
+	
 
-router.get('/roastTitle/:id', roastController.getRoast);
+	app.get('/', function(req, res){
+		res.sendFile(__dirname + '/client/index.html');
+	});
 
-router.post('/debateComment', debateController.debateComment);
+	app.get('/roast/:id', function(req, res){
+		res.sendFile(__dirname + '/client/index.html');
+	});
+	app.get('/create', function(req, res){
+		res.sendFile(__dirname + '/client/index.html');
+	});
+	app.get('/roastList', function(req, res){
+		res.sendFile(__dirname + '/client/index.html');
+	});
+	app.get('/QandA/:id', function(req, res){
+		res.sendFile(__dirname + '/client/index.html');
+	});
+	app.get('/QandAlist', function(req, res){
+		res.sendFile(__dirname + '/client/index.html');
+	});
+	app.get('/replies/:id', function(req, res){
+		res.sendFile(__dirname + '/client/index.html');
+	});
+	app.get('/404', function(req, res){
+		res.sendFile(__dirname + '/client/index.html');
+	});
 
-router.post('/roastComment', roastController.roastComment);
-
-router.get('/roastComments/:id', roastController.roastComments);
-
-router.get('/debateComments/:id', debateController.debateComments);
-
-router.post('/vote', debateController.vote);
-
-router.get('/allDebates', debateController.getDebates);
-
-router.get('/allRoasts', roastController.getRoasts);
-
-router.post('/newRcomments', roastController.getNewRcomments);
-
-router.post('/newQcomments', debateController.getNewQcomments);
-
-};*/
-
-
-
-
-
-/*
-
-
-
-    // route for login form
-    // route for processing the login form
-    // route for signup form
-    // route for processing the signup form
-
-    // route for showing the profile page
-    app.get('/QandAlist', isLoggedIn, function(req, res) {
-        res.render('profile.ejs', {
-            user : req.user // get the user out of session and pass to template
-        });
+    app.get('/userInfo', function( req, res ) {
+        res.sendFile( __dirname + '/client/index.html' );
     });
 
-    // route for logging out
-    app.get('/logout', function(req, res) {
+	app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+
+	    // the callback after google has authenticated the user
+	    app.get('/auth/google/callback',
+	            passport.authenticate('google', {
+	                    successRedirect : '/#userInfo',
+	                    failureRedirect : '/'
+	            }));
+
+
+	app.use(bodyParser());
+
+    app.get('/user/me', isLoggedIn, function( req, res, next ) {
+        res.status( 200 ).json( req.user );
+    });
+
+    app.post('/logout', function (req, res, next ) {
         req.logout();
         res.redirect('/');
     });
 
-    // facebook routes
-    // twitter routes
+	//this is for posting data
+	app.post('/createRoast', roastController.createRoast);
 
-    // =====================================
-    // GOOGLE ROUTES =======================
-    // =====================================
-    // send to google to do the authentication
-    // profile gets us their basic information including their name
-    // email gets their emails
-    app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+	app.post('/createDebate', debateController.createDebate);
 
-    // the callback after google has authenticated the user
-    app.get('/auth/google/callback',
-            passport.authenticate('google', {
-                    successRedirect : '/QandAlist',
-                    failureRedirect : '/'
-            }));
+	app.get('/trendingDebates', trendingController.getDebates);
 
+	app.get('/trendingRoasts', trendingController.getRoasts);
+
+	app.get('/debateTitle/:id', debateController.getDebate);
+
+	app.get('/roastTitle/:id', roastController.getRoast);
+
+	app.post('/debateComment', debateController.debateComment);
+
+	app.post('/roastComment', roastController.roastComment);
+
+	app.get('/roastComments/:id', roastController.roastComments);
+
+	app.get('/debateComments/:id', debateController.debateComments);
+
+	app.post('/vote', debateController.vote);
+
+	app.get('/allDebates', debateController.getDebates);
+
+	app.get('/allRoasts', roastController.getRoasts);
+
+	app.get('/debateReplies/:id', debateController.getReplies);
+
+	app.post('/newRcomments', roastController.getNewRcomments);
+
+	app.post('/newQcomments', debateController.getNewQcomments);
+
+	app.post('/editQcomment/:debateID', debateController.editQcomment);
+
+	app.post('/editQuestion/:debateID', debateController.editQuestion);
+
+	app.post('/debateReply/:debateID', debateController.debateReplies);
+
+	app.post('/upload', function(req, res) {
+	    var image =  req.files.image;
+	    var newImageLocation = path.join(__dirname, 'public/images', image.name);
+	    
+	    fs.readFile(image.path, function(err, data) {
+	        fs.writeFile(newImageLocation, data, function(err) {
+	            res.json(200, { 
+	                src: 'images/' + image.name,
+	                size: image.size
+	            });
+	        });
+	    });
+	});
 };
-
-// route middleware to make sure a user is logged in
-function isLoggedIn(req, res, next) {
-
-    // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
-        return next();
-
-    // if they aren't redirect them to the home page
-    res.redirect('/');
-}*/

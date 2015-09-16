@@ -38,6 +38,10 @@ app.config(function($routeProvider,$locationProvider) {
                 templateUrl : 'views/404.html',
                 controller  : 'errorController'
             })
+            .when('/userInfo', {
+                templateUrl : '/views/loadingUserData.html',
+                controller : 'loadingDataController'
+            })
             .otherwise({redirectTo:'/404'});
             
             $locationProvider.html5Mode(true);
@@ -873,7 +877,17 @@ app.controller('errorController', function($scope){
 
 });
 
+app.controller('loadingDataController', function($scope, $location, $http, UserInfoProvider){
+    $http.get('/user/me').success( function(data ) {
+        console.log( data );
 
+        UserInfoProvider.setData( data.google );
+        $location.path('/');
+    })
+    .error( function (data ) {
+        console.log( data );
+    });
+})
 
 // directives start here 
 
@@ -1124,3 +1138,25 @@ app.factory('socialLinker', [
             })
         };
     }])
+
+    app.service('UserInfoProvider', function($http){
+        this.data = null;
+        var self = this;
+
+        this.setData = function( data ) {
+            self.data = data;
+        };
+
+        this.getUserName = function () {
+            return self.data.name;
+        };
+
+        this.getUserEmail = function () {
+            return self.data.email;
+        };
+
+        this.logout = function () {
+            $http.post('/logout');
+            self.data = null;
+        };
+    });
