@@ -255,15 +255,17 @@ module.exports.debateReplies = function(req, res){
 
 	var collectionLength 	= combinedID.length - commentID.length;
 
-	var collectionName 		= combinedID.substring(0,collectionLength);
-
-	console.log(collectionName);
+	if (collectionLength >= 112) {
+		var collectionName 		= combinedID.substring(0,112);
+	}else{
+		var collectionName 		= combinedID.substring(0,collectionLength);
+	}
 
 	var debate = debateHandler.getCommentModel(collectionName);
 
 	if (req.body.id === 'replyPage'){
 
-		console.log(commentID);
+		console.log(collectionName);
 
 		debate.update(
 						{"_id"		: commentID},
@@ -283,6 +285,7 @@ module.exports.debateReplies = function(req, res){
 	}else{
 
 		var commentName = req.body.id;
+		console.log('commentName>>>>>>>>>>>>>>>'+commentName);
 		debate.update(
 						{"_id"		: commentName},
 						{ "$push":	{"replies": {	
@@ -313,11 +316,16 @@ module.exports.getReplies = function(req, res){
 
 	var collectionLength 	= combinedID.length - commentID.length;
 
-	var collectionName 		= combinedID.substring(0,collectionLength);
+	if (collectionLength >= 112) {
+		var collectionName 		= combinedID.substring(0,112);
+	}else{
+		var collectionName 		= combinedID.substring(0,collectionLength);
+	}
 	
 	var replies = debateHandler.getCommentModel(collectionName);
 	
 	replies.find({'_id':commentID}, function (err, result) {
         res.json(result);
+        console.log(result);
 	});
 };
