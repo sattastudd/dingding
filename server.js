@@ -95,6 +95,8 @@ app.get('/allDebates', debateController.getDebates);
 
 app.get('/allRoasts', roastController.getRoasts);
 
+app.get('/debateReplies/:id', debateController.getReplies);
+
 app.post('/newRcomments', roastController.getNewRcomments);
 
 app.post('/newQcomments', debateController.getNewQcomments);

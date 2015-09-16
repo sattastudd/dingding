@@ -140,7 +140,9 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     }
 
     $scope.goToRepliesQ = function(qna){
-        $location.path('/replies/' + qna._id);
+        var replyPath = '/replies/' + $scope.questions.slug + qna._id;
+        console.log(replyPath);
+        $location.path(replyPath);
         window.scrollTo(0,0);
     }
     
@@ -275,16 +277,16 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.comment = {};
     $scope.newDataQ = {};
 
-    $scope.fetchComments = function(){
-        console.log('intervals running');
-
-        $scope.comment.id = $routeParams.id;
+    $scope.comment.id = $routeParams.id;
         if($scope.Qanonymous === "Y"){
             $scope.comment.name = 'Anonymous';
         }
         else{
              $scope.comment.name = 'User';
-        }
+    }
+
+    $scope.fetchComments = function(){
+        console.log('intervals running');
 
         var commentID = '/debateComments/' + $routeParams.id;
 
@@ -379,11 +381,11 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
                     if(data === '"failure"'){
                         window.alert('Bakchodi Nahi');
                     }else{
-                        $location.path('/replies/' + $scope.repliesQ.id);
+                        $location.path('/replies/' + $routeParams.id + $scope.repliesQ.id);
                     }
 
                 }).error(function(data){
-                    if(data === '"failure"'){
+                    if(data === '"failure"'){ 
                         window.alert('Bakchodi Nahi');
                     }
                 });
@@ -575,6 +577,7 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
     $scope.debate.createdOn = new Date();
     $scope.nameChar = 50;
     $scope.descChar = 150;
+    $scope.qDescChar = 300;
     $scope.qChar1 = 150;
     $scope.qChar2 = 150;
     $scope.btnDisable1 = false;
@@ -601,6 +604,14 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
             $scope.qChar1 = 150 - $scope.debate.question1.length;
             if ($scope.qChar1 === 0) {
                 $scope.qChar1 = 0;
+            };
+        };
+    });
+    $scope.$watch('debate.description', function() {
+        if(angular.isDefined($scope.debate.description)){
+            $scope.qDescChar = 300 - $scope.debate.description.length;
+            if ($scope.qDescChar === 0) {
+                $scope.qDescChar = 0;
             };
         };
     });
@@ -761,9 +772,101 @@ app.controller('QandAlistController', function($http,$scope,$location,$routePara
     }
 })
 
-app.controller('replyCommentController', function(){
+app.controller('replyCommentController', function($scope,$http,$routeParams,$interval){
+
+    console.log('Its in loop');
     
-})
+    $scope.comment = {};
+    $scope.newDataQ = {};
+    $scope.repliesQ = {};
+
+    $scope.postBlockActive = false;
+    $scope.appreciated = false;
+    $scope.appriValue = 'Appreciate';
+    $scope.hideTextArea = function () {
+        $scope.postBlockActive = false;
+        $scope.repliesQ.comment = null;
+    }
+    $scope.showTextArea = function () {
+        $scope.postBlockActive = true;
+        console.log('show is working');
+    }
+    $scope.appreciate = function (roast) {
+        $scope.appreciated = true;
+        $scope.appriValue = 'Appreciated';
+        console.log(roast.name);
+    }
+    $scope.anonyClicked = function (value) {
+        console.log(value);
+    }
+
+    $scope.postBlockActive = false;
+    $scope.textFocus = function () {
+        $scope.postBlkActv = true;
+    };
+
+    $scope.comment.id = $routeParams.id;
+        if($scope.Qanonymous === "Y"){
+            $scope.comment.name = 'Anonymous';
+        }
+        else{
+             $scope.comment.name = 'User';
+        }
+
+    console.log('Its in loop');
+
+    $scope.fetchRepliesQ = function(){
+        console.log('intervals running');
+
+        var replyID = '/debateReplies/' + $routeParams.id;
+
+            $http.get(replyID).success(function(data){
+                $scope.replyContent = data;
+                $scope.repliesGot = data[0].replies;
+                console.log(data);
+                if (data.length === 1){
+                    $scope.newDataQ.oldDate = data[0].createdOn;
+                }else if (data.length > 1){
+                    $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
+                }
+            }).error(function(data){
+
+            });
+    };
+
+    $scope.fetchRepliesQ();
+
+    $scope.repliesQ.name = 'Anonymous';
+    $scope.btnDisable = false;
+
+    $scope.postReply = function(){
+                $scope.btnDisable = true;
+                $scope.repliesQ.id = 'replyPage';
+                var debateID = '/debateReply/' + $routeParams.id;
+                $http.post(debateID, $scope.repliesQ).success(function(data){
+                    
+                    if(data === '"failure"'){
+                        window.alert('Bakchodi Nahi');
+                    }else{
+                        $scope.btnDisable = false;
+                        $scope.hideTextArea();
+                        $scope.fetchRepliesQ();
+                    }
+
+                }).error(function(data){
+                    if(data === '"failure"'){ 
+                        window.alert('Bakchodi Nahi');
+                    }
+                });
+    };
+
+    $scope.stopPromise = $interval($scope.fetchRepliesQ, 30000);
+
+   $scope.$on('$routeChangeStart', function(){
+        $interval.cancel($scope.stopPromise);
+   });
+
+});
 
 
 app.controller('errorController', function($scope){

@@ -10,6 +10,8 @@ var debateSchema = new mongoose.Schema({
 	createdBy	: String,
 	debate 		: String,
 	slug		: String,
+	description	: String,
+	collectionID : String,
 	createdOn	: Date
 });
 
@@ -29,7 +31,7 @@ var replySchema = new mongoose.Schema({
 	name : String,
 	comment : String,
 	imgUrl : String,
-	creatdOn : Date
+	createdOn : Date
 });
 
 var commentSchema = new mongoose.Schema({

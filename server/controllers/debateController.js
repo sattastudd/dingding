@@ -10,13 +10,17 @@ module.exports.createDebate = function(req, res){
 	var slugReal = null;
 
 	if(req.body.debate === "Y"){
-		var slugValue = req.body.question.replace(/ /g, '_');
-			slugReal =  (slugValue + '_options_' + req.body.yBtnValue + '_' + req.body.nBtnValue).toLowerCase();
+			var slugValue 	=  (req.body.question + '-options-' + req.body.yBtnValue + '-' + req.body.nBtnValue).toLowerCase();
+				slugReal 	=  slugValue.replace(/[\s+,.<>'!@#$]/g, '-');
 	}else{
-		slugReal = req.body.question.replace(/ /g, '_').toLowerCase();
+		slugReal = req.body.question.replace(/[\s+,.<>'!@#$]/g, '-').toLowerCase();
 	}
 
-	debateCreate.find({'slug' : slugReal}, function (err, doc) {
+	var collectionIDSorted = req.body.question.replace(/[\s+,.<>'!@#$]/g, '-').toLowerCase();
+
+	var collectionID = collectionIDSorted.substring(0,112);
+
+	debateCreate.find({'collectionID' : collectionID}, function (err, doc) {
 
         if (doc.length !== 0) {
         	res.json(doc);
@@ -30,6 +34,8 @@ module.exports.createDebate = function(req, res){
 				nBtnValue	: req.body.nBtnValue,
 				debate 		: req.body.debate,
 				slug		: slugReal,
+				description	: req.body.description,
+				collectionID : collectionID,
 				createdOn	: new Date()
 			}
 
@@ -63,12 +69,14 @@ module.exports.getDebate = function(req, res){
 
 module.exports.debateComment = function(req, res){
 
-	var collectionName = req.body.id;
+	var collectionLength = req.body.id;
+
+	var collectionName = collectionLength.substring(0, 112);
 
 	var debate = debateHandler.getDebateModel();
 
 	//if(collectionName.length === 24){
-		debate.find({'slug' : collectionName}, function (err, doc) {
+		debate.find({'collectionID' : collectionName}, function (err, doc) {
 
 	        if(doc.length !== 0){
 	        	var comment = debateHandler.getCommentModel(collectionName);
@@ -100,13 +108,13 @@ module.exports.debateComment = function(req, res){
 
 module.exports.debateComments = function(req, res){
 
-	var collectionName = req.params.id;
+	var collectionLength = req.params.id;
+
+	var collectionName = collectionLength.substring(0, 112);
 
 	var debate = debateHandler.getDebateModel();
 
-
-	//if(collectionName.length === 24){
-		debate.find({'slug' : collectionName}, function (err, doc) {
+		debate.find({'collectionID' : collectionName}, function (err, doc) {
 
 			if(doc.length !== 0){
 
@@ -114,7 +122,13 @@ module.exports.debateComments = function(req, res){
 
 				comments.find({}, function (err, result) {
 
-				    if (result.length === 0) {
+					console.log(result); 
+					console.log('collectionName>>>>'+collectionName);
+
+					if (result.length !== 0) {
+						res.json(result);
+
+					}else {
 				        var firstComment = {
 							name		: 'IndiaRoasts@offcial',
 							comment 	: 'Share with your friends to get more and more answers',
@@ -133,14 +147,8 @@ module.exports.debateComments = function(req, res){
 							    arrOfVals.push( arrOfObjs );
 							
 							res.json(arrOfVals);
+							console.log(arrOfVals);
 						})
-					};
-					if (result.length !== 0) {
-						res.json(result);
-
-						/*for (var i = result.length - 1; i >= 0; i--) {
-							var realComment = result[i].comment.replace(/<br>/g, '\r?\n');
-						};*/
 					};
 				});
 			}else{
@@ -154,7 +162,9 @@ module.exports.debateComments = function(req, res){
 
 module.exports.getNewQcomments = function (req, res){
 
-	var collectionName = req.body.id;
+	var collectionLength = req.body.id;
+
+	var collectionName = collectionLength.substring(0, 112);
 
 	var newComments = debateHandler.getCommentModel(collectionName);
 
@@ -203,35 +213,11 @@ module.exports.vote = function(req, res){
 };
 
 
-module.exports.debateReplies = function(req, res){
-
-	var collectionName = req.params.debateID;
-
-	var commentName = req.body.id;
-
-	var debate = debateHandler.getCommentModel(collectionName);
-
-	debate.update(
-					{"_id"		: commentName},
-					{ "$push":	{"replies": {	
-										name 		: req.body.name,
-										comment 	: req.body.comment,
-										imgUrl		: '../images/user.jpg',
-										createdOn	: new Date()
-									}
-								}
-					},
-					function(err, result) {
-						res.json(result);
-						console.log(result);
-				   }
-	);
-};
-
-
 module.exports.editQcomment = function(req, res){
 
-	var collectionName = req.params.debateID;
+	var collectionLength = req.params.debateID;
+
+	var collectionName = collectionLength.substring(0, 112);
 
 	var commentName = req.body.id;
 
@@ -247,8 +233,6 @@ module.exports.editQcomment = function(req, res){
 
 module.exports.editQuestion = function(req, res){
 
-	var collectionName = req.params.debateID;
-
 	var debateName = req.body.id;
 
 	var debateTitle = debateHandler.getDebateModel();
@@ -259,13 +243,81 @@ module.exports.editQuestion = function(req, res){
 		res.json(result);
 		console.log(result);
 	})
+};
 
 
-	//var debate = debateHandler.getCommentModel(collectionName);
 
-	/*debate.update({'_id': commentName},{'comment':req.body.comment}, function(err, result){
-						
-						res.json(result);
-						console.log(result);
-					});*/
+module.exports.debateReplies = function(req, res){
+
+	var combinedID = req.params.debateID;
+
+	var commentID = combinedID.substr(combinedID.length - 24);
+
+	var collectionLength 	= combinedID.length - commentID.length;
+
+	var collectionName 		= combinedID.substring(0,collectionLength);
+
+	console.log(collectionName);
+
+	var debate = debateHandler.getCommentModel(collectionName);
+
+	if (req.body.id === 'replyPage'){
+
+		console.log(commentID);
+
+		debate.update(
+						{"_id"		: commentID},
+						{ "$push":	{"replies": {	
+											name 		: req.body.name,
+											comment 	: req.body.comment,
+											imgUrl		: '../images/user.jpg',
+											createdOn	: new Date()
+										}
+									}
+						},
+						function(err, result) {
+							res.json(result);
+							console.log(result);
+					   }
+		);
+	}else{
+
+		var commentName = req.body.id;
+		debate.update(
+						{"_id"		: commentName},
+						{ "$push":	{"replies": {	
+											name 		: req.body.name,
+											comment 	: req.body.comment,
+											imgUrl		: '../images/user.jpg',
+											createdOn	: new Date()
+										}
+									}
+						},
+						function(err, result) {
+							res.json(result);
+							console.log(result);
+					   }
+		);
+		
+	}
+};
+
+
+
+
+module.exports.getReplies = function(req, res){
+
+	var combinedID 			= req.params.id;
+
+	var commentID 			= combinedID.substr(combinedID.length - 24);
+
+	var collectionLength 	= combinedID.length - commentID.length;
+
+	var collectionName 		= combinedID.substring(0,collectionLength);
+	
+	var replies = debateHandler.getCommentModel(collectionName);
+	
+	replies.find({'_id':commentID}, function (err, result) {
+        res.json(result);
+	});
 };
