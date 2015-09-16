@@ -385,6 +385,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
                     if(data === '"failure"'){
                         window.alert('Bakchodi Nahi');
                     }else{
+                        window.scrollTo(0,0);
                         $location.path('/replies/' + $routeParams.id + $scope.repliesQ.id);
                     }
 
@@ -419,6 +420,8 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
     $scope.appriValue = 'Appreciate';
     $scope.hideTextArea = function () {
         $scope.postBlockActive = false;
+        $scope.rComment.comment = null;
+        $scope.postR = false;
     }
     $scope.showTextArea = function () {
         $scope.postBlockActive = true;
@@ -437,6 +440,40 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
     $scope.textFocus = function () {
         $scope.postBlkActv = true;
     };
+
+    $scope.replyR = function(value){
+        $scope.postBlockActive = true;
+        $scope.postR = true;
+        $scope.repliesR = {};
+        $scope.repliesR.id = value._id;
+        $scope.repliesR.name = 'Anonymous';
+    }
+
+
+    $scope.editBox = false;
+    $scope.roastObj = {};
+
+    $scope.editRComment = function(value){
+        $scope.editBox = true;
+        $scope.showTextArea();
+        $scope.rComment.comment = value.comment;
+        console.log(value);
+        $scope.roastObj.id = value._id;
+    };
+
+    $scope.btnDisable = false;
+    $scope.updateRcomment = function(){
+        $scope.btnDisable = true;
+        $scope.roastObj.comment = $scope.rComment.comment;
+        var commentID = '/editRComment/' + $routeParams.id;
+        $http.post(commentID, $scope.roastObj).success(function(data){
+            $scope.hideTextArea();
+            $scope.fetchRComments();
+            $scope.btnDisable = false;
+        }).error(function(data){
+
+        })
+    }
 
     var commentID = '/roastComments/' + $routeParams.id;
 
@@ -501,6 +538,7 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
        };
     });
 
+    $scope.postR === false;
 
     var valid = null;
 
@@ -513,22 +551,41 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
         if (valid === true){
 
             $scope.btnDisable = true;
-            $http.post('/roastComment', $scope.rComment).success(function(data){
+            if ($scope.postR === false){
+                $http.post('/roastComment', $scope.rComment).success(function(data){
 
-                if(data === '"failure"'){
-                    window.alert('Bakchodi Nahi');
-                }else{
-                    newCommentsR();
-                    $scope.hideTextArea();
-                    $scope.rComment.comment = null;
-                    $scope.btnDisable = false;
-                };
+                    if(data === '"failure"'){
+                        window.alert('Bakchodi Nahi');
+                    }else{
+                        newCommentsR();
+                        $scope.hideTextArea();
+                        $scope.rComment.comment = null;
+                        $scope.btnDisable = false;
+                    };
 
-            }).error(function(data){
-                if(data === '"failure"'){
-                    window.alert('Bakchodi Nahi');
-                }
-            });
+                }).error(function(data){
+                    if(data === '"failure"'){
+                        window.alert('Bakchodi Nahi');
+                    }
+                });
+            }else{
+                    $scope.repliesR.comment = $scope.rComment.comment;
+                    var debateID = '/roastReply/' + $routeParams.id;
+                    $http.post(debateID, $scope.repliesR).success(function(data){
+                        
+                        if(data === '"failure"'){
+                            window.alert('Bakchodi Nahi');
+                        }else{
+                            window.scrollTo(0,0);
+                            $location.path('/replies/' + $routeParams.id + $scope.repliesR.id);
+                        }
+
+                    }).error(function(data){
+                        if(data === '"failure"'){ 
+                            window.alert('Bakchodi Nahi');
+                        }
+                    });
+            }
         };
     };
 

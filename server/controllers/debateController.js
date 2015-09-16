@@ -251,21 +251,19 @@ module.exports.debateReplies = function(req, res){
 
 	var combinedID = req.params.debateID;
 
-	var commentID = combinedID.substr(combinedID.length - 24);
-
-	var collectionLength 	= combinedID.length - commentID.length;
-
-	if (collectionLength >= 112) {
-		var collectionName 		= combinedID.substring(0,112);
-	}else{
-		var collectionName 		= combinedID.substring(0,collectionLength);
-	}
-
-	var debate = debateHandler.getCommentModel(collectionName);
-
 	if (req.body.id === 'replyPage'){
 
-		console.log(collectionName);
+		var commentID = combinedID.substr(combinedID.length - 24);
+
+		var collectionLength 	= combinedID.length - commentID.length;
+
+		if (collectionLength >= 112) {
+			var collectionName 		= combinedID.substring(0,112);
+		}else{
+			var collectionName 		= combinedID.substring(0,collectionLength);
+		}
+
+		var debate = debateHandler.getCommentModel(collectionName);
 
 		debate.update(
 						{"_id"		: commentID},
@@ -284,9 +282,11 @@ module.exports.debateReplies = function(req, res){
 		);
 	}else{
 
+		var debatePage = debateHandler.getCommentModel(combinedID);
+
 		var commentName = req.body.id;
-		console.log('commentName>>>>>>>>>>>>>>>'+commentName);
-		debate.update(
+
+		debatePage.update(
 						{"_id"		: commentName},
 						{ "$push":	{"replies": {	
 											name 		: req.body.name,
