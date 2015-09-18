@@ -72,7 +72,9 @@ module.exports.roastComment = function(req, res){
 
 	var roast = roastHandler.getRoastModel();
 
-	console.log(req.body);
+	console.log('user details');
+
+	console.log(req.user);
 	
 	//if(collectionName.length === 24){
 		roast.find({'slug' : collectionName}, function (err, doc) {
@@ -85,7 +87,7 @@ module.exports.roastComment = function(req, res){
 				var commentInfo = {
 					name		: req.body.name,
 					comment		: req.body.comment,
-					imgUrl		: '../images/user.jpg',
+					imgUrl		: req.body.imgUrl,
 					createdOn	: new Date()
 				}
 
@@ -263,7 +265,7 @@ module.exports.getReplies = function(req, res){
 		var collectionName 		= combinedID.substring(0,collectionLength);
 	}
 	
-	var replies = debateHandler.getCommentModel(collectionName);
+	var replies = roastHandler.getCommentModel(collectionName);
 	
 	replies.find({'_id':commentID}, function (err, result) {
         res.json(result);

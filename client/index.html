@@ -35,8 +35,8 @@
                             </div>
                             <div class="col-xs-2 col-sm-2">
                                 <div class="userIcon pull-right">
-                                    <span class="glyphicon glyphicon-off" ng-if="loggedIn" style="font-size:24px;padding-top:10px;margin-right:-60px"></span>
-                                    <p class="hand" ng-click="loginModal()" style="font-size:18px;margin-top:10px;margin-right:-50px">Login</p>
+                                    <span class="glyphicon glyphicon-off hand" ng-click="logout()" ng-if="isLoggedin" style="font-size:24px;padding-top:10px;margin-right:-60px"></span>
+                                    <p class="hand" ng-click="loginModal()" ng-hide="isLoggedin" style="font-size:18px;margin-top:10px;margin-right:-50px">Login</p>
                                 </div>
                             </div>
                         </div>
@@ -106,10 +106,10 @@
 	            	<div class="row">
 		            	<div class="col-md-3 col-lg-2 dpBlock hidden-xs hidden-sm"  style="text-align:center" >
 		            		<div>
-		            			<img src="/images/user.jpg" class="profilePic"/>
+		            			<img src="{{imgUserBig}}" class="profilePic"/>
 		            		</div>
 		            		<div>
-		            			<p class="f20"><b>Satish Mishra</b></p>
+		            			<p class="f20"><b>{{userName}}</b></p>
 		            		</div>
 		            		<div class="col-xs-6">
 		            			<p class="f20"><b>12</b></p>

@@ -110,6 +110,32 @@ app.controller('roastIndexController', function($scope,$http,$location){
                 var googleLoginForm = document.forms.googleLogin;
                 googleLoginForm.submit();
             }
+
+
+            // code for getting user profile pic
+
+            $scope.isLoggedin = false;
+
+            $http.get('/memberData').success(function(data){
+                $scope.isLoggedin = true;
+                $scope.userName = data[0].name;
+                $scope.imgUserBig = data[0].imgUrlLg;
+                $scope.imgUserSmall = data[0].imgUrlXs;
+                console.log(data[0].name);
+            }).error(function(data){
+                console.log(data);
+            })
+
+            $scope.logout = function(){
+                $scope.isLoggedin = false;
+                $scope.userName = null;
+                $scope.imgUserBig = null;
+                $scope.imgUserSmall = null;
+            }
+            
+
+
+
     });
 
 
@@ -286,12 +312,6 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.newDataQ = {};
 
     $scope.comment.id = $routeParams.id;
-        if($scope.Qanonymous === "Y"){
-            $scope.comment.name = 'Anonymous';
-        }
-        else{
-             $scope.comment.name = 'User';
-        }
 
     $scope.fetchComments = function(){
         console.log('intervals running');
@@ -421,6 +441,7 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
     $scope.newDataR = {};
     $scope.postBlockActive = false;
     $scope.appreciated = false;
+    $scope.postR = false;
     $scope.appriValue = 'Appreciate';
     $scope.hideTextArea = function () {
         $scope.postBlockActive = false;
@@ -444,6 +465,13 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
     $scope.textFocus = function () {
         $scope.postBlkActv = true;
     };
+
+    $scope.goToRepliesR = function(qna){
+        var replyPath = '/repliesR/' + $scope.roastTitle.slug + qna._id;
+        console.log(replyPath);
+        $location.path(replyPath);
+        window.scrollTo(0,0);
+    }
 
     $scope.replyR = function(value){
         $scope.postBlockActive = true;
@@ -528,7 +556,12 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
 
 
     $scope.rComment = {};
-    $scope.rComment.name = 'Anonymous';
+    console.log($scope.userName);
+    if($scope.userName === null || $scope.userName === '' || angular.isUndefined($scope.userName)){
+        $scope.rComment.name = 'Anonymous';
+    }else{
+        $scope.rComment.name = $scope.userName;
+    }
     $scope.rComment.id = $routeParams.id;
 
     $scope.rCommentChar = 2000;
@@ -542,11 +575,11 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
        };
     });
 
-    $scope.postR === false;
-
     var valid = null;
 
     $scope.postRComment = function(){
+
+        console.log($scope.postR);
     
         if ($scope.rComment.comment === null || $scope.rComment.comment === "" || angular.isUndefined($scope.rComment.comment)) {
                 valid = false
@@ -556,6 +589,9 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
 
             $scope.btnDisable = true;
             if ($scope.postR === false){
+
+                $scope.rComment.imgUrl = $scope.imgUserSmall;
+                console.log('comments clicked');
                 $http.post('/roastComment', $scope.rComment).success(function(data){
 
                     if(data === '"failure"'){
@@ -573,6 +609,7 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
                     }
                 });
             }else{
+                    $scope.repliesR.imgUrl = $scope.imgUserSmall;
                     $scope.repliesR.comment = $scope.rComment.comment;
                     var debateID = '/roastReply/' + $routeParams.id;
                     $http.post(debateID, $scope.repliesR).success(function(data){
@@ -581,7 +618,7 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
                             window.alert('Bakchodi Nahi');
                         }else{
                             window.scrollTo(0,0);
-                            $location.path('/replies/' + $routeParams.id + $scope.repliesR.id);
+                            $location.path('/repliesR/' + $routeParams.id + $scope.repliesR.id);
                         }
 
                     }).error(function(data){
@@ -930,8 +967,7 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
 app.controller('roastCommentController', function($scope,$http,$routeParams,$interval){
 
     console.log('Its in loop');
-    
-    $scope.comment = {};
+
     $scope.repliesR = {};
 
     $scope.postBlockActive = false;
@@ -958,10 +994,6 @@ app.controller('roastCommentController', function($scope,$http,$routeParams,$int
     $scope.textFocus = function () {
         $scope.postBlkActv = true;
     };
-
-    $scope.comment.id = $routeParams.id;
-
-    $scope.fetchRepliesQ();
 
     $scope.fetchRepliesR = function(){
         console.log('intervals running');

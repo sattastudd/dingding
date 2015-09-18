@@ -2,6 +2,8 @@ var trending 		= require('../models/debateModel');
 
 var trendingRoast 	= require('../models/roastModel');
 
+var http 	 		= require('http');
+
 
 module.exports.getDebates = function(req, res){
 	
@@ -9,17 +11,25 @@ module.exports.getDebates = function(req, res){
 	
 	trends.find({}, function (err, result) {
         res.json(result);
-        console.log(result);
+        //console.log(result);
 	});
 };
 
 module.exports.getRoasts = function(req, res){
+
+	/*http.get('http://picasaweb.google.com/data/entry/api/user/113370979064211585630?alt=json', function(resp){
+	  
+	    console.log(resp);
+	  
+	}).on("error", function(e){
+	  console.log("Got error: " + e.message);
+	});*/
 	
 	var trends = trendingRoast.getRoastModel();
 	
 	trends.find({}, function (err, result) {
         res.json(result);
-        console.log(result);
+        //console.log(result);
 	});
 };
 
