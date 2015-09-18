@@ -16,9 +16,9 @@ module.exports.createDebate = function(req, res){
 		slugReal = req.body.question.replace(/[\s+,.<>'!@#$]/g, '-').toLowerCase();
 	}
 
-	var collectionIDSorted = req.body.question.replace(/[\s+,.<>'!@#$]/g, '-').toLowerCase();
+	//var collectionIDSorted = req.body.question.replace(/[\s+,.<>'!@#$]/g, '-').toLowerCase();
 
-	var collectionID = collectionIDSorted.substring(0,112);
+	var collectionID = slugReal.substring(0,112);
 
 	debateCreate.find({'collectionID' : collectionID}, function (err, doc) {
 
@@ -39,7 +39,7 @@ module.exports.createDebate = function(req, res){
 				createdOn	: new Date()
 			}
 
-			console.log(debateInfo);
+			//console.log(debateInfo);
 
 			var newDebate = new debateCreate(debateInfo);
 	
@@ -82,7 +82,7 @@ module.exports.debateComment = function(req, res){
 	        	var comment = debateHandler.getCommentModel(collectionName);
 
 	        	var sortedComment = req.body.comment.replace(/\r?\n/g, '<br>');
-	        	console.log(sortedComment);
+	        	//console.log(sortedComment);
 
 				var commentInfo = {
 					name		: req.body.name,
@@ -122,8 +122,8 @@ module.exports.debateComments = function(req, res){
 
 				comments.find({}, function (err, result) {
 
-					console.log(result); 
-					console.log('collectionName>>>>'+collectionName);
+					//console.log(result); 
+					//console.log('collectionName>>>>'+collectionName);
 
 					if (result.length !== 0) {
 						res.json(result);
@@ -147,7 +147,7 @@ module.exports.debateComments = function(req, res){
 							    arrOfVals.push( arrOfObjs );
 							
 							res.json(arrOfVals);
-							console.log(arrOfVals);
+							//console.log(arrOfVals);
 						})
 					};
 				});
@@ -237,17 +237,17 @@ module.exports.editQuestion = function(req, res){
 
 	var debateTitle = debateHandler.getDebateModel();
 
-	console.log(req.body.question);
+	//console.log(req.body.question);
 
 	debateTitle.update({'_id':debateName},{'question':req.body.question}, function(err, result){
 		res.json(result);
-		console.log(result);
+		//console.log(result);
 	})
 };
 
 
 
-module.exports.debateReplies = function(req, res){
+module.exports.debateReply = function(req, res){
 
 	var combinedID = req.params.debateID;
 
@@ -277,12 +277,14 @@ module.exports.debateReplies = function(req, res){
 						},
 						function(err, result) {
 							res.json(result);
-							console.log(result);
+							//console.log(result);
 					   }
 		);
 	}else{
 
-		var debatePage = debateHandler.getCommentModel(combinedID);
+		var collectionName = combinedID.substring(0, 112);
+
+		var debatePage = debateHandler.getCommentModel(collectionName);
 
 		var commentName = req.body.id;
 
@@ -298,7 +300,7 @@ module.exports.debateReplies = function(req, res){
 						},
 						function(err, result) {
 							res.json(result);
-							console.log(result);
+							//console.log(result);
 					   }
 		);
 		
@@ -326,6 +328,6 @@ module.exports.getReplies = function(req, res){
 	
 	replies.find({'_id':commentID}, function (err, result) {
         res.json(result);
-        console.log(result);
+        //console.log(result);
 	});
 };

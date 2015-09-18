@@ -42,6 +42,9 @@ module.exports = function( app, passport, express ) {
 	app.get('/replies/:id', function(req, res){
 		res.sendFile(__dirname + '/client/index.html');
 	});
+	app.get('/repliesR/:id', function(req, res){
+		res.sendFile(__dirname + '/client/index.html');
+	});
 	app.get('/404', function(req, res){
 		res.sendFile(__dirname + '/client/index.html');
 	});
@@ -100,15 +103,21 @@ module.exports = function( app, passport, express ) {
 
 	app.get('/debateReplies/:id', debateController.getReplies);
 
+	app.get('/roastReplies/:id', roastController.getReplies);
+
 	app.post('/newRcomments', roastController.getNewRcomments);
 
 	app.post('/newQcomments', debateController.getNewQcomments);
 
 	app.post('/editQcomment/:debateID', debateController.editQcomment);
 
+	app.post('/editRcomment/:debateID', roastController.editRcomment);
+
 	app.post('/editQuestion/:debateID', debateController.editQuestion);
 
-	app.post('/debateReply/:debateID', debateController.debateReplies);
+	app.post('/debateReply/:debateID', debateController.debateReply);
+
+	app.post('/roastReply/:debateID', roastController.roastReply);
 
 	app.post('/upload', function(req, res) {
 	    var image =  req.files.image;

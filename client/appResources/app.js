@@ -34,6 +34,10 @@ app.config(function($routeProvider,$locationProvider) {
                 templateUrl : '../views/replyComments.html',
                 controller  : 'replyCommentController'
             })
+            .when('/repliesR/:id', {
+                templateUrl : '../views/replyCommentsR.html',
+                controller  : 'roastCommentController'
+            })
             .when('/404', {
                 templateUrl : 'views/404.html',
                 controller  : 'errorController'
@@ -287,7 +291,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         }
         else{
              $scope.comment.name = 'User';
-    }
+        }
 
     $scope.fetchComments = function(){
         console.log('intervals running');
@@ -838,7 +842,6 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
     console.log('Its in loop');
     
     $scope.comment = {};
-    $scope.newDataQ = {};
     $scope.repliesQ = {};
 
     $scope.postBlockActive = false;
@@ -867,12 +870,6 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
     };
 
     $scope.comment.id = $routeParams.id;
-        if($scope.Qanonymous === "Y"){
-            $scope.comment.name = 'Anonymous';
-        }
-        else{
-             $scope.comment.name = 'User';
-        }
 
     console.log('Its in loop');
 
@@ -885,11 +882,11 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
                 $scope.replyContent = data;
                 $scope.repliesGot = data[0].replies;
                 console.log(data);
-                if (data.length === 1){
+                /*if (data.length === 1){
                     $scope.newDataQ.oldDate = data[0].createdOn;
                 }else if (data.length > 1){
                     $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
-                }
+                }*/
             }).error(function(data){
 
             });
@@ -900,7 +897,7 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
     $scope.repliesQ.name = 'Anonymous';
     $scope.btnDisable = false;
 
-    $scope.postReply = function(){
+    $scope.postReplyQ = function(){
                 $scope.btnDisable = true;
                 $scope.repliesQ.id = 'replyPage';
                 var debateID = '/debateReply/' + $routeParams.id;
@@ -923,7 +920,97 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
 
     $scope.stopPromise = $interval($scope.fetchRepliesQ, 30000);
 
-   $scope.$on('$routeChangeStart', function(){
+    $scope.$on('$routeChangeStart', function(){
+        $interval.cancel($scope.stopPromise);
+   });
+
+});
+
+
+app.controller('roastCommentController', function($scope,$http,$routeParams,$interval){
+
+    console.log('Its in loop');
+    
+    $scope.comment = {};
+    $scope.repliesR = {};
+
+    $scope.postBlockActive = false;
+    $scope.appreciated = false;
+    $scope.appriValue = 'Appreciate';
+    $scope.hideTextArea = function () {
+        $scope.postBlockActive = false;
+        $scope.repliesR.comment = null;
+    }
+    $scope.showTextArea = function () {
+        $scope.postBlockActive = true;
+        console.log('show is working');
+    }
+    $scope.appreciate = function (roast) {
+        $scope.appreciated = true;
+        $scope.appriValue = 'Appreciated';
+        console.log(roast.name);
+    }
+    $scope.anonyClicked = function (value) {
+        console.log(value);
+    }
+
+    $scope.postBlockActive = false;
+    $scope.textFocus = function () {
+        $scope.postBlkActv = true;
+    };
+
+    $scope.comment.id = $routeParams.id;
+
+    $scope.fetchRepliesQ();
+
+    $scope.fetchRepliesR = function(){
+        console.log('intervals running');
+
+        var replyID = '/roastReplies/' + $routeParams.id;
+
+            $http.get(replyID).success(function(data){
+                $scope.replyContent = data;
+                $scope.repliesGot = data[0].replies;
+                console.log(data);
+                /*if (data.length === 1){
+                    $scope.newDataQ.oldDate = data[0].createdOn;
+                }else if (data.length > 1){
+                    $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
+                }*/
+            }).error(function(data){
+
+            });
+    };
+
+    $scope.fetchRepliesR();
+
+    $scope.repliesR.name = 'Anonymous';
+    $scope.btnDisable = false;
+
+    $scope.postReplyR = function(){
+                $scope.btnDisable = true;
+                $scope.repliesR.id = 'replyPage';
+                var debateID = '/roastReply/' + $routeParams.id;
+                $http.post(debateID, $scope.repliesR).success(function(data){
+                    
+                    if(data === '"failure"'){
+                        window.alert('Bakchodi Nahi');
+                    }else{
+                        $scope.btnDisable = false;
+                        $scope.hideTextArea();
+                        $scope.fetchRepliesR();
+                    }
+
+                }).error(function(data){
+                    if(data === '"failure"'){ 
+                        window.alert('Bakchodi Nahi');
+                    }
+                });
+    };
+
+    $scope.stopPromise = $interval($scope.fetchRepliesQ, 30000);
+
+    $scope.$on('$routeChangeStart', function(){
         $interval.cancel($scope.stopPromise);
    });
 

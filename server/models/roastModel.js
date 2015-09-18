@@ -24,11 +24,19 @@ exports.getRoastModel = getRoastModel;
 
 // comments for roast
 
+var replySchema = new mongoose.Schema({
+	name : String,
+	comment : String,
+	imgUrl : String,
+	createdOn : Date
+});
+
 var commentSchema = new mongoose.Schema({
 	name		: String,
 	comment 	: String,
 	imgUrl		: String,
-	createdOn	: Date
+	createdOn	: Date,
+	replies		: [replySchema]
 });
 
 var getCommentModel = function(collectionName){

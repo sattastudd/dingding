@@ -171,3 +171,102 @@ module.exports.getNewRcomments = function(req, res){
 		res.json(result);
 	});
 }
+
+
+module.exports.editRcomment = function(req, res){
+
+	var collectionName = req.params.debateID;
+
+	var commentName = req.body.id;
+
+	var debate = roastHandler.getCommentModel(collectionName);
+
+	debate.update({'_id': commentName},{'comment':req.body.comment}, function(err, result){
+						
+						res.json(result);
+					});
+};
+
+
+
+module.exports.roastReply = function(req, res){
+
+	var combinedID = req.params.debateID;
+
+	console.log(collectionName);
+
+	if (req.body.id === 'replyPage'){
+
+		var commentID = combinedID.substr(combinedID.length - 24);
+
+		var collectionLength 	= combinedID.length - commentID.length;
+
+		var collectionName 		= combinedID.substring(0,collectionLength);
+
+		var roast = roastHandler.getCommentModel(collectionName);
+
+		roast.update(
+						{"_id"		: commentID},
+						{ "$push":	{"replies": {	
+											name 		: req.body.name,
+											comment 	: req.body.comment,
+											imgUrl		: '../images/user.jpg',
+											createdOn	: new Date()
+										}
+									}
+						},
+						function(err, result) {
+							res.json(result);
+							console.log(result);
+					   }
+		);
+	}else{
+
+		var roast = roastHandler.getCommentModel(combinedID);
+
+		var commentName = req.body.id;
+
+		console.log('collectionName$$$$$$$$$'+combinedID);
+
+		roast.update(
+						{"_id"		: commentName},
+						{ "$push":	{"replies": {	
+											name 		: req.body.name,
+											comment 	: req.body.comment,
+											imgUrl		: '../images/user.jpg',
+											createdOn	: new Date()
+										}
+									}
+						},
+						function(err, result) {
+							res.json(result);
+							console.log(result);
+					   }
+		);
+		
+	}
+};
+
+
+
+module.exports.getReplies = function(req, res){
+
+	var combinedID 			= req.params.id;
+
+	var commentID 			= combinedID.substr(combinedID.length - 24);
+
+	var collectionLength 	= combinedID.length - commentID.length;
+
+	if (collectionLength >= 112) {
+		var collectionName 		= combinedID.substring(0,112);
+	}else{
+		var collectionName 		= combinedID.substring(0,collectionLength);
+	}
+	
+	var replies = debateHandler.getCommentModel(collectionName);
+	
+	replies.find({'_id':commentID}, function (err, result) {
+        res.json(result);
+        //console.log(result);
+	});
+};
