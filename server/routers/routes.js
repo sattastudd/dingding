@@ -6,7 +6,7 @@ var roastController     = require('../../server/controllers/roastController'),
 
 module.exports = function( app, passport, express ) {
 
-    // route middleware to make sure a user is logged in
+     // route middleware to make sure a user is logged in
     function isLoggedIn(req, res, next) {
 
         // if user is authenticated in the session, carry on
@@ -17,7 +17,6 @@ module.exports = function( app, passport, express ) {
         req.user = null;
         return next();
     }
-
 	
 
 	app.get('/', function(req, res){
