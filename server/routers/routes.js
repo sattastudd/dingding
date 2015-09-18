@@ -14,7 +14,8 @@ module.exports = function( app, passport, express ) {
             return next();
 
         // if they aren't redirect them to the home page
-        res.redirect('/');
+        req.user = null;
+        return next();
     }
 
 	
