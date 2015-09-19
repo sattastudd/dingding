@@ -21,35 +21,40 @@ module.exports.createDebate = function(req, res){
 	var collectionID = slugReal.substring(0,112);
 
 	debateCreate.find({'collectionID' : collectionID}, function (err, doc) {
+		var query = req.user;
 
-        if (doc.length !== 0) {
-        	res.json(doc);
+		if ( typeof query !== 'undefined' && query ) {
 
-        }else{
-        	var debateInfo = {
-				question	: req.body.question,
-				yes			: req.body.yes,
-				no			: req.body.no,
-				yBtnValue	: req.body.yBtnValue,
-				nBtnValue	: req.body.nBtnValue,
-				debate 		: req.body.debate,
-				slug		: slugReal,
-				description	: req.body.description,
-				collectionID : collectionID,
-				email		: req.body.email,
-				createdOn	: new Date()
-			}
+	        if (doc.length !== 0) {
+	        	res.json(doc);
 
-			//console.log(debateInfo);
+	        }else{
+	        	var debateInfo = {
+					question	: req.body.question,
+					yes			: req.body.yes,
+					no			: req.body.no,
+					yBtnValue	: req.body.yBtnValue,
+					nBtnValue	: req.body.nBtnValue,
+					debate 		: req.body.debate,
+					slug		: slugReal,
+					description	: req.body.description,
+					collectionID : collectionID,
+					email		: req.user.google.email,
+					views		: 1,
+					createdOn	: new Date()
+				}
 
-			var newDebate = new debateCreate(debateInfo);
-	
-			newDebate.save(function(err, result){
-				if (!err) {
-					res.json(result);
-				};
-			});
-        };
+				//console.log(debateInfo);
+
+				var newDebate = new debateCreate(debateInfo);
+		
+				newDebate.save(function(err, result){
+					if (!err) {
+						res.json(result);
+					};
+				});
+	        };
+	    };
 	});
 	
 };
@@ -60,10 +65,18 @@ module.exports.getDebate = function(req, res){
 	var debate = debateHandler.getDebateModel();
 
 	var id = req.params.id;
+
+	debate.update(
+					   { "slug": id },
+					   { "$inc": { "views": 1 } },
+					   function(err, result) {
+						   
+					   }
+				);
 	
 	debate.find({'slug' : id}, function (err, doc) {
         res.json(doc);
-	});
+    });
 };
 
 
@@ -144,6 +157,7 @@ module.exports.debateComments = function(req, res){
 							name		: 'IndiaRoasts@offcial',
 							comment 	: 'Share with your friends to get more and more answers',
 							imgUrl		: '../images/logo.jpg',
+							email		: 'roast@indiaroasts.com',
 							createdOn	: new Date()
 						}
 

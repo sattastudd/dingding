@@ -13,6 +13,7 @@ var debateSchema = new mongoose.Schema({
 	description	: String,
 	collectionID : String,
 	email		: String,
+	views		: Number,
 	createdOn	: Date
 });
 

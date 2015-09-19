@@ -9,6 +9,7 @@ var roastSchema = new mongoose.Schema({
 	image		: String,
 	createdOn	: Date,
 	slug		: String,
+	views		: Number,
 	createdBy	: String
 });
 

@@ -14,6 +14,7 @@ module.exports.createRoast = function(req, res){
 						name		: req.body.name,
 						quote 		: req.body.quote,
 						slug		: slugReal + docLength,
+						views		: 1,
 						createdOn	: new Date()
 					}
 			var newRoast = new Roast(roastInfoDuplicate);
@@ -27,6 +28,7 @@ module.exports.createRoast = function(req, res){
 				name		: req.body.name,
 				quote 		: req.body.quote,
 				slug		: slugReal,
+				views		: 1,
 				createdOn	: new Date()
 			}
 
@@ -49,6 +51,14 @@ module.exports.getRoast = function(req, res){
 	var roast = roastHandler.getRoastModel(req.params);
 
 	var id = req.params.id;
+
+	roast.update(
+					   { "slug": id },
+					   { "$inc": { "views": 1 } },
+					   function(err, result) {
+						   
+					   }
+				);
 	
 	roast.find({'slug' : id}, function (err, doc) {
         res.json(doc);
@@ -140,6 +150,7 @@ module.exports.roastComments = function(req, res){
 							name		: 'IndiaRoasts@offcial',
 							comment 	: 'We recommend a clean Roast. Naah Fuck it, make it dirty.',
 							imgUrl		: '../images/logo.jpg',
+							email		: 'roast@indiaroasts.com',
 							createdOn	: new Date()
 						}
 

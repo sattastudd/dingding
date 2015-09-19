@@ -210,6 +210,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.commentObj = {};
     $scope.questionObj = {};
     $scope.editQComment = function(value){
+        console.log(value);
         if(value.email === $scope.email){
             $scope.editBox = true;
             $scope.showTextArea();
