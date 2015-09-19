@@ -84,11 +84,22 @@ module.exports.roastComment = function(req, res){
 
 				var comment = roastHandler.getCommentModel(collectionName);
 
-				var commentInfo = {
-					name		: req.body.name,
-					comment		: req.body.comment,
-					imgUrl		: req.body.imgUrl,
-					createdOn	: new Date()
+				if (req.body.anonymous === "Y"){
+					var commentInfo = {
+						name		: 'Anonymous',
+						comment		: req.body.comment,
+						imgUrl		: '../images/user.png',
+						email		: null,
+						createdOn	: new Date()
+					}
+				}else{
+					var commentInfo = {
+						name		: req.body.name,
+						comment		: req.body.comment,
+						imgUrl		: req.body.imgUrl,
+						email		: req.body.email,
+						createdOn	: new Date()
+					}
 				}
 
 				var newComment = new comment(commentInfo);
@@ -207,21 +218,41 @@ module.exports.roastReply = function(req, res){
 
 		var roast = roastHandler.getCommentModel(collectionName);
 
-		roast.update(
-						{"_id"		: commentID},
-						{ "$push":	{"replies": {	
-											name 		: req.body.name,
-											comment 	: req.body.comment,
-											imgUrl		: '../images/user.jpg',
-											createdOn	: new Date()
+		if(req.body.anonymous === 'Y'){
+			roast.update(
+							{"_id"		: commentID},
+							{ "$push":	{"replies": {	
+												name 		: 'Anonymous',
+												comment 	: req.body.comment,
+												imgUrl		: '../images/user.png',
+												email		: null,
+												createdOn	: new Date()
+											}
 										}
-									}
-						},
-						function(err, result) {
-							res.json(result);
-							console.log(result);
-					   }
-		);
+							},
+							function(err, result) {
+								res.json(result);
+								console.log(result);
+						   }
+			);
+		}else{
+			roast.update(
+							{"_id"		: commentID},
+							{ "$push":	{"replies": {	
+												name 		: req.body.name,
+												comment 	: req.body.comment,
+												imgUrl		: req.body.imgUrl,
+												email		: req.body.email,
+												createdOn	: new Date()
+											}
+										}
+							},
+							function(err, result) {
+								res.json(result);
+								console.log(result);
+						   }
+			);
+		}
 	}else{
 
 		var roast = roastHandler.getCommentModel(combinedID);
@@ -230,21 +261,41 @@ module.exports.roastReply = function(req, res){
 
 		console.log('collectionName$$$$$$$$$'+combinedID);
 
-		roast.update(
-						{"_id"		: commentName},
-						{ "$push":	{"replies": {	
-											name 		: req.body.name,
-											comment 	: req.body.comment,
-											imgUrl		: '../images/user.jpg',
-											createdOn	: new Date()
+		if(req.body.anonymous === 'Y'){
+			roast.update(
+							{"_id"		: commentName},
+							{ "$push":	{"replies": {	
+												name 		: 'Anonymous',
+												comment 	: req.body.comment,
+												imgUrl		: '../images/user.png',
+												email		: null,
+												createdOn	: new Date()
+											}
 										}
-									}
-						},
-						function(err, result) {
-							res.json(result);
-							console.log(result);
-					   }
-		);
+							},
+							function(err, result) {
+								res.json(result);
+								console.log(result);
+						   }
+			);
+		}else{
+			roast.update(
+							{"_id"		: commentName},
+							{ "$push":	{"replies": {	
+												name 		: req.body.name,
+												comment 	: req.body.comment,
+												imgUrl		: req.body.imgUrl,
+												email		: req.body.email,
+												createdOn	: new Date()
+											}
+										}
+							},
+							function(err, result) {
+								res.json(result);
+								console.log(result);
+						   }
+			);
+		}
 		
 	}
 };

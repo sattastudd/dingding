@@ -44,7 +44,7 @@
                                             <div>
                                                 <span class="pull-left replyBtn" ng-click="replyR(roast)">Reply</span><span class="pull-left replyBtn" ng-click="goToRepliesR(roast)">Comments</span>
                                                 <span class="pull-left replyBtn" ng-click="editRComment(roast)">Edit</span>
-                                                <div class="appreciateBtn hand pull-right" ng-class="appreciated?'appreciatedBtn':'appreciateBtn'" ng-click="appreciate(roast)">{{appriValue}}</div><span class="appriNo pull-right"><i class="glyphicon glyphicon-thumbs-up"></i>123</span>
+                                                <!-- <div class="appreciateBtn hand pull-right" ng-class="appreciated?'appreciatedBtn':'appreciateBtn'" ng-click="appreciate(roast)">{{appriValue}}</div><span class="appriNo pull-right"><i class="glyphicon glyphicon-thumbs-up"></i>123</span> -->
                                             </div>
                                         </div> 
                                     </div>
@@ -65,7 +65,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-xs-4">
-                                                <input type="checkbox" ng-click="anonyClicked(value)" ng-checked="true" ng-true-value="Y" ng-false-value="N" ng-model="roast.anonymous" ng-disabled="true">Anonymous
+                                                <input type="checkbox" ng-model="rComment.anonymous" ng-checked="anony" ng-true-value="Y" ng-false-value="N" ng-disabled="anony">Anonymous
                                                 <br>
                                             </div>
                                             <div class="col-xs-8">

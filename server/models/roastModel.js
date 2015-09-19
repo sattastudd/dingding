@@ -36,6 +36,7 @@ var commentSchema = new mongoose.Schema({
 	comment 	: String,
 	imgUrl		: String,
 	createdOn	: Date,
+	email		: String,
 	replies		: [replySchema]
 });
 

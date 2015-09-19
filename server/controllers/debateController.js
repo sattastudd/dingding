@@ -36,6 +36,7 @@ module.exports.createDebate = function(req, res){
 				slug		: slugReal,
 				description	: req.body.description,
 				collectionID : collectionID,
+				email		: req.body.email,
 				createdOn	: new Date()
 			}
 
@@ -83,12 +84,22 @@ module.exports.debateComment = function(req, res){
 
 	        	var sortedComment = req.body.comment.replace(/\r?\n/g, '<br>');
 	        	//console.log(sortedComment);
-
-				var commentInfo = {
-					name		: req.body.name,
-					comment 	: req.body.comment,
-					imgUrl		: '../images/user.jpg',
-					createdOn	: new Date()
+	        	if (req.body.anonymous === "Y"){
+					var commentInfo = {
+						name		: 'Anonymous',
+						comment 	: req.body.comment,
+						imgUrl		: '../images/user.png',
+						email		: null,
+						createdOn	: new Date()
+					}
+				}else {
+					var commentInfo = {
+						name		: req.body.name,
+						comment 	: req.body.comment,
+						imgUrl		: req.body.imgUrl,
+						email		: req.body.email,
+						createdOn	: new Date()
+					}
 				}
 
 				var newComment = new comment(commentInfo);
@@ -265,21 +276,39 @@ module.exports.debateReply = function(req, res){
 
 		var debate = debateHandler.getCommentModel(collectionName);
 
-		debate.update(
-						{"_id"		: commentID},
-						{ "$push":	{"replies": {	
-											name 		: req.body.name,
-											comment 	: req.body.comment,
-											imgUrl		: '../images/user.jpg',
-											createdOn	: new Date()
+		if(req.body.anonymous === 'Y'){
+			debate.update(
+							{"_id"		: commentID},
+							{ "$push":	{"replies": {	
+												name 		: 'Anonymous',
+												comment 	: req.body.comment,
+												imgUrl		: '../images/user.png',
+												createdOn	: new Date()
+											}
 										}
-									}
-						},
-						function(err, result) {
-							res.json(result);
-							//console.log(result);
-					   }
-		);
+							},
+							function(err, result) {
+								res.json(result);
+								//console.log(result);
+						   }
+			);
+		}else{
+			debate.update(
+							{"_id"		: commentID},
+							{ "$push":	{"replies": {	
+												name 		: req.body.name,
+												comment 	: req.body.comment,
+												imgUrl		: req.body.imgUrl,
+												createdOn	: new Date()
+											}
+										}
+							},
+							function(err, result) {
+								res.json(result);
+								//console.log(result);
+						   }
+			);
+		}
 	}else{
 
 		var collectionName = combinedID.substring(0, 112);
@@ -288,21 +317,39 @@ module.exports.debateReply = function(req, res){
 
 		var commentName = req.body.id;
 
-		debatePage.update(
-						{"_id"		: commentName},
-						{ "$push":	{"replies": {	
-											name 		: req.body.name,
-											comment 	: req.body.comment,
-											imgUrl		: '../images/user.jpg',
-											createdOn	: new Date()
+		if(req.body.anonymous === 'Y'){
+			debatePage.update(
+							{"_id"		: commentName},
+							{ "$push":	{"replies": {	
+												name 		: 'Anonymous',
+												comment 	: req.body.comment,
+												imgUrl		: '../images/user.png',
+												createdOn	: new Date()
+											}
 										}
-									}
-						},
-						function(err, result) {
-							res.json(result);
-							//console.log(result);
-					   }
-		);
+							},
+							function(err, result) {
+								res.json(result);
+								//console.log(result);
+						   }
+			);
+		}else{
+			debatePage.update(
+							{"_id"		: commentName},
+							{ "$push":	{"replies": {	
+												name 		: req.body.name,
+												comment 	: req.body.comment,
+												imgUrl		: req.body.imgUrl,
+												createdOn	: new Date()
+											}
+										}
+							},
+							function(err, result) {
+								res.json(result);
+								//console.log(result);
+						   }
+			);
+		}
 		
 	}
 };

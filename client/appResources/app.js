@@ -119,6 +119,7 @@ app.controller('roastIndexController', function($scope,$http,$location){
             $http.get('/memberData').success(function(data){
                 $scope.isLoggedin = true;
                 $scope.userName = data[0].name;
+                $scope.email = data[0].email;
                 $scope.imgUserBig = data[0].imgUrlLg;
                 $scope.imgUserSmall = data[0].imgUrlXs;
                 console.log(data[0].name);
@@ -149,29 +150,35 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.appriValue = 'Appreciate';
     $scope.postAreply = false;
     $scope.appri = {};
+    $scope.comment = {};
+    $scope.newDataQ = {};
+    $scope.repliesQ = {};
     $scope.hideTextArea = function () {
         $scope.postBlockActive = false;
         $scope.postAreply = false;
         $scope.comment.comment = null;
         $scope.editBox = false;
         $scope.editBoxQ = false;
+        $scope.comment.anonymous = null;
     }
     $scope.showTextArea = function () {
         $scope.postBlockActive = true;
+        //$scope.comment.anonymous = $scope.comment.anonymous;
+        if($scope.userName === null || $scope.userName === '' || angular.isUndefined($scope.userName)){
+            $scope.anony = true;
+            $scope.comment.anonymous = 'Y';
+            console.log('its working');
+        }else{
+            $scope.comment.name = $scope.userName;
+            $scope.repliesQ.name = $scope.userName;
+            $scope.comment.email = $scope.email;
+            $scope.repliesQ.email = $scope.email;
+            $scope.repliesQ.imgUrl = $scope.imgUserSmall;
+            $scope.comment.imgUrl = $scope.imgUserSmall;
+            $scope.anony = false;
+        }
     }
-    $scope.appreciate = function (qna) {
-        //$scope.appreciated = true;
-        //$scope.appriValue = 'Appreciated';
 
-        $scope.appri.commentID = qna.slug;
-        $scope.appri.qnaID = $routeParams.id;
-
-        $http.post('/appriQnA', $scope.appri).success(function(data){
-            console.log(data);
-        }).error(function(data){
-
-        });
-    }
 
     $scope.goToRepliesQ = function(qna){
         var replyPath = '/replies/' + $scope.questions.slug + qna._id;
@@ -183,7 +190,6 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.replyQ = function(qna){
         $scope.postBlockActive = true;
         $scope.postAreply = true;
-        $scope.repliesQ = {};
         $scope.repliesQ.id = qna._id;
         $scope.repliesQ.name = 'Anonymous';
     }
@@ -193,11 +199,13 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.commentObj = {};
     $scope.questionObj = {};
     $scope.editQComment = function(value){
-        $scope.editBox = true;
-        $scope.showTextArea();
-        $scope.comment.comment = value.comment;
-        console.log(value);
-        $scope.commentObj.id = value._id;
+        if(value.email === $scope.email){
+            $scope.editBox = true;
+            $scope.showTextArea();
+            $scope.comment.comment = value.comment;
+            console.log(value);
+            $scope.commentObj.id = value._id;
+        }
     };
 
     $scope.updateQcomment = function(){
@@ -211,13 +219,15 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         })
     }
 
-    $scope.editQuestion = function(){
-        $scope.editBoxQ = true;
-        $scope.showTextArea();
-        $scope.comment.comment = $scope.questions.question;
-        $scope.questionObj.slug = $scope.questions.slug;
-        $scope.questionObj.id = $scope.questions._id;
-        $scope.questionObj.debate = $scope.questions.debate;
+    $scope.editQuestion = function(value){
+        if(value.email === $scope.email){
+            $scope.editBoxQ = true;
+            $scope.showTextArea();
+            $scope.comment.comment = $scope.questions.question;
+            $scope.questionObj.slug = $scope.questions.slug;
+            $scope.questionObj.id = $scope.questions._id;
+            $scope.questionObj.debate = $scope.questions.debate;
+        }
     };
 
     $scope.updateQuestion = function(){
@@ -308,9 +318,6 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         }
 
 
-    $scope.comment = {};
-    $scope.newDataQ = {};
-
     $scope.comment.id = $routeParams.id;
 
     $scope.fetchComments = function(){
@@ -385,6 +392,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
             
             $scope.btnDisable = true;
             if ($scope.postAreply === false){
+                console.log($scope.comment.anonymous);
                 $http.post('/debateComment', $scope.comment).success(function(data){
 
                     if(data === '"failure"'){
@@ -402,6 +410,8 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
                     }
                 });
             }else{
+                $scope.repliesQ.anonymous = $scope.comment.anonymous;
+                console.log($scope.comment.anonymous);
                 $scope.repliesQ.comment = $scope.comment.comment;
                 var debateID = '/debateReply/' + $routeParams.id;
                 $http.post(debateID, $scope.repliesQ).success(function(data){
@@ -439,6 +449,7 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
 
     $scope.roast = {};
     $scope.newDataR = {};
+    $scope.repliesR = {};
     $scope.postBlockActive = false;
     $scope.appreciated = false;
     $scope.postR = false;
@@ -447,24 +458,33 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
         $scope.postBlockActive = false;
         $scope.rComment.comment = null;
         $scope.postR = false;
+        $scope.rComment.anonymous = null;
     }
     $scope.showTextArea = function () {
         $scope.postBlockActive = true;
-        console.log('show is working');
+        if($scope.userName === null || $scope.userName === '' || angular.isUndefined($scope.userName)){
+            $scope.anony = true;
+            $scope.rComment.anonymous = 'Y';
+            console.log('its working');
+        }else{
+            $scope.rComment.name = $scope.userName;
+            $scope.repliesR.name = $scope.userName;
+            $scope.rComment.email = $scope.email;
+            $scope.repliesR.email = $scope.email;
+            $scope.repliesR.imgUrl = $scope.imgUserSmall;
+            $scope.rComment.imgUrl = $scope.imgUserSmall;
+            $scope.anony = false;
+        }
     }
-    $scope.appreciate = function (roast) {
-        $scope.appreciated = true;
-        $scope.appriValue = 'Appreciated';
-        console.log(roast.name);
-    }
-    $scope.anonyClicked = function (value) {
+    
+    /*$scope.anonyClicked = function (value) {
         console.log(value);
     }
 
     $scope.postBlockActive = false;
     $scope.textFocus = function () {
         $scope.postBlkActv = true;
-    };
+    };*/
 
     $scope.goToRepliesR = function(qna){
         var replyPath = '/repliesR/' + $scope.roastTitle.slug + qna._id;
@@ -476,7 +496,6 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
     $scope.replyR = function(value){
         $scope.postBlockActive = true;
         $scope.postR = true;
-        $scope.repliesR = {};
         $scope.repliesR.id = value._id;
         $scope.repliesR.name = 'Anonymous';
     }
@@ -556,11 +575,14 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
 
 
     $scope.rComment = {};
-    console.log($scope.userName);
+    
     if($scope.userName === null || $scope.userName === '' || angular.isUndefined($scope.userName)){
         $scope.rComment.name = 'Anonymous';
+        $scope.rComment.imgUrl = '../images/user.png';
     }else{
         $scope.rComment.name = $scope.userName;
+        $scope.repliesR.imgUrl = $scope.imgUserSmall;
+        $scope.rComment.imgUrl = $scope.imgUserSmall;
     }
     $scope.rComment.id = $routeParams.id;
 
@@ -590,7 +612,6 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
             $scope.btnDisable = true;
             if ($scope.postR === false){
 
-                $scope.rComment.imgUrl = $scope.imgUserSmall;
                 console.log('comments clicked');
                 $http.post('/roastComment', $scope.rComment).success(function(data){
 
@@ -609,8 +630,8 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
                     }
                 });
             }else{
-                    $scope.repliesR.imgUrl = $scope.imgUserSmall;
                     $scope.repliesR.comment = $scope.rComment.comment;
+                    $scope.repliesR.anonymous = $scope.rComment.anonymous;
                     var debateID = '/roastReply/' + $routeParams.id;
                     $http.post(debateID, $scope.repliesR).success(function(data){
                         
@@ -782,6 +803,7 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
             }else{valid = true};
 
         if (valid === true) {
+            $scope.roast.email = $scope.email;
             $scope.btnDisable = true;
             $scope.waiting = true;
             $http.post('/createRoast', $scope.roast).success(function(data){
@@ -804,6 +826,7 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
         }else{validQ = true};
 
         if(validQ === true){
+            $scope.debate.email = $scope.email;
             $scope.btnDisable = true;
             $scope.waiting = true;
             $http.post('/createDebate', $scope.debate).success(function(data){
@@ -887,24 +910,23 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
     $scope.hideTextArea = function () {
         $scope.postBlockActive = false;
         $scope.repliesQ.comment = null;
+        $scope.repliesQ.anonymous = null;
     }
     $scope.showTextArea = function () {
         $scope.postBlockActive = true;
-        console.log('show is working');
+        if($scope.userName === null || $scope.userName === '' || angular.isUndefined($scope.userName)){
+            $scope.repliesQ.name = 'Anonymous';
+            $scope.anony = true;
+            $scope.repliesQ.anonymous = 'Y';
+            console.log('its working');
+        }else{
+            $scope.repliesQ.name = $scope.userName;
+            $scope.repliesQ.email = $scope.email;
+            $scope.repliesQ.imgUrl = $scope.imgUserSmall;
+            $scope.anony = false;
+        }
     }
-    $scope.appreciate = function (roast) {
-        $scope.appreciated = true;
-        $scope.appriValue = 'Appreciated';
-        console.log(roast.name);
-    }
-    $scope.anonyClicked = function (value) {
-        console.log(value);
-    }
-
-    $scope.postBlockActive = false;
-    $scope.textFocus = function () {
-        $scope.postBlkActv = true;
-    };
+   
 
     $scope.comment.id = $routeParams.id;
 
@@ -976,25 +998,23 @@ app.controller('roastCommentController', function($scope,$http,$routeParams,$int
     $scope.hideTextArea = function () {
         $scope.postBlockActive = false;
         $scope.repliesR.comment = null;
+        $scope.repliesR.anonymous = null;
     }
     $scope.showTextArea = function () {
         $scope.postBlockActive = true;
-        console.log('show is working');
+        if($scope.userName === null || $scope.userName === '' || angular.isUndefined($scope.userName)){
+            $scope.repliesR.name = 'Anonymous';
+            $scope.anony = true;
+            $scope.repliesR.anonymous = 'Y';
+            console.log('its working');
+        }else{
+            $scope.repliesR.name = $scope.userName;
+            $scope.repliesR.email = $scope.email;
+            $scope.repliesR.imgUrl = $scope.imgUserSmall;
+            $scope.anony = false;
+        }
     }
-    $scope.appreciate = function (roast) {
-        $scope.appreciated = true;
-        $scope.appriValue = 'Appreciated';
-        console.log(roast.name);
-    }
-    $scope.anonyClicked = function (value) {
-        console.log(value);
-    }
-
-    $scope.postBlockActive = false;
-    $scope.textFocus = function () {
-        $scope.postBlkActv = true;
-    };
-
+    
     $scope.fetchRepliesR = function(){
         console.log('intervals running');
 
