@@ -117,22 +117,28 @@ app.controller('roastIndexController', function($scope,$http,$location){
             //if($scope.userName === null || $scope.userName === '' || angular.isUndefined($scope.userName)){
                            
             //}
+            $scope.getMemberData = function(){
+                $http.get('/memberData').success(function(data){
+                    console.log(data);
+                    if(data.length === 0){
+                        $scope.getMemberData();
+                    }
+                    else if (data === '"NotLoggedIn"'){
+                        $scope.isLoggedin = false;
+                        $scope.imgUserBig = '/images/user.jpg'; 
+                    }else{
+                        $scope.isLoggedin = true;
+                        $scope.userName = data[0].name;
+                        $scope.email = data[0].email;
+                        $scope.imgUserBig = data[0].imgUrlLg;
+                        $scope.imgUserSmall = data[0].imgUrlXs;
+                    }
+                }).error(function(data){
+                    console.log(data);
+                })
+            }
 
-            $http.get('/memberData').success(function(data){
-                console.log(data);
-                if (data === '"NotLoggedIn"'){
-                    $scope.isLoggedin = false;
-                    $scope.imgUserBig = '/images/user.jpg'; 
-                }else{
-                    $scope.isLoggedin = true;
-                    $scope.userName = data[0].name;
-                    $scope.email = data[0].email;
-                    $scope.imgUserBig = data[0].imgUrlLg;
-                    $scope.imgUserSmall = data[0].imgUrlXs;
-                }
-            }).error(function(data){
-                console.log(data);
-            })
+            $scope.getMemberData();            
 
             $scope.logout = function(){
                 $scope.isLoggedin = false;

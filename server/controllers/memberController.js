@@ -36,7 +36,7 @@ module.exports.getMemberData = function(req, res){
 				        var imageUrlBig = imageUrlSmall.replace('64-c', '100-c');
 				        console.log(imageUrlBig);
 
-				        var memberInfo = {
+				       	var memberInfo = {
 							name			: req.user.google.name,
 							email 			: req.user.google.email,
 							id				: req.user.google.id,
@@ -44,17 +44,20 @@ module.exports.getMemberData = function(req, res){
 							imgUrlXs		: imageUrlSmall
 						}
 
-			        	var newMember = new member(memberInfo);
+						var newMember = new member(memberInfo);
 			        	//console.log(roastInfo);
 
-						newMember.save(function(err, result){
-								result.json(result);
+						newMember.save( memberInfo, function(err, result){
+								res.json(result);
 						});
+
 				    });
 				  
 				}).on("error", function(e){
 				  console.log("Got error: " + e.message);
 				});
+
+				res.json(result);
 
 	        }else{
 	        	res.json(result);
