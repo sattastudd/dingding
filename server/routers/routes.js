@@ -17,37 +17,7 @@ module.exports = function( app, passport, express ) {
         // if they aren't redirect them to the home page
         req.user = null;
         return next();
-    }
-	
-
-	app.get('/', function(req, res){
-		res.sendFile(__dirname + '/client/index.html');
-	});
-
-	app.get('/roast/:id', function(req, res){
-		res.sendFile(__dirname + '/client/index.html');
-	});
-	app.get('/create', function(req, res){
-		res.sendFile(__dirname + '/client/index.html');
-	});
-	app.get('/roastList', function(req, res){
-		res.sendFile(__dirname + '/client/index.html');
-	});
-	app.get('/QandA/:id', function(req, res){
-		res.sendFile(__dirname + '/client/index.html');
-	});
-	app.get('/QandAlist', function(req, res){
-		res.sendFile(__dirname + '/client/index.html');
-	});
-	app.get('/replies/:id', function(req, res){
-		res.sendFile(__dirname + '/client/index.html');
-	});
-	app.get('/repliesR/:id', function(req, res){
-		res.sendFile(__dirname + '/client/index.html');
-	});
-	app.get('/404', function(req, res){
-		res.sendFile(__dirname + '/client/index.html');
-	});
+    }	
 
     app.get('/userInfo', function( req, res ) {
         res.sendFile( __dirname + '/client/index.html' );
