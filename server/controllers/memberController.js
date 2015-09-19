@@ -65,7 +65,7 @@ module.exports.getMemberData = function(req, res){
 
 	}else{
 
-		res.json('no user Logged in');
+		res.json('NotLoggedIn');
 
 	};
 };

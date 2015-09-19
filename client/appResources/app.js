@@ -114,15 +114,22 @@ app.controller('roastIndexController', function($scope,$http,$location){
 
             // code for getting user profile pic
 
-            $scope.isLoggedin = false;
+            //if($scope.userName === null || $scope.userName === '' || angular.isUndefined($scope.userName)){
+                           
+            //}
 
             $http.get('/memberData').success(function(data){
-                $scope.isLoggedin = true;
-                $scope.userName = data[0].name;
-                $scope.email = data[0].email;
-                $scope.imgUserBig = data[0].imgUrlLg;
-                $scope.imgUserSmall = data[0].imgUrlXs;
-                console.log(data[0].name);
+                console.log(data);
+                if (data === '"NotLoggedIn"'){
+                    $scope.isLoggedin = false;
+                    $scope.imgUserBig = '/images/user.jpg'; 
+                }else{
+                    $scope.isLoggedin = true;
+                    $scope.userName = data[0].name;
+                    $scope.email = data[0].email;
+                    $scope.imgUserBig = data[0].imgUrlLg;
+                    $scope.imgUserSmall = data[0].imgUrlXs;
+                }
             }).error(function(data){
                 console.log(data);
             })
@@ -130,11 +137,9 @@ app.controller('roastIndexController', function($scope,$http,$location){
             $scope.logout = function(){
                 $scope.isLoggedin = false;
                 $scope.userName = null;
-                $scope.imgUserBig = null;
+                $scope.imgUserBig = '/images/user.jpg';
                 $scope.imgUserSmall = null;
             }
-            
-
 
 
     });
