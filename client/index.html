@@ -37,7 +37,7 @@
                                 <div class="userIcon pull-right">
                                     <span class="glyphicon glyphicon-off hand" ng-click="logout()" ng-if="isLoggedin" style="font-size:24px;padding-top:10px;margin-right:-60px"></span>
                                     <span class="glyphicon glyphicon-bell hand" ng-click="goToHome()" ng-if="isLoggedin" style="font-size:24px;padding-top:10px;margin-right:-60px"></span>
-                                    <span class="badge hand" ng-click="goToHome()" ng-if="isLoggedin" style="padding-top:3px;font-size:24px;padding-top:10px;margin-right:-60px;margin-left:-7px"></span>
+                                    <span class="badge hand" ng-click="goToHome()" ng-if="isLoggedin" style="padding-top:3px;font-size:24px;padding-top:10px;margin-right:-60px;margin-left:-7px">{{count}}</span>
                                     <p class="hand" ng-click="loginModal()" ng-hide="isLoggedin" style="font-size:18px;margin-top:10px;margin-right:-50px">Login</p>
                                 </div>
                             </div>
