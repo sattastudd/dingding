@@ -145,6 +145,12 @@ app.controller('roastIndexController', function($scope,$http,$location){
                         $scope.imgUserBig = data[0].imgUrlLg;
                         $scope.imgUserSmall = data[0].imgUrlXs;
                         $scope.notifications = data[0].notifications;
+                        $scope.count = 0;
+                            angular.forEach($scope.notifications, function(value, key) {
+                                if(value === 'false'){
+                                    $scope.count  = $scope.count + 1;
+                                }
+                            });
                     } 
                 }).error(function(data){
 
