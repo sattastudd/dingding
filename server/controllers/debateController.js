@@ -211,7 +211,7 @@ module.exports.debateComments = function(req, res){
 
 				var comments = debateHandler.getCommentModel(collectionName);
 
-				comments.find({},{},{ sort: {'createdOn': -1}}, function (err, result) {
+				comments.find({},{'replies': false},{ sort: {'createdOn': -1}}, function (err, result) {
 
 					//console.log(result); 
 					//console.log('collectionName>>>>'+collectionName);
