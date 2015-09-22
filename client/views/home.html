@@ -1,0 +1,21 @@
+<div ng-controller="homeController">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="row">
+		        <div class="col-xs-12 trendingTitle">
+		      		Notifications
+          		</div>
+          	</div>
+			<div class="col-xs-12 trendBlock hand" ng-repeat="notif in notifications | orderBy: '-time'">
+	            <div class="row" ng-click="goToLoc(notif)">
+	                <div class="col-xs-2">
+	                	<img src="{{notif.imgUrl}}" style="width:50px;margin-top:-8px;" />
+	                </div>
+	                <div class="col-xs-10">
+                        <p class="qFont">{{notif.msg}}</p>
+                    </div>
+	            </div>
+	        </div>
+		</div>
+	</div>
+</div>

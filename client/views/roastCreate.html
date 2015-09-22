@@ -52,7 +52,8 @@
                     </div>
                     <div class="col-xs-12" style="margin-bottom:30px;">
                         <p><b>Write Your Question</b></p>
-                        <input type="text" class="form-control" my-maxlength="150" ng-trim="false" ng-model="debate.question1" placeholder="Write your question" />
+                        <input type="text" class="form-control" ng-focus="removeErr()" my-maxlength="150" ng-trim="false" ng-model="debate.question1" placeholder="Write your question" />
+                        <p ng-if="showError1" class="blankErr">Kuch type kar le pahle</p>
                         <p class="pull-right mTop0" style="color:grey;margin-bottom:10px;">{{qChar1}} words left</p>
 
                         <p ng-if="showDesc"><b>Describe your Question (optional)</b></p>
@@ -74,7 +75,8 @@
                     </div>
                     <div class="col-xs-12" style="margin-bottom:30px;">
                         <p><b>Write Your Debatable Question</b></p>
-                        <input type="text" class="form-control" my-maxlength="150" ng-trim="false" ng-model="debate.question2" placeholder="Write your Debatable question" />
+                        <input type="text" class="form-control" ng-focus="removeErr()" my-maxlength="150" ng-trim="false" ng-model="debate.question2" placeholder="Write your Debatable question" />
+                        <p ng-if="showError2" class="blankErr">Kuch type kar le pahle</p>
                         <p class="pull-right mTop0" style="color:grey;margin-bottom:10px;">{{qChar2}} words left</p>
 
                         <p ng-if="showDesc1"><b>Describe your Question (optional)</b></p>

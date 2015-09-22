@@ -70,7 +70,7 @@ module.exports.getRoasts = function(req, res){
 	
 	var roasts = roastHandler.getRoastModel();
 	
-	roasts.find({}, function (err, doc) {
+	roasts.find({},{},{ sort: {'createdOn': -1}}, function (err, doc) {
         res.json(doc);
 	});
 };
@@ -143,7 +143,7 @@ module.exports.roastComments = function(req, res){
 
 				var comments = roastHandler.getCommentModel(collectionName);
 
-				comments.find({}, function (err, result) {
+				comments.find({},{},{ sort: {'createdOn': -1}}, function (err, result) {
 
 			        if (result.length === 0) {
 				        var firstComment = {
@@ -191,7 +191,7 @@ module.exports.getNewRcomments = function(req, res){
 
 	var newComments = roastHandler.getCommentModel(collectionName);
 
-	newComments.find({createdOn: { $gt: req.body.oldDate }}, function (err, result){
+	newComments.find({createdOn: { $gt: req.body.oldDate }},{},{ sort: {'createdOn': 1}}, function (err, result){
 		res.json(result);
 	});
 }

@@ -30,10 +30,11 @@ exports.getDebateModel 	= getDebateModel;
 // for comment in denbates
 
 var replySchema = new mongoose.Schema({
-	name : String,
-	comment : String,
-	imgUrl : String,
-	createdOn : Date
+	name 		: String,
+	comment 	: String,
+	imgUrl 		: String,
+	email		: String,
+	createdOn 	: Date
 });
 
 var commentSchema = new mongoose.Schema({
@@ -42,6 +43,7 @@ var commentSchema = new mongoose.Schema({
 	imgUrl		: String,
 	createdOn	: Date,
 	email		: String,
+	replyCount 	: Number,
 	replies		: [replySchema]
 });
 

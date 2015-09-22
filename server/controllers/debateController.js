@@ -1,5 +1,7 @@
 var debateHandler = require('../models/debateModel');
 
+var memberHandler = require('../models/memberModel');
+
 var mongoose = require( 'mongoose' );
 
 
@@ -40,7 +42,7 @@ module.exports.createDebate = function(req, res){
 					description	: req.body.description,
 					collectionID : collectionID,
 					email		: req.user.google.email,
-					views		: 1,
+					createdBy	: req.user.google.email,
 					createdOn	: new Date()
 				}
 
@@ -73,8 +75,10 @@ module.exports.getDebate = function(req, res){
 						   
 					   }
 				);
+
+	var collectionName = id.substring(0, 112);
 	
-	debate.find({'slug' : id}, function (err, doc) {
+	debate.find({'collectionID' : collectionName}, function (err, doc) {
         res.json(doc);
     });
 };
@@ -87,7 +91,11 @@ module.exports.debateComment = function(req, res){
 
 	var collectionName = collectionLength.substring(0, 112);
 
+	var commentID = null;
+
 	var debate = debateHandler.getDebateModel();
+
+	var member = memberHandler.getMemberModel();
 
 	//if(collectionName.length === 24){
 		debate.find({'collectionID' : collectionName}, function (err, doc) {
@@ -105,6 +113,27 @@ module.exports.debateComment = function(req, res){
 						email		: null,
 						createdOn	: new Date()
 					}
+
+
+
+					var goToLocation 	= '/QandA/' + collectionLength;
+					var message 		= 'Anonymous' + ' has answered to your question - ' + '"' + req.body.question + '"';
+
+					member.update(
+								{"email"		: req.body.qCreator},
+								{ "$push"		: {"notifications": {
+											  		location	: goToLocation,
+													msg			: message,
+													read		: 'false',
+													imgUrl		: '../images/user.png',
+													time 		: new Date()
+												}
+											  }
+								}, function(err, result){
+
+								});
+
+
 				}else {
 					var commentInfo = {
 						name		: req.body.name,
@@ -113,6 +142,42 @@ module.exports.debateComment = function(req, res){
 						email		: req.body.email,
 						createdOn	: new Date()
 					}
+
+					var goToLocation 	= '/QandA/' + collectionLength;
+					var message 		= req.body.name + ' has answered to your question - ' + '"' + req.body.question + '"';
+
+					member.update(
+								{"email"		: req.body.email},
+								{ "$push":	{"comments": {	
+													question 		: req.body.question,
+													comment 		: req.body.comment,
+													collectionID 	: collectionName,
+													commentID		: commentID,
+													createdOn		: new Date()
+												}
+											}
+								},
+								function(err, result) {
+									console.log(result);
+									//console.log(result);
+							   });
+
+					if (req.user.google.email !== req.body.qCreator){
+						member.update(
+									{"email"		: req.body.qCreator},
+									{ "$push"		: {"notifications": {
+												  		location	: goToLocation,
+														msg			: message,
+														read		: 'false',
+														imgUrl		: req.body.imgUrl,
+														time 		: new Date()
+													}
+												  }
+									}, function(err, result){
+
+									});
+					}
+							  
 				}
 
 				var newComment = new comment(commentInfo);
@@ -120,8 +185,10 @@ module.exports.debateComment = function(req, res){
 				newComment.save(function(err, result){
 					if (!err) {
 						res.json(result);
+						commentID = result._id;
 					}
 				})
+
 			}else{
 				res.json('failure');
 			}
@@ -138,13 +205,13 @@ module.exports.debateComments = function(req, res){
 
 	var debate = debateHandler.getDebateModel();
 
-		debate.find({'collectionID' : collectionName}, function (err, doc) {
+		debate.find({'collectionID' : collectionName},{"replies": false}, function (err, doc) {
 
 			if(doc.length !== 0){
 
 				var comments = debateHandler.getCommentModel(collectionName);
 
-				comments.find({}, function (err, result) {
+				comments.find({},{},{ sort: {'createdOn': -1}}, function (err, result) {
 
 					//console.log(result); 
 					//console.log('collectionName>>>>'+collectionName);
@@ -193,7 +260,7 @@ module.exports.getNewQcomments = function (req, res){
 
 	var newComments = debateHandler.getCommentModel(collectionName);
 
-	newComments.find({createdOn: { $gt: req.body.oldDate }}, function (err, result){
+	newComments.find({createdOn: { $gt: req.body.oldDate }},{},{ sort: {'createdOn': -1}}, function (err, result){
 		res.json(result);
 	});
 }
@@ -204,7 +271,7 @@ module.exports.getDebates = function(req, res){
 	
 	var debates = debateHandler.getDebateModel();
 	
-	debates.find({}, function (err, result) {
+	debates.find({},{},{ sort: {'views': 1}}, function (err, result) {
         res.json(result);
 	});
 };
@@ -291,6 +358,7 @@ module.exports.debateReply = function(req, res){
 		var debate = debateHandler.getCommentModel(collectionName);
 
 		if(req.body.anonymous === 'Y'){
+
 			debate.update(
 							{"_id"		: commentID},
 							{ "$push":	{"replies": {	
@@ -299,7 +367,8 @@ module.exports.debateReply = function(req, res){
 												imgUrl		: '../images/user.png',
 												createdOn	: new Date()
 											}
-										}
+										},
+							"$inc": 	{"replyCount": 1}
 							},
 							function(err, result) {
 								res.json(result);
@@ -307,6 +376,7 @@ module.exports.debateReply = function(req, res){
 						   }
 			);
 		}else{
+
 			debate.update(
 							{"_id"		: commentID},
 							{ "$push":	{"replies": {	
@@ -315,14 +385,15 @@ module.exports.debateReply = function(req, res){
 												imgUrl		: req.body.imgUrl,
 												createdOn	: new Date()
 											}
-										}
+										},
+							 "$inc": 	{"replyCount": 1}
 							},
 							function(err, result) {
 								res.json(result);
 								//console.log(result);
 						   }
-			);
-		}
+						);
+			}
 	}else{
 
 		var collectionName = combinedID.substring(0, 112);
@@ -332,6 +403,7 @@ module.exports.debateReply = function(req, res){
 		var commentName = req.body.id;
 
 		if(req.body.anonymous === 'Y'){
+
 			debatePage.update(
 							{"_id"		: commentName},
 							{ "$push":	{"replies": {	
@@ -340,7 +412,8 @@ module.exports.debateReply = function(req, res){
 												imgUrl		: '../images/user.png',
 												createdOn	: new Date()
 											}
-										}
+										},
+							"$inc": 	{"replyCount": 1}
 							},
 							function(err, result) {
 								res.json(result);
@@ -348,6 +421,7 @@ module.exports.debateReply = function(req, res){
 						   }
 			);
 		}else{
+
 			debatePage.update(
 							{"_id"		: commentName},
 							{ "$push":	{"replies": {	
@@ -356,7 +430,8 @@ module.exports.debateReply = function(req, res){
 												imgUrl		: req.body.imgUrl,
 												createdOn	: new Date()
 											}
-										}
+										},
+							"$inc": 	{"replyCount": 1}
 							},
 							function(err, result) {
 								res.json(result);
@@ -366,6 +441,47 @@ module.exports.debateReply = function(req, res){
 		}
 		
 	}
+
+	var member = memberHandler.getMemberModel();
+
+	if(req.body.anonymous === "Y"){
+
+		var goToLocation 	= '/replies/' + combinedID;
+		var message 		= 'Anonymous' + ' has replied to your comment - ' + '"' + req.body.comContent.substring(0,20) + '..."';
+
+						member.update(
+									{"email"		: req.body.comOwner},
+									{ "$push"		: {"notifications": {
+												  		location	: goToLocation,
+														msg			: message,
+														read		: 'false',
+														imgUrl		: '../images/user.png',
+														time 		: new Date()
+													}
+												  }
+									}, function(err, result){
+
+									});
+
+	}else if(req.user.google.email !== req.body.comOwner){
+
+		var goToLocation 	= '/replies/' + combinedID;
+		var message 		= req.body.name + ' has replied to your comment - ' + '"' + req.body.comContent.substring(0,20) + '..."';
+
+						member.update(
+									{"email"		: req.body.comOwner},
+									{ "$push"		: {"notifications": {
+												  		location	: goToLocation,
+														msg			: message,
+														read		: 'false',
+														imgUrl		: req.body.imgUrl,
+														time 		: new Date()
+													}
+												  }
+									}, function(err, result){
+
+									});
+					}
 };
 
 
@@ -388,7 +504,29 @@ module.exports.getReplies = function(req, res){
 	var replies = debateHandler.getCommentModel(collectionName);
 	
 	replies.find({'_id':commentID}, function (err, result) {
-        res.json(result);
-        //console.log(result);
+        console.log(result);
+       /* if (result[0].replies.length === 0) {
+
+						replies.update(
+							{"_id"		: commentID},
+							{ "$push":	{"replies": {	
+												name		: 'IndiaRoasts@offcial',
+												comment 	: 'Share with your friends to get more and more Replies',
+												imgUrl		: '../images/logo.jpg',
+												email		: 'roast@indiaroasts.com',
+												createdOn	: new Date()
+											}
+										}
+							},
+							function(err, reply) {
+
+						   }
+						);*/
+					
+							res.json(result);
+
+        /*}else{
+        	res.json(result);
+        }*/
 	});
 };

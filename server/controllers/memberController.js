@@ -3,7 +3,7 @@ var memberList 		= require('../models/memberModel');
 var http 	 		= require('http');
 
 
-module.exports.getMemberData = function(req, res){
+module.exports.createMember = function(req, res){
 
 	console.log(req.user);
 
@@ -14,6 +14,9 @@ module.exports.getMemberData = function(req, res){
 		var member = memberList.getMemberModel();
 		
 		member.find({'email': req.user.google.email}, function (err, result) {
+
+			console.log('result');
+			console.log(result);
 	        
 	        if (result.length === 0){
 
@@ -21,8 +24,7 @@ module.exports.getMemberData = function(req, res){
 
 	        	http.get(userDataUrl, function(res){
 		  
-				    /*var imageUrlSmall = resp.entry.gphoto$thumbnail.$t;
-		            var imageUrlBig = imageUrlSmall.replace('64-c', '100-c');*/
+				    
 
 		            var body = '';
 
@@ -32,8 +34,9 @@ module.exports.getMemberData = function(req, res){
 
 				    res.on('end', function(){
 				        var jsonData = JSON.parse(body);
-				        var imageUrlSmall = jsonData.entry.gphoto$thumbnail.$t;
+				        var imageUrl = jsonData.entry.gphoto$thumbnail.$t;
 				        var imageUrlBig = imageUrlSmall.replace('64-c', '100-c');
+				        var imageUrlSmall = imageUrlSmall.replace('64-c', '40-c');
 				        console.log(imageUrlBig);
 
 				       	var memberInfo = {
@@ -46,9 +49,8 @@ module.exports.getMemberData = function(req, res){
 
 						var newMember = new member(memberInfo);
 			        	//console.log(roastInfo);
+						newMember.save(function(err, result){
 
-						newMember.save( memberInfo, function(err, result){
-								res.json(result);
 						});
 
 				    });
@@ -56,15 +58,8 @@ module.exports.getMemberData = function(req, res){
 				}).on("error", function(e){
 				  console.log("Got error: " + e.message);
 				});
-
-				res.json(result);
-
-	        }else{
-	        	res.json(result);
-	        }
+			};
 		});
-
-		
 
 	}else{
 
@@ -72,3 +67,21 @@ module.exports.getMemberData = function(req, res){
 
 	};
 };
+
+module.exports.getMemberData = function(req, res){
+
+	var query = req.user;
+
+	if ( typeof query !== 'undefined' && query ) {
+
+			var member = memberList.getMemberModel();
+
+			member.find({'email': req.user.google.email}, function (err, result) {
+					res.json(result);
+			});
+
+	}else{
+		res.json('NotLoggedIn');
+	}
+
+}

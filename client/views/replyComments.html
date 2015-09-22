@@ -10,7 +10,7 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <img class="userIcon" src="{{reply.imgUrl}}" /><b>{{reply.name}}</b>
-                                               <p class="roastTime">{{reply.createdOn}}</p>
+                                               <p class="roastTime">{{reply.createdOn | date:'d MMM h:mm a'}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -30,7 +30,7 @@
                                             <div class="row">
                                                 <div class="col-xs-12">
                                                     <img class="userIcon" src="{{qna.imgUrl}}" /><b>{{qna.name}}</b>
-                                                    <p class="roastTime">{{qna.createdOn | date:'d MMM h:m a'}}</p>
+                                                    <p class="roastTime">{{qna.createdOn | date:'d MMM h:mm a'}}</p>
                                                 </div>
                                             </div>
                                         </div>

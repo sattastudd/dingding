@@ -75,6 +75,8 @@ module.exports = function( app, passport, express ) {
 
 	app.get('/memberData', memberController.getMemberData);
 
+	app.get('/createMember', memberController.createMember);
+
 	app.get('/roastReplies/:id', roastController.getReplies);
 
 	app.post('/newRcomments', roastController.getNewRcomments);

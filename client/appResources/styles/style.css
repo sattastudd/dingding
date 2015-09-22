@@ -425,13 +425,16 @@ textarea.form-control.textAreaActive {
     height: 40px;
     color: white;
 }
-.duplicateErr{
-    font-size: 20px;
-    background-color: #FE9104;
+.blankErr{
+    font-size: 15px;
+    background-color: #EF0000;
     color: #fff;
-    height: 45px;
+    height: 23px;
     text-align: center;
-    padding-top: 6px;
+    margin-top: 6px;
+}
+.redBrdr{
+    border: 1px solid #EF0000;
 }
 
 /* styles for create roast page ends here */
@@ -460,11 +463,11 @@ textarea.form-control.textAreaActive {
     margin-top: 15px;
     margin-bottom: 25px;
     min-height: 45px;
-    padding-top: 10px;
+    padding-top: 9px;
     color: #fff;
     background-color: #42B9B0;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: 15px;
     text-align: center;
 }
 .barGraph{

@@ -38,6 +38,10 @@ app.config(function($routeProvider,$locationProvider) {
                 templateUrl : '../views/replyCommentsR.html',
                 controller  : 'roastCommentController'
             })
+            .when('/home', {
+                templateUrl : 'views/home.html',
+                controller  : 'homeController'
+            })
             .when('/404', {
                 templateUrl : 'views/404.html',
                 controller  : 'errorController'
@@ -101,6 +105,7 @@ app.controller('roastIndexController', function($scope,$http,$location){
             
             $scope.loginModal = function(){
                    $scope.modalOpen = !$scope.modalOpen;
+                   window.scrollTo(0,0);
             }
             $scope.cancelModal = function(){
                 $scope.modalOpen = false;
@@ -117,13 +122,20 @@ app.controller('roastIndexController', function($scope,$http,$location){
             //if($scope.userName === null || $scope.userName === '' || angular.isUndefined($scope.userName)){
                            
             //}
-            $scope.getMemberData = function(){
+
+            $scope.createdMember = false;
+
+            $scope.memberData = function(){
+
                 $http.get('/memberData').success(function(data){
-                    console.log(data);
+
                     if(data.length === 0){
-                        $scope.getMemberData();
-                    }
-                    else if (data === '"NotLoggedIn"'){
+                        if($scope.createdMember === false){
+                            $scope.createMember();
+                            $scope.createdMember = true;
+                        }
+                        $scope.memberData();
+                    }else if (data === '"NotLoggedIn"'){
                         $scope.isLoggedin = false;
                         $scope.imgUserBig = '/images/user.jpg'; 
                     }else{
@@ -132,13 +144,22 @@ app.controller('roastIndexController', function($scope,$http,$location){
                         $scope.email = data[0].email;
                         $scope.imgUserBig = data[0].imgUrlLg;
                         $scope.imgUserSmall = data[0].imgUrlXs;
-                    }
+                        $scope.notifications = data[0].notifications;
+                    } 
+                }).error(function(data){
+
+                });
+            };
+
+             $scope.memberData();
+
+            $scope.createMember = function(){
+                $http.get('/createMember').success(function(data){
+                    console.log(data);
                 }).error(function(data){
                     console.log(data);
                 })
-            }
-
-            $scope.getMemberData();            
+            }            
 
             $scope.logout = function(){
                 $scope.isLoggedin = false;
@@ -203,6 +224,8 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         $scope.postAreply = true;
         $scope.repliesQ.id = qna._id;
         $scope.repliesQ.name = 'Anonymous';
+        $scope.repliesQ.comOwner = qna.email;
+        $scope.repliesQ.comContent = qna.comment; 
     }
 
     $scope.editBox = false;
@@ -276,6 +299,9 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
             console.log(data[0]);
             $scope.questions = data[0];
 
+            $scope.comment.question = $scope.questions.question;
+            $scope.comment.qCreator = $scope.questions.createdBy;
+
             if ($scope.questions.debate === "Y") {
                 $scope.calcVote();
             }
@@ -288,7 +314,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.getQuestion();
 
     $scope.goToCreateQ = function(){
-        window.scrollTo(1000,1000);
+        window.scrollTo(0,0);
         $location.path('/create');
     }
 
@@ -339,11 +365,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
 
             $http.get(commentID).success(function(data){
                 $scope.QandA = data;
-                if (data.length === 1){
-                    $scope.newDataQ.oldDate = data[0].createdOn;
-                }else if (data.length > 1){
-                    $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
-                }
+                $scope.newDataQ.oldDate = data[0].createdOn;
             }).error(function(data){
 
             });
@@ -358,13 +380,11 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         $scope.newDataQ.id = $routeParams.id;
         $http.post('/newQcomments', $scope.newDataQ).success(function(data){
 
-            if (data.length === 1){
+            if(data.length !== 0){
                 $scope.newDataQ.oldDate = data[0].createdOn;
-            }else if (data.length > 1){
-                $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
-            }
-
-             angular.forEach( data, function( item ) {
+            };
+            
+            angular.forEach( data.slice().reverse(), function( item ) {
                 $scope.QandA.push( item )
             });
         }).error(function(data){
@@ -544,12 +564,8 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
         $http.get(commentID).success(function(data){
             
             $scope.roasts = data;
-
-            if (data.length === 1){
-                $scope.newDataR.oldDate = data[0].createdOn;
-            }else if (data.length > 1){
-                $scope.newDataR.oldDate = data[data.length - 1].createdOn;
-            }
+            $scope.newDataR.oldDate = data[0].createdOn;
+            
 
         }).error(function(data){
 
@@ -564,13 +580,9 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
         console.log('new comments');
         $scope.newDataR.id = $routeParams.id;
         $http.post('/newRcomments', $scope.newDataR).success(function(data){
-
-            if (data.length === 1){
+            if(data.length !== 0){
                 $scope.newDataR.oldDate = data[0].createdOn;
-            }else if (data.length > 1){
-                $scope.newDataR.oldDate = data[data.length - 1].createdOn;
             }
-
             angular.forEach( data, function( item ) {
                 $scope.roasts.push( item )
             });
@@ -833,11 +845,6 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
 
     $scope.postQuestion = function(){
 
-         if ($scope.debate.question === null || $scope.debate.question === "" || angular.isUndefined($scope.debate.question)) {
-                validQ = false
-        }else{validQ = true};
-
-        if(validQ === true){
             $scope.debate.email = $scope.email;
             $scope.btnDisable = true;
             $scope.waiting = true;
@@ -854,17 +861,32 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
             }).error(function(data){
                 $scope.waiting = false;
             })
-        };
     };
+
+    $scope.showError1 = false;
+    $scope.showError2 = false;
 
     $scope.postQuestion1 = function(){
         $scope.debate.question = $scope.debate.question1;
-        $scope.postQuestion();
+        if ($scope.debate.question === null || $scope.debate.question === "" || angular.isUndefined($scope.debate.question)) {
+                $scope.showError1 = true;
+        }else{
+            $scope.postQuestion();
+        };
+        
     };
+    $scope.removeErr = function(){
+        $scope.showError1 = false;
+        $scope.showError2 = false;
+    }
     $scope.postQuestion2 = function(){
         $scope.debate.question = $scope.debate.question2;
         $scope.debate.debate = "Y";
-        $scope.postQuestion();
+        if ($scope.debate.question === null || $scope.debate.question === "" || angular.isUndefined($scope.debate.question)) {
+                $scope.showError2 = true;
+        }else{
+            $scope.postQuestion();
+        };
     };
 
 });
@@ -952,6 +974,7 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
             $http.get(replyID).success(function(data){
                 $scope.replyContent = data;
                 $scope.repliesGot = data[0].replies;
+                $scope.repliesQ.comContent = data[0].comment;
                 console.log(data);
                 /*if (data.length === 1){
                     $scope.newDataQ.oldDate = data[0].createdOn;
@@ -972,6 +995,9 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
                 $scope.btnDisable = true;
                 $scope.repliesQ.id = 'replyPage';
                 var debateID = '/debateReply/' + $routeParams.id;
+
+                $scope.repliesQ.comContent = $scope.replyContent.comment;
+
                 $http.post(debateID, $scope.repliesQ).success(function(data){
                     
                     if(data === '"failure"'){
@@ -1077,6 +1103,11 @@ app.controller('roastCommentController', function($scope,$http,$routeParams,$int
     $scope.$on('$routeChangeStart', function(){
         $interval.cancel($scope.stopPromise);
    });
+
+});
+
+
+app.controller('homeController', function($scope){
 
 });
 
