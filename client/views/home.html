@@ -2,17 +2,49 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="row">
-		        <div class="col-xs-12 trendingTitle">
-		      		Notifications
+		        <div class="col-xs-12" style="margin-bottom:10px">
+		        	<div class="row">
+			      		<div class="col-xs-4 marTB25 Bborder hand" ng-class="{'activeBlck':commentsActive}" ng-click="commentsDiv()">
+			      			<p align="center">Answers</p>
+			      		</div>
+			      		<div class="col-xs-4 marTB25 Bborder hand" ng-class="{'activeBlck':notifsActive}" ng-click="notifsDiv()">
+			      			<p align="center">Notifs <span class="badge">{{count}}</span></p>
+			      		</div>
+			      		<div class="col-xs-4 marTB25 Bborder hand" ng-class="{'activeBlck':settingsActive}" ng-click="settingsDiv()">
+			      			<p align="center">Settings</p>
+			      		</div>
+			      	</div>
           		</div>
           	</div>
-			<div class="col-xs-12 trendBlock hand" ng-repeat="notif in notifications | orderBy: '-time'">
+          	<div ng-if="notifsActive"  ng-repeat="notif in notifications | orderBy: '-time'">
+				<div class="col-xs-12 hand" ng-class="{'msgUnread': trendBlock' : {{notif.read}}}" ng-click="goToLoc(notif)">
+		            <div class="row">
+		                <div class="col-xs-2">
+		                	<img src="{{notif.imgUrl}}" style="width:50px;margin-top:-12px;" />
+		                </div>
+		                <div class="col-xs-10">
+	                        <p class="notifTxt">{{notif.msg}}</p>
+	                    </div>
+		            </div>
+		        </div>
+		        <!-- <div class="col-xs-12 hand" ng-if="{{notif.read}}" ng-click="goToLoc(notif)">
+		            <div class="row">
+		                <div class="col-xs-2">
+		                	<img src="{{notif.imgUrl}}" style="width:50px;margin-top:-12px;" />
+		                </div>
+		                <div class="col-xs-10">
+	                        <p class="notifTxt">{{notif.msg}}</p>
+	                    </div>
+		            </div>
+		        </div> -->
+		    </div>
+	        <div ng-if="commentsActive" class="col-xs-12 trendBlock hand" ng-repeat="comment in activity | orderBy: '-time'">
 	            <div class="row" ng-click="goToLoc(notif)">
-	                <div class="col-xs-2">
-	                	<img src="{{notif.imgUrl}}" style="width:50px;margin-top:-12px;" />
-	                </div>
-	                <div class="col-xs-10">
-                        <p style="font-size:18px;margin-top:-16px;">{{notif.msg}}</p>
+	                <div class="col-xs-12">
+                        <p class="qFont"><b>Q</b> {{comment.question}}?</p>
+                    </div>
+                    <div class="col-xs-12">
+                    	<p>{{comment.comment}}</p>
                     </div>
 	            </div>
 	        </div>

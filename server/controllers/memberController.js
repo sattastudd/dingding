@@ -35,8 +35,8 @@ module.exports.createMember = function(req, res){
 				    res.on('end', function(){
 				        var jsonData = JSON.parse(body);
 				        var imageUrl = jsonData.entry.gphoto$thumbnail.$t;
-				        var imageUrlBig = imageUrlSmall.replace('64-c', '100-c');
-				        var imageUrlSmall = imageUrlSmall.replace('64-c', '40-c');
+				        var imageUrlBig = imageUrl.replace('64-c', '100-c');
+				        var imageUrlSmall = imageUrl.replace('64-c', '40-c');
 				        console.log(imageUrlBig);
 
 				       	var memberInfo = {
@@ -77,6 +77,24 @@ module.exports.getMemberData = function(req, res){
 			var member = memberList.getMemberModel();
 
 			member.find({'email': req.user.google.email}, function (err, result) {
+					res.json(result);
+			});
+
+	}else{
+		res.json('NotLoggedIn');
+	}
+
+}
+
+module.exports.notifRead = function(req, res){
+
+	var query = req.user;
+
+	if ( typeof query !== 'undefined' && query ) {
+
+			var member = memberList.getMemberModel();
+
+			member.update({'notifications._id': req.body._id},{'$set': {'notifications.$.read': true}}, function (err, result) {
 					res.json(result);
 			});
 

@@ -56,6 +56,10 @@ a, .dropdown-menu {
     background-color: rgba(0, 0, 0, .4);
     height: 600px;
 }
+.loginTxt{
+    font-size: 18px;
+    margin-top: 10px;
+}
 
 /* NavBar CSS End */
 /* Left Nav Bar CSS Begin */
@@ -444,6 +448,8 @@ textarea.form-control.textAreaActive {
 .qFont{
     font-size:20px;
     margin-top: -15px;
+    padding-bottom: 13px;
+    border-bottom: 1px solid gainsboro;
 }
 .borderBtm{
     border-bottom:1px solid grey;
@@ -493,7 +499,6 @@ textarea.form-control.textAreaActive {
 @media screen and (min-width: 992px) {
     .qFont{
         font-size:22px;
-        font-weight: bold;
     }
     .voteBtn{
         padding-top: 0px;
@@ -518,9 +523,36 @@ textarea.form-control.textAreaActive {
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
     margin-bottom: 15px;
     padding-bottom: 15px;
-    background-color: #ABE6CE;
+    background-color: #C7C7C7;
     padding-top: 30px;
 }
+.notifTxt{
+        font-size: 13px;
+        margin-top: -15px;
+}
+.marTB25{
+    padding-top: 15px;
+    padding-bottom: 7px;
+    margin-bottom: 15px;
+    background-color: #A2A2A2;
+    font-weight: bold;
+}
+.Bborder{
+    border-bottom: 1px solid gainsboro;
+}
+.activeBlck{
+    background-color: #f1f1f1;
+    border: 0px;
+}
+
+@media screen and (min-width: 992px) {
+    .notifTxt{
+        font-size: 18px;
+        margin-top: -15px;
+        margin-left: 10px;
+    }
+}
+
 
 /* styles for Home category page  /*
 

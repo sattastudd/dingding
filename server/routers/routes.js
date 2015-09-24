@@ -93,6 +93,8 @@ module.exports = function( app, passport, express ) {
 
 	app.post('/roastReply/:debateID', roastController.roastReply);
 
+	app.post('/notifRead', memberController.notifRead);
+
 	app.post('/upload', function(req, res) {
 	    var image =  req.files.image;
 	    var newImageLocation = path.join(__dirname, 'public/images', image.name);

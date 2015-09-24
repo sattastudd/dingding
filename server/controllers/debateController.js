@@ -42,7 +42,7 @@ module.exports.createDebate = function(req, res){
 					description	: req.body.description,
 					collectionID : collectionID,
 					email		: req.user.google.email,
-					createdBy	: req.user.google.email,
+					createdBy	: req.user.google.name,
 					createdOn	: new Date()
 				}
 
@@ -117,7 +117,7 @@ module.exports.debateComment = function(req, res){
 
 
 					var goToLocation 	= '/QandA/' + collectionLength;
-					var message 		= 'Anonymous' + ' has answered to your question - ' + '"' + req.body.question + '"';
+					var message 		= 'Anonymous' + ' has answered to your question - ' + '"' + req.body.question.substring(0,50) + '"';
 
 					member.update(
 								{"email"		: req.body.qCreator},
@@ -144,7 +144,7 @@ module.exports.debateComment = function(req, res){
 					}
 
 					var goToLocation 	= '/QandA/' + collectionLength;
-					var message 		= req.body.name + ' has answered to your question - ' + '"' + req.body.question + '"';
+					var message 		= req.body.name + ' has answered to your question - ' + '"' + req.body.question.substring(0,50) + '"';
 
 					member.update(
 								{"email"		: req.body.email},
@@ -444,11 +444,17 @@ module.exports.debateReply = function(req, res){
 
 	var member = memberHandler.getMemberModel();
 
+	if (req.body.id === 'replyPage'){
+		var goToLocation 	= '/replies/' + combinedID;
+	}else{
+		var goToLocation 	= '/replies/' + combinedID + req.body.id;
+	}
+
 	if(req.body.anonymous === "Y"){
 
-		var goToLocation 	= '/replies/' + combinedID;
 		var message 		= 'Anonymous' + ' has replied to your comment - ' + '"' + req.body.comContent.substring(0,20) + '..."';
 
+					if(req.body.comOwner !== null){
 						member.update(
 									{"email"		: req.body.comOwner},
 									{ "$push"		: {"notifications": {
@@ -462,12 +468,13 @@ module.exports.debateReply = function(req, res){
 									}, function(err, result){
 
 									});
+					}
 
 	}else if(req.user.google.email !== req.body.comOwner){
 
-		var goToLocation 	= '/replies/' + combinedID;
 		var message 		= req.body.name + ' has replied to your comment - ' + '"' + req.body.comContent.substring(0,20) + '..."';
 
+					if(req.body.comOwner !== null){
 						member.update(
 									{"email"		: req.body.comOwner},
 									{ "$push"		: {"notifications": {
@@ -482,6 +489,8 @@ module.exports.debateReply = function(req, res){
 
 									});
 					}
+	}
+
 };
 
 

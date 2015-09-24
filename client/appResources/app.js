@@ -73,6 +73,9 @@ app.controller('roastIndexController', function($scope,$http,$location){
                 $location.path('/home');
                 window.scrollTo(0,0);
                 $scope.showToolBox();
+                $scope.commentsActive = true;
+                $scope.notifsActive = false;
+                $scope.settingsActive = false;
             }
             $scope.goToRoasts = function(){
                 $location.path('/roastList');
@@ -116,6 +119,10 @@ app.controller('roastIndexController', function($scope,$http,$location){
                 googleLoginForm.submit();
             }
 
+            $scope.commentsActive = false;
+            $scope.notifsActive = false;
+            $scope.settingsActive = false;
+
 
             // code for getting user profile pic
 
@@ -145,17 +152,28 @@ app.controller('roastIndexController', function($scope,$http,$location){
                         $scope.imgUserBig = data[0].imgUrlLg;
                         $scope.imgUserSmall = data[0].imgUrlXs;
                         $scope.notifications = data[0].notifications;
-                        $scope.count = 0;
-                            angular.forEach($scope.notifications, function(value, key) {
-                                if(value === 'false'){
-                                    $scope.count  = $scope.count + 1;
+                        $scope.activity     = data[0].comments;
+                           var length = $scope.notifications.length;
+                            
+                            $scope.count = 0;
+                            
+                            for( var i=0; i < length; i++){
+                                if($scope.notifications[i].read === 'false'){
+                                    $scope.count = $scope.count + 1;
                                 }
-                            });
+                            }
                     } 
                 }).error(function(data){
 
                 });
             };
+            
+            $scope.goToNotif = function(){
+                $location.path('/home')
+                $scope.notifsActive = true;
+                $scope.commentsActive = false;
+                $scope.settingsActive = false;
+            }
 
              $scope.memberData();
 
@@ -967,6 +985,7 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
         }
     }
    
+   // $scope.repliesQ.comContent = qna.comment; 
 
     $scope.comment.id = $routeParams.id;
 
@@ -981,7 +1000,8 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
                 $scope.replyContent = data;
                 $scope.repliesGot = data[0].replies;
                 $scope.repliesQ.comContent = data[0].comment;
-                console.log(data);
+                $scope.repliesQ.comOwner = data[0].email;
+                //console.log(data);
                 /*if (data.length === 1){
                     $scope.newDataQ.oldDate = data[0].createdOn;
                 }else if (data.length > 1){
@@ -1002,7 +1022,7 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
                 $scope.repliesQ.id = 'replyPage';
                 var debateID = '/debateReply/' + $routeParams.id;
 
-                $scope.repliesQ.comContent = $scope.replyContent.comment;
+                //$scope.repliesQ.comContent = $scope.replyContent.comment;
 
                 $http.post(debateID, $scope.repliesQ).success(function(data){
                     
@@ -1113,8 +1133,36 @@ app.controller('roastCommentController', function($scope,$http,$routeParams,$int
 });
 
 
-app.controller('homeController', function($scope){
+app.controller('homeController', function($scope,$location,$http){
+    $scope.goToLoc = function(value){
 
+        if(value.read === 'false'){
+            $http.post('/notifRead', value).success(function(data){
+                $location.path(value.location);
+            })
+        }
+    }
+
+    if($scope.settingsActive === false && $scope.notifsActive === false){
+        $scope.commentsActive = true;
+    }
+
+    $scope.notifsDiv = function(){
+        $scope.commentsActive = false;
+        $scope.notifsActive = true;
+        $scope.settingsActive = false;
+    }
+
+    $scope.commentsDiv = function(){
+        $scope.commentsActive = true;
+        $scope.notifsActive = false;
+        $scope.settingsActive = false;
+    }
+    $scope.settingsDiv = function(){
+        $scope.commentsActive = false;
+        $scope.notifsActive = false;
+        $scope.settingsActive = true;
+    }
 });
 
 
