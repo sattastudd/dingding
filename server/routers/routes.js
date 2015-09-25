@@ -32,7 +32,7 @@ module.exports = function( app, passport, express ) {
 	            failureRedirect : '/'
     }));
 
-    app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
+    app.get('/auth/facebook', passport.authenticate('facebook', { scope : ['email', 'public_profile'] }));
 
     // handle the callback after facebook has authenticated the user
     app.get('/auth/facebook/callback',

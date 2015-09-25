@@ -26,7 +26,8 @@ module.exports = function(passport) {
         // pull in our app id and secret from our auth.js file
         clientID        : configAuth.facebookAuth.clientID,
         clientSecret    : configAuth.facebookAuth.clientSecret,
-        callbackURL     : configAuth.facebookAuth.callbackURL
+        callbackURL     : configAuth.facebookAuth.callbackURL,
+        profileFields: [ 'emails' ]
 
     },
 
@@ -50,6 +51,8 @@ module.exports = function(passport) {
                 } else {
                     // if there is no user found with that facebook id, create them
                     var newUser            = new User();
+
+                    console.log( profile );
 
                     // set all of the facebook information in our user model
                     newUser.facebook.id    = profile.id; // set the users facebook id                   
