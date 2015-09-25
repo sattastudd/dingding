@@ -119,6 +119,11 @@ app.controller('roastIndexController', function($scope,$http,$location){
                 googleLoginForm.submit();
             }
 
+            $scope.GoToFacebookLogin = function () {
+                var facebookLoginForm = document.forms.facebookLogin;
+                facebookLoginForm.submit();
+            }
+
             $scope.commentsActive = false;
             $scope.notifsActive = false;
             $scope.settingsActive = false;

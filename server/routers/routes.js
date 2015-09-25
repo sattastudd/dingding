@@ -26,12 +26,20 @@ module.exports = function( app, passport, express ) {
 	app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 
 	    // the callback after google has authenticated the user
-	    app.get('/auth/google/callback',
-	            passport.authenticate('google', {
-	                    successRedirect : '/#userInfo',
-	                    failureRedirect : '/'
-	            }));
+    app.get('/auth/google/callback',
+           passport.authenticate('google', {
+                successRedirect : '/#userInfo',
+	            failureRedirect : '/'
+    }));
 
+    app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
+
+    // handle the callback after facebook has authenticated the user
+    app.get('/auth/facebook/callback',
+        passport.authenticate('facebook', {
+            successRedirect : '/#userInfo',
+            failureRedirect : '/'
+    }));
 
 	app.use(bodyParser());
 
