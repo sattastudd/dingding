@@ -5,6 +5,7 @@ var mongoose 		= require('mongoose');
 var commentSchema = new mongoose.Schema({
 	question 		: String,
 	comment 		: String,
+	parentCom		: String,
 	collectionID 	: String,
 	commentID		: String,
 	createdOn		: Date

@@ -1,11 +1,11 @@
 <div ng-controller="homeController">
 	<div class="container-fluid">
-		<div class="row">
+		<div class="row" ng-if="isLoggedin">
 			<div class="row">
 		        <div class="col-xs-12" style="margin-bottom:10px">
 		        	<div class="row">
 			      		<div class="col-xs-4 marTB25 Bborder hand" ng-class="{'activeBlck':commentsActive}" ng-click="commentsDiv()">
-			      			<p align="center">Answers</p>
+			      			<p align="center">Activities</p>
 			      		</div>
 			      		<div class="col-xs-4 marTB25 Bborder hand" ng-class="{'activeBlck':notifsActive}" ng-click="notifsDiv()">
 			      			<p align="center">Notifs <span class="badge">{{count}}</span></p>
@@ -17,7 +17,7 @@
           		</div>
           	</div>
           	<div ng-if="notifsActive"  ng-repeat="notif in notifications | orderBy: '-time'">
-				<div class="col-xs-12 hand" ng-class="{'msgUnread': trendBlock' : {{notif.read}}}" ng-click="goToLoc(notif)">
+				<div class="col-xs-12 hand" ng-class="{{notif.read}}?'msgUnread':'trendBlock'" ng-click="notifRead(notif)">
 		            <div class="row">
 		                <div class="col-xs-2">
 		                	<img src="{{notif.imgUrl}}" style="width:50px;margin-top:-12px;" />
@@ -27,7 +27,7 @@
 	                    </div>
 		            </div>
 		        </div>
-		        <!-- <div class="col-xs-12 hand" ng-if="{{notif.read}}" ng-click="goToLoc(notif)">
+		        <!-- <div class="col-xs-12 trendBlock hand" ng-click="goToLoc(notif)">
 		            <div class="row">
 		                <div class="col-xs-2">
 		                	<img src="{{notif.imgUrl}}" style="width:50px;margin-top:-12px;" />
@@ -38,16 +38,30 @@
 		            </div>
 		        </div> -->
 		    </div>
-	        <div ng-if="commentsActive" class="col-xs-12 trendBlock hand" ng-repeat="comment in activity | orderBy: '-time'">
-	            <div class="row" ng-click="goToLoc(notif)">
-	                <div class="col-xs-12">
-                        <p class="qFont"><b>Q</b> {{comment.question}}?</p>
+	        <div ng-if="commentsActive" class="col-xs-12 trendBlock hand" ng-repeat="comment in activity | orderBy: '-createdOn'">
+	            <div class="row">
+	                <div class="col-xs-12 qFont" style="padding-bottom:0px;margin-top:-25px" ng-click="goToQ(comment)">
+                        <p>{{comment.question}}</p>
+                        <p ng-click="goToCom(comment)">{{comment.parentCom}}</p>
                     </div>
-                    <div class="col-xs-12">
+                    <div class="col-xs-12" style="margin-top:10px" ng-click="goToCom(comment)">
                     	<p>{{comment.comment}}</p>
                     </div>
 	            </div>
 	        </div>
+		</div>
+		<div class="row" ng-if="!isLoggedin">
+			<div class="row" style="background-color:#fff;min-height:300px;">
+		                <div class="col-xs-12" style="margin-top:60px">
+		                    <p align="center">Login</p>
+		               	</div>
+		               	<div class="col-xs-4 col-xs-offset-4">
+		               		<img src="/images/googleplusLg.png" class="hand" ng-click="GoToGoogleLogin()"/>
+		                    <img src="/images/facebookLg.png" class="hand" ng-click="GoToFacebookLogin()"/>
+		               	</div>
+
+			      		<form name="googleLogin" action="/auth/google" method="get"></form>
+			</div>
 		</div>
 	</div>
 </div>

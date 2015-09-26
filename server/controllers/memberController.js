@@ -94,7 +94,7 @@ module.exports.notifRead = function(req, res){
 
 			var member = memberList.getMemberModel();
 
-			member.update({'notifications._id': req.body._id},{'$set': {'notifications.$.read': true}}, function (err, result) {
+			member.update({'notifications._id': req.body._id},{'$set': {'notifications.$.read': 'true'}}, function (err, result) {
 					res.json(result);
 			});
 

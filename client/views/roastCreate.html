@@ -1,7 +1,7 @@
 <div ng-controller="roastCreateController">
-    <div class="container-fluid" style="background-color:#fff">
+    <div class="container-fluid">
         <div class="row" style="height:450px">
-            <div class="row">
+            <div class="row" style="background-color:#fff">
                 <div class="col-xs-12" style="min-height:556px">
                     <!-- <div class="row">
                         <div class="col-xs-12 trendingTitle">
@@ -50,6 +50,11 @@
                             Ask a Question
                         </div>
                     </div>
+                    <div class="row" ng-if="!isLoggedin">
+                        <div class="col-xs-12" style="font-size:22px;background-color:#FF4545;margin-bottom:20px;margin-top:-15px;text-align:center;">
+                            Login before asking Question
+                        </div>
+                    </div>
                     <div class="col-xs-12" style="margin-bottom:30px;">
                         <p><b>Write Your Question</b></p>
                         <input type="text" class="form-control" ng-focus="removeErr()" my-maxlength="150" ng-trim="false" ng-model="debate.question1" placeholder="Write your question" />
@@ -66,7 +71,7 @@
                         <img src="../images/loader.gif" class="loader" />
                     </div>
                     <div class="col-xs-12" style="margin-bottom:60px;">
-                        <button type="button" ng-click="postQuestion1()" class="btn btn-place-primary" ng-disabled="btnDisable1">Ask Question</button>
+                        <button type="button" ng-click="postQuestion1()" class="btn btn-place-primary" ng-disabled="btnDisable1 || !isLoggedin">Ask Question</button>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 trendingTitle" style="margin-top:4px;background-color:#2ECBDE;">
@@ -117,7 +122,7 @@
                         <img src="../images/loader.gif" class="loader" />
                     </div>
                     <div class="col-xs-12" style="margin-bottom:60px;margin-top:15px;" ng-hide="showtext">
-                        <button type="button" ng-click="postQuestion2()" class="btn btn-place-primary" ng-disabled="btnDisable2">Create Debate</button>
+                        <button type="button" ng-click="postQuestion2()" class="btn btn-place-primary" ng-disabled="btnDisable2 || !isLoggedin">Create Debate</button>
                     </div>
                </div>
             </div>
