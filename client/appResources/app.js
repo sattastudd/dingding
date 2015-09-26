@@ -136,6 +136,7 @@ app.controller('roastIndexController', function($scope,$http,$location){
             //}
 
             $scope.createdMember = false;
+            $scope.maiBaap = false;
 
             $scope.memberData = function(){
 
@@ -143,10 +144,22 @@ app.controller('roastIndexController', function($scope,$http,$location){
 
                     if(data.length === 0){
                         if($scope.createdMember === false){
-                            $scope.createMember();
-                            $scope.createdMember = true;
+                            $http.get('/memberInit').success(function(data){
+                                if (angular.isDefined(data.google)) {
+                                    var userDataUrl = 'http://picasaweb.google.com/data/entry/api/user/' + data.google.id + '?alt=json';
+                                    $http.get(userDataUrl).success(function(data){
+                                        var imageUrl = data.entry.gphoto$thumbnail.$t;
+                                        $scope.imgUrlBig = imageUrl.replace('64-c', '100-c');
+                                        $scope.imgUrlSm = imageUrl.replace('64-c', '40-c');
+                                        $scope.createMember();
+                                    })
+                                }else if (angular.isDefined(data.facebook)) {
+                                    $scope.imgUrlBig = 'https://graph.facebook.com/' + data.facebook.id + '/picture?type=large'
+                                    $scope.imgUrlSm = 'https://graph.facebook.com/' + data.facebook.id + '/picture?type=small'
+                                    $scope.createMember();
+                                };
+                            })
                         }
-                        $scope.memberData();
                     }else if (data === '"NotLoggedIn"'){
                         $scope.isLoggedin = false;
                         $scope.imgUserBig = '/images/user.jpg'; 
@@ -172,6 +185,15 @@ app.controller('roastIndexController', function($scope,$http,$location){
                             }else{
                                 $scope.countNull = true;
                             }
+
+                            if ($scope.email === 'indiaroasts@gmail.com') {
+                                console.log('sending dta');
+                                $http.get('/allMemData').success(function(data){
+                                    $scope.maiBaap = true;
+                                    $scope.allMemData = data;
+                                    $scope.allMemDataLength = data.length;
+                                })
+                            };
                     } 
                 }).error(function(data){
 
@@ -189,12 +211,18 @@ app.controller('roastIndexController', function($scope,$http,$location){
              $scope.memberData();
 
             $scope.createMember = function(){
-                $http.get('/createMember').success(function(data){
+                $scope.createMemObj = {};
+                $scope.createMemObj.imgUrlBig = $scope.imgUrlBig;
+                $scope.createMemObj.imgUrlSm = $scope.imgUrlSm;
+            
+                $http.post('/createMember', $scope.createMemObj).success(function(data){
                     console.log(data);
+                    $scope.createdMember = true;
+                    $scope.memberData();
                 }).error(function(data){
                     console.log(data);
                 })
-            }            
+            }  
 
             $scope.logout = function(){
                 $scope.isLoggedin = false;
@@ -385,8 +413,8 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.getQuestion();
 
     $scope.goToCreateQ = function(){
-        window.scrollTo(0,0);
         $location.path('/create');
+        window.scrollTo(0,0);
     }
 
     $scope.voteObject = {};
@@ -905,6 +933,7 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
                 $scope.waiting = false;
                 var roastID = '/roast/' + data.slug;
                 $location.path(roastID);
+                window.scrollTo(0,0);
             }).error(function(data){
                 $scope.waiting = false;
             })
@@ -917,6 +946,7 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
     $scope.postQuestion = function(){
 
             $scope.debate.email = $scope.email;
+            $scope.debate.name = $scope.userName;
             $scope.btnDisable = true;
             $scope.waiting = true;
             $http.post('/createDebate', $scope.debate).success(function(data){
@@ -925,9 +955,11 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
                     if (angular.isDefined(data[0])) {
                         var debateID = '/QandA/' + data[0].slug;
                         $location.path(debateID);
+                        window.scrollTo(0,0);
                     }else{
                         var debateID = '/QandA/' + data.slug;
                         $location.path(debateID);
+                        window.scrollTo(0,0);
                     }
             }).error(function(data){
                 $scope.waiting = false;
@@ -1286,6 +1318,7 @@ app.controller('loadingDataController', function($scope, $location, $http, UserI
 
         UserInfoProvider.setData( data.google );
         $location.path('/');
+        window.scrollTo(0,0);
     })
     .error( function (data ) {
         console.log( data );

@@ -83,7 +83,11 @@ module.exports = function( app, passport, express ) {
 
 	app.get('/memberData', memberController.getMemberData);
 
-	app.get('/createMember', memberController.createMember);
+	app.get('/allMemData', memberController.allMemData);
+
+	app.post('/createMember', memberController.createMember);
+
+	app.get('/memberInit', memberController.memberInit);
 
 	app.get('/roastReplies/:id', roastController.getReplies);
 

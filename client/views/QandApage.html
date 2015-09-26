@@ -28,7 +28,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="col-xs-12" ng-hide="showVoteBlock">
+                            <div class="col-xs-12" ng-hide="showVoteBlock || editBoxQ">
                                 <div class="row">     
                                     <div class="col-xs-5 col-xs-offset-7 Qbtn hand" ng-click="goToCreateQ()">
                                         Ask Question
@@ -80,7 +80,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div ng-if="editBoxQ">
+                            <div ng-if="editBoxQ && showVoteBlock">
                                 <div class="col-xs-12" style="margin-bottom:60px;" ng-hide="showtext">
                                     <div class="col-xs-5 voteBtn hand" ng-click="editY()">
                                         {{questions.yBtnValue}}
@@ -105,10 +105,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-12" ng-if="editBoxQ" style="margin-top:-10px">
+                            </div>
+                            <div class="col-xs-12" ng-if="editBoxQ" style="margin-top:5px">
                                         <button type="btn" style="background-color:#009688;color:#fff;min-width:90px;" class="btn btn-default pull-right" ng-click="updateQuestion()" ng-disabled="btnDisable">Update Question</button>
                                         <button type="btn" style="margin-right:10px" ng-click="hideTextArea()" class="btn btn-default pull-right">Cancel</button>                   
-                                </div>
                             </div>
                             <div class="col-xs-12 roastDiv" ng-repeat="qna in QandA | orderBy:'-createdOn' track by $index">
                                 <div class="row">

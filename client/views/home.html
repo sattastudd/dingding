@@ -27,16 +27,6 @@
 	                    </div>
 		            </div>
 		        </div>
-		        <!-- <div class="col-xs-12 trendBlock hand" ng-click="goToLoc(notif)">
-		            <div class="row">
-		                <div class="col-xs-2">
-		                	<img src="{{notif.imgUrl}}" style="width:50px;margin-top:-12px;" />
-		                </div>
-		                <div class="col-xs-10">
-	                        <p class="notifTxt">{{notif.msg}}</p>
-	                    </div>
-		            </div>
-		        </div> -->
 		    </div>
 	        <div ng-if="commentsActive" class="col-xs-12 trendBlock hand" ng-repeat="comment in activity | orderBy: '-createdOn'">
 	            <div class="row">
@@ -48,6 +38,30 @@
                     	<p>{{comment.comment}}</p>
                     </div>
 	            </div>
+	        </div>
+	        <div ng-if="settingsActive" class="col-xs-12" style="margin-bottom:300px">
+	        	<div class="row">
+	        		<div class="col-xs-4">
+	        			<img src="{{imgUserBig}}" />
+	        		</div>
+	        		<div class="col-xs-8">
+	        			<p>{{userName}}</p>
+	        			<p>{{email}}</p>
+	        		</div>
+	        	</div>
+	        	<div class="col-xs-12" ng-if="maiBaap">
+	        		<div class="col-xs-12">
+	        			{{allMemDataLength}}
+	        		</div>
+	        		<div class="col-xs-12" style="margin-bottom:5px" ng-repeat="data in allMemData">
+		        		<div class="col-xs-2">
+		        			<img src="{{data.imgUrlXs}}" />
+		        		</div>
+		        		<div class="col-xs-10">
+		        			<p>{{data.name}}-{{data.email}}</p>
+		        		</div>
+		        	</div>
+	        	</div>
 	        </div>
 		</div>
 		<div class="row" ng-if="!isLoggedin">
@@ -61,6 +75,7 @@
 		               	</div>
 
 			      		<form name="googleLogin" action="/auth/google" method="get"></form>
+			      		<form name="facebookLogin" action="/auth/facebook" method="get"></form>
 			</div>
 		</div>
 	</div>

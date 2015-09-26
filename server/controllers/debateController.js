@@ -41,8 +41,8 @@ module.exports.createDebate = function(req, res){
 					slug		: slugReal,
 					description	: req.body.description,
 					collectionID : collectionID,
-					email		: req.user.google.email,
-					createdBy	: req.user.google.name,
+					email		: req.body.email,
+					createdBy	: req.body.name,
 					createdOn	: new Date()
 				}
 
@@ -173,7 +173,7 @@ module.exports.debateComment = function(req, res){
 											//console.log(result);
 									   });
 
-							if (req.user.google.email !== req.body.qCreator){
+							if (req.body.email !== req.body.qCreator){
 								member.update(
 											{"email"		: req.body.qCreator},
 											{ "$push"		: {"notifications": {
@@ -533,7 +533,7 @@ module.exports.debateReply = function(req, res){
 									});
 					}
 
-	}else if(req.user.google.email !== req.body.comOwner){
+	}else if(req.body.email !== req.body.comOwner){
 
 		var message 		= req.body.name + ' has replied to your comment - ' + '"' + req.body.comContent.substring(0,20) + '..."';
 
