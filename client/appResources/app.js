@@ -167,14 +167,20 @@ app.controller('roastIndexController', function($scope,$http,$location){
                                     $scope.count = $scope.count + 1;
                                 }
                             }
+                            if ($scope.count === 0) {
+                                $scope.countNull = false;
+                            }else{
+                                $scope.countNull = true;
+                            }
                     } 
                 }).error(function(data){
 
                 });
             };
-            
+
             $scope.goToNotif = function(){
                 $location.path('/home')
+                window.scrollTo(0,0);
                 $scope.notifsActive = true;
                 $scope.commentsActive = false;
                 $scope.settingsActive = false;
@@ -221,6 +227,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         $scope.editBox = false;
         $scope.editBoxQ = false;
         $scope.comment.anonymous = null;
+        $scope.showtext = false;
     }
     $scope.showTextArea = function () {
         $scope.postBlockActive = true;
@@ -286,16 +293,51 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.editQuestion = function(value){
         if(value.email === $scope.email){
             $scope.editBoxQ = true;
-            $scope.showTextArea();
-            $scope.comment.comment = $scope.questions.question;
             $scope.questionObj.slug = $scope.questions.slug;
             $scope.questionObj.id = $scope.questions._id;
             $scope.questionObj.debate = $scope.questions.debate;
         }
     };
 
+    $scope.editY = function(){
+        $scope.showtext = true;
+    }
+
+    $scope.yChar = 10;
+    $scope.nChar = 10;
+    $scope.qEditchar = 150;
+
+    $scope.$watch('questions.yBtnValue', function() {
+        if(angular.isDefined($scope.questions.yBtnValue)){
+            $scope.yChar = 10 - $scope.questions.yBtnValue.length;
+            if ($scope.yChar === 0) {
+                $scope.yChar = 0;
+            };
+        };
+    });
+
+    $scope.$watch('questions.nBtnValue', function() {
+        if(angular.isDefined($scope.questions.nBtnValue)){
+            $scope.nChar = 10 - $scope.questions.nBtnValue.length;
+            if ($scope.nChar === 0) {
+                $scope.nChar = 0;
+            };
+        };
+    });
+
+    $scope.$watch('questions.question', function() {
+        if(angular.isDefined($scope.questions.question)){
+            $scope.qEditchar = 150 - $scope.questions.question.length;
+            if ($scope.qEditchar === 0) {
+                $scope.qEditchar = 0;
+            };
+        };
+    });
+
     $scope.updateQuestion = function(){
-        $scope.questionObj.question = $scope.comment.comment;
+        $scope.questionObj.question = $scope.questions.question;
+        $scope.questionObj.yBtnValue = $scope.questions.yBtnValue;
+        $scope.questionObj.nBtnValue = $scope.questions.nBtnValue;
         var questionID = '/editQuestion/' + $routeParams.id;
         $http.post(questionID, $scope.questionObj).success(function(data){
             $scope.hideTextArea();
@@ -329,7 +371,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
             $scope.questions = data[0];
 
             $scope.comment.question = $scope.questions.question;
-            $scope.comment.qCreator = $scope.questions.createdBy;
+            $scope.comment.qCreator = $scope.questions.email;
 
             if ($scope.questions.debate === "Y") {
                 $scope.calcVote();
@@ -951,6 +993,17 @@ app.controller('QandAlistController', function($http,$scope,$location,$routePara
         console.log(data);
     })
 
+    $scope.recentActv = true;
+    $scope.popularActv = false;
+
+    $scope.recentDiv = function(){
+        $scope.recentActv = true;
+        $scope.popularActv = false;
+    }
+    $scope.popularDiv = function(){
+        $scope.recentActv = false;
+        $scope.popularActv = true;
+    }
     $scope.goToDebate = function(question){
 
         window.scrollTo(0,0);
@@ -967,6 +1020,44 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
     $scope.comment = {};
     $scope.repliesQ = {};
 
+    $scope.editBox = false;
+    $scope.editBoxQ = false;
+    $scope.commentObj = {};
+    $scope.questionObj = {};
+    $scope.editQComment = function(value){
+        console.log(value);
+        if(value.email === $scope.email){
+            $scope.editBox = true;
+            $scope.showTextArea();
+            $scope.repliesQ.comment = value.comment;
+            console.log(value);
+            $scope.commentObj.id = value._id;
+            $scope.commentObj.replyCom = 'N';
+        }
+    };
+    $scope.editQReply = function(value){
+        console.log(value);
+        if(value.email === $scope.email){
+            $scope.editBox = true;
+            $scope.showTextArea();
+            $scope.repliesQ.comment = value.comment;
+            console.log(value);
+            $scope.commentObj.id = value._id;
+            $scope.commentObj.replyCom = 'Y';
+        }
+    };
+    $scope.updateQcomment = function(){
+        $scope.commentObj.replyPage = 'Y';
+        $scope.commentObj.comment = $scope.repliesQ.comment;
+        var commentID = '/editQComment/' + $routeParams.id;
+        $http.post(commentID, $scope.commentObj).success(function(data){
+            $scope.hideTextArea();
+            $scope.fetchRepliesQ();
+        }).error(function(data){
+
+        })
+    }
+
     $scope.postBlockActive = false;
     $scope.appreciated = false;
     $scope.appriValue = 'Appreciate';
@@ -974,6 +1065,7 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
         $scope.postBlockActive = false;
         $scope.repliesQ.comment = null;
         $scope.repliesQ.anonymous = null;
+        $scope.editBox = false;
     }
     $scope.showTextArea = function () {
         $scope.postBlockActive = true;
@@ -1139,13 +1231,26 @@ app.controller('roastCommentController', function($scope,$http,$routeParams,$int
 
 
 app.controller('homeController', function($scope,$location,$http){
-    $scope.goToLoc = function(value){
-
+    $scope.memberData();
+    $scope.notifRead = function(value){
+        window.scrollTo(0,0);
         if(value.read === 'false'){
             $http.post('/notifRead', value).success(function(data){
-                $location.path(value.location);
+                $scope.memberData();
             })
         }
+        $location.path(value.location);
+    }
+
+    $scope.goToQ = function(value){
+        var Qpath = '/QandA/' + value.collectionID;
+        window.scrollTo(0,0);
+        $location.path(Qpath);
+    }
+    $scope.goToCom = function(value){
+        var compath = '/replies/' + value.collectionID + value.commentID;
+        window.scrollTo(0,0);
+        $location.path(compath);
     }
 
     if($scope.settingsActive === false && $scope.notifsActive === false){
