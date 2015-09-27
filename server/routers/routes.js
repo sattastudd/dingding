@@ -85,6 +85,8 @@ module.exports = function( app, passport, express ) {
 
 	app.get('/allMemData', memberController.allMemData);
 
+	app.post('/getNotif', memberController.getNotif);
+
 	app.post('/createMember', memberController.createMember);
 
 	app.get('/memberInit', memberController.memberInit);

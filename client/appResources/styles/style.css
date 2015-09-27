@@ -353,7 +353,7 @@ textarea.form-control.textAreaActive {
     text-align: center;
     height: 40px;
     padding-top: 2px;
-    margin-bottom: 35px;
+    margin-bottom: 20px;
     font-size: 25px;
     margin-top: 6px;
     background-color: #FF9108;
@@ -392,15 +392,6 @@ textarea.form-control.textAreaActive {
 
 /* styles for create roast page */
 
-.trendingTitle{
-    text-align: center;
-    height: 40px;
-    padding-top: 2px;
-    margin-bottom: 35px;
-    font-size: 25px;
-    margin-top: 6px;
-    background-color: #FF9108;
-}
 .addImage{
     height: 35px;
     width: 100px;

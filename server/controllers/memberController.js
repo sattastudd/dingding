@@ -15,8 +15,6 @@ module.exports.createMember = function(req, res){
 
 			var member = memberList.getMemberModel();
 
-			console.log('req.user');
-
 			if( typeof googleUser !== 'undefined' && googleUser ){
 				var memberInfo = {
 							name			: req.user.google.name,
@@ -65,8 +63,6 @@ module.exports.getMemberData = function(req, res){
 
 			var member = memberList.getMemberModel();
 
-			console.log('req.user');
-
 			if( typeof googleUser !== 'undefined' && googleUser ){
 				member.find({'email': req.user.google.email}, function (err, result) {
 						res.json(result);
@@ -111,6 +107,17 @@ module.exports.allMemData = function(req, res){
 	var member = memberList.getMemberModel();
 
 	member.find({}, function(err, result){
+		res.json(result);
+	})
+
+}
+
+
+module.exports.getNotif = function(req, res){
+
+	var member = memberList.getMemberModel();
+
+	member.find({'email': req.body.email},{'notifications': true}, function(err, result){
 		res.json(result);
 	})
 

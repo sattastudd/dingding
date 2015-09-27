@@ -57,7 +57,7 @@ app.config(function($routeProvider,$locationProvider) {
         });
 
 
-app.controller('roastIndexController', function($scope,$http,$location){
+app.controller('roastIndexController', function($scope,$http,$location,$interval){
 
             $scope.goToCreate = function(){
                 $location.path('/create');
@@ -137,6 +137,7 @@ app.controller('roastIndexController', function($scope,$http,$location){
 
             $scope.createdMember = false;
             $scope.maiBaap = false;
+            $scope.notifObj = {};
 
             $scope.memberData = function(){
 
@@ -186,6 +187,8 @@ app.controller('roastIndexController', function($scope,$http,$location){
                                 $scope.countNull = true;
                             }
 
+                            $interval($scope.getNotif, 40000);
+
                             if ($scope.email === 'indiaroasts@gmail.com') {
                                 console.log('sending dta');
                                 $http.get('/allMemData').success(function(data){
@@ -199,6 +202,27 @@ app.controller('roastIndexController', function($scope,$http,$location){
 
                 });
             };
+
+            $scope.getNotif = function(){
+                $scope.notifObj.email = $scope.email;
+                $http.post('/getNotif', $scope.notifObj).success(function(data){
+                        $scope.notifications = data[0].notifications;
+                           var length = $scope.notifications.length;
+                            
+                            $scope.count = 0;
+                            
+                            for( var i=0; i < length; i++){
+                                if($scope.notifications[i].read === 'false'){
+                                    $scope.count = $scope.count + 1;
+                                }
+                            }
+                            if ($scope.count === 0) {
+                                $scope.countNull = false;
+                            }else{
+                                $scope.countNull = true;
+                            }
+                })
+            }
 
             $scope.goToNotif = function(){
                 $location.path('/home')
@@ -248,6 +272,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
     $scope.comment = {};
     $scope.newDataQ = {};
     $scope.repliesQ = {};
+    $scope.voteObject = {};
     $scope.hideTextArea = function () {
         $scope.postBlockActive = false;
         $scope.postAreply = false;
@@ -417,10 +442,12 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         window.scrollTo(0,0);
     }
 
-    $scope.voteObject = {};
-    $scope.voteObject.id = $routeParams.id;
-
     $scope.vote = function(){
+        
+        $scope.voteObject.id = $routeParams.id;
+        $scope.voteObject.email = $scope.email;
+        $scope.voteObject.qCreator = $scope.questions.email;
+        $scope.voteObject.question = $scope.questions.question;
 
         $http.post('/vote', $scope.voteObject).success(function(data){
             console.log(data);
@@ -491,7 +518,7 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         })
     };
     
-    $scope.stopPromise = $interval($scope.newCommentsQ, 10000);
+    $scope.stopPromise = $interval($scope.newCommentsQ, 30000);
     
     $scope.$on('$routeChangeStart', function(){
         console.log( 'Route Change Start' );
@@ -690,7 +717,7 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
         })
     };
 
-   $scope.stopPromise = $interval(newCommentsR, 10000);
+   $scope.stopPromise = $interval(newCommentsR, 30000);
 
    $scope.$on('$routeChangeStart', function(){
         $interval.cancel($scope.stopPromise);
@@ -1280,9 +1307,15 @@ app.controller('homeController', function($scope,$location,$http){
         $location.path(Qpath);
     }
     $scope.goToCom = function(value){
-        var compath = '/replies/' + value.collectionID + value.commentID;
-        window.scrollTo(0,0);
-        $location.path(compath);
+        if(value.commentID === null){
+            var Qpath = '/QandA/' + value.collectionID;
+            window.scrollTo(0,0);
+            $location.path(Qpath);
+        }else{
+            var compath = '/replies/' + value.collectionID + value.commentID;
+            window.scrollTo(0,0);
+            $location.path(compath);
+        }
     }
 
     if($scope.settingsActive === false && $scope.notifsActive === false){

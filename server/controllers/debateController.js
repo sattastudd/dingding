@@ -9,6 +9,8 @@ module.exports.createDebate = function(req, res){
 	
 	var debateCreate = debateHandler.getDebateModel();
 
+	var member = memberHandler.getMemberModel();
+
 	var slugReal = null;
 
 	if(req.body.debate === "Y"){
@@ -46,7 +48,20 @@ module.exports.createDebate = function(req, res){
 					createdOn	: new Date()
 				}
 
-				//console.log(debateInfo);
+				member.update({"email"		: req.body.email},
+							  { "$push":	{"comments": {	
+															question 		: req.body.question,
+															comment 		: 'The above question is created by you',
+															collectionID 	: slugReal,
+															commentID		: null,
+															createdOn		: new Date()
+														}
+													}
+										},
+						function(err, result) {
+								console.log(result);
+								//console.log(result);
+					   });
 
 				var newDebate = new debateCreate(debateInfo);
 		
@@ -155,13 +170,13 @@ module.exports.debateComment = function(req, res){
 							var commentID = result._id;
 
 							var goToLocation 	= '/QandA/' + collectionLength;
-							var message 		= req.body.name + ' has answered to your question - ' + '"' + req.body.question.substring(0,50) + '"';
+							var message 		= req.body.name + ' has answered to your question - ' + '"' + req.body.question.substring(0,50) + '..."';
 
 							member.update(
 										{"email"		: req.body.email},
 										{ "$push":	{"comments": {	
 															question 		: req.body.question,
-															comment 		: req.body.comment,
+															comment 		: req.body.comment.substring(0,120),
 															collectionID 	: collectionName,
 															commentID		: commentID,
 															createdOn		: new Date()
@@ -266,7 +281,7 @@ module.exports.getNewQcomments = function (req, res){
 
 	var newComments = debateHandler.getCommentModel(collectionName);
 
-	newComments.find({createdOn: { $gt: req.body.oldDate }},{},{ sort: {'createdOn': -1}}, function (err, result){
+	newComments.find({createdOn: { $gt: req.body.oldDate }},{'replies': false},{ sort: {'createdOn': -1}}, function (err, result){
 		res.json(result);
 	});
 }
@@ -278,8 +293,8 @@ module.exports.getDebates = function(req, res){
 	var debates = debateHandler.getDebateModel();
 	
 	debates.find({},{},{ sort: {'views': 1}}, function (err, result) {
-        res.json(result);
-	});
+        	res.json(result);
+		});
 };
 
 
@@ -288,6 +303,43 @@ module.exports.vote = function(req, res){
 	var id = req.body.id;
 
 	var vote = debateHandler.getDebateModel();
+
+	var member = memberHandler.getMemberModel();
+
+	member.update({"email"		: req.body.email},
+							  { "$push":	{"comments": {	
+															question 		: req.body.question,
+															comment 		: 'You have voted to the above qustion',
+															collectionID 	: id,
+															commentID		: null,
+															createdOn		: new Date()
+														}
+													}
+										},
+						function(err, result) {
+								console.log(result);
+					   });
+
+	vote.find({'slug': id}, function(err, result){
+		var total = result[0].yes + result[0].no;
+		if (total === 10) {
+			var goToLocation = '/QandA/' + id;
+			var message = 'People have voted to your question - ' + req.body.question.substring(0,40) + '...' 
+			member.update(
+											{"email"		: req.body.qCreator},
+											{ "$push"		: {"notifications": {
+														  		location	: goToLocation,
+																msg			: message,
+																read		: 'false',
+																imgUrl		: '../images/user.png',
+																time 		: new Date()
+															}
+														  }
+											}, function(err, result){
+												console.log('result');
+											});
+		};
+	})
 
 	if(req.body.value === 'Y'){
 		vote.update(
@@ -393,7 +445,7 @@ module.exports.debateReply = function(req, res){
 							{ "$push":	{"replies": {	
 												name 		: 'Anonymous',
 												comment 	: req.body.comment,
-												email		: req.body.email,
+												email		: null,
 												imgUrl		: '../images/user.png',
 												createdOn	: new Date()
 											}
@@ -428,8 +480,8 @@ module.exports.debateReply = function(req, res){
 			member.update(
 							{"email"		: req.body.email},
 							{ "$push":	{"comments": {	
-													parentCom 		: req.body.comContent.substring(0,40),
-													comment 		: req.body.comment,
+													parentCom 		: req.body.comContent.substring(0,40) + '...',
+													comment 		: req.body.comment.substring(0,120) + '...',
 													collectionID 	: collectionName,
 													commentID		: commentID,
 													createdOn		: new Date()
@@ -456,7 +508,7 @@ module.exports.debateReply = function(req, res){
 							{ "$push":	{"replies": {	
 												name 		: 'Anonymous',
 												comment 	: req.body.comment,
-												email		: req.body.email,
+												email		: null,
 												imgUrl		: '../images/user.png',
 												createdOn	: new Date()
 											}
@@ -491,8 +543,8 @@ module.exports.debateReply = function(req, res){
 			member.update(
 							{"email"		: req.body.email},
 							{ "$push":	{"comments": {	
-													parentCom 		: req.body.comContent.substring(0,40),
-													comment 		: req.body.comment,
+													parentCom 		: req.body.comContent.substring(0,40) + '...',
+													comment 		: req.body.comment.substring(0,120) + '...',
 													collectionID 	: collectionName,
 													commentID		: commentName,
 													createdOn		: new Date()

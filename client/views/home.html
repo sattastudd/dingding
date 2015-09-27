@@ -4,19 +4,19 @@
 			<div class="row">
 		        <div class="col-xs-12" style="margin-bottom:10px">
 		        	<div class="row">
-			      		<div class="col-xs-4 marTB25 Bborder hand" ng-class="{'activeBlck':commentsActive}" ng-click="commentsDiv()">
+			      		<div class="col-xs-4 marTB25 hand" ng-class="{'activeBlck':commentsActive}" ng-click="commentsDiv()">
 			      			<p align="center">Activities</p>
 			      		</div>
-			      		<div class="col-xs-4 marTB25 Bborder hand" ng-class="{'activeBlck':notifsActive}" ng-click="notifsDiv()">
+			      		<div class="col-xs-4 marTB25 hand" ng-class="{'activeBlck':notifsActive}" ng-click="notifsDiv()">
 			      			<p align="center">Notifs <span class="badge">{{count}}</span></p>
 			      		</div>
-			      		<div class="col-xs-4 marTB25 Bborder hand" ng-class="{'activeBlck':settingsActive}" ng-click="settingsDiv()">
+			      		<div class="col-xs-4 marTB25 hand" ng-class="{'activeBlck':settingsActive}" ng-click="settingsDiv()">
 			      			<p align="center">Settings</p>
 			      		</div>
 			      	</div>
           		</div>
           	</div>
-          	<div ng-if="notifsActive"  ng-repeat="notif in notifications | orderBy: '-time'">
+          	<div ng-if="notifsActive" style="min-height:500px" ng-repeat="notif in notifications | orderBy: '-time'">
 				<div class="col-xs-12 hand" ng-class="{{notif.read}}?'msgUnread':'trendBlock'" ng-click="notifRead(notif)">
 		            <div class="row">
 		                <div class="col-xs-2">
@@ -28,7 +28,7 @@
 		            </div>
 		        </div>
 		    </div>
-	        <div ng-if="commentsActive" class="col-xs-12 trendBlock hand" ng-repeat="comment in activity | orderBy: '-createdOn'">
+	        <div ng-if="commentsActive" class="col-xs-12 trendBlock hand"  ng-repeat="comment in activity | orderBy: '-createdOn'">
 	            <div class="row">
 	                <div class="col-xs-12 qFont" style="padding-bottom:0px;margin-top:-25px" ng-click="goToQ(comment)">
                         <p>{{comment.question}}</p>
@@ -39,7 +39,7 @@
                     </div>
 	            </div>
 	        </div>
-	        <div ng-if="settingsActive" class="col-xs-12" style="margin-bottom:300px">
+	        <div ng-if="settingsActive" class="col-xs-12" style="min-height:500px">
 	        	<div class="row">
 	        		<div class="col-xs-4">
 	        			<img src="{{imgUserBig}}" />
