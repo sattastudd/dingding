@@ -632,7 +632,7 @@ app.controller('QandApageController',['$scope', '$http', '$routeParams', '$locat
 
 
 
-app.controller('roastPageController',['$scope', '$http', '$routeParams', '$location', '$interval', function ($scope,$http,$location,$routeParams,$interval){
+app.controller('roastPageController',['$scope', '$http', '$location', '$routeParams', '$interval', function ($scope,$http,$location,$routeParams,$interval){
 
     var roastID = '/roastTitle/' + $routeParams.id;
 
@@ -840,7 +840,7 @@ app.controller('roastPageController',['$scope', '$http', '$routeParams', '$locat
 
 }]);
 
-app.controller('roastTrendingController',['$scope', '$http', '$routeParams', '$location', function($scope,$location,$http,$routeParams){
+app.controller('roastTrendingController',['$scope', '$location', '$http', '$routeParams', function($scope,$location,$http,$routeParams){
 
     $http.get('/trendingDebates').success(function(data){
         console.log(data[0]);
@@ -876,7 +876,7 @@ app.controller('roastTrendingController',['$scope', '$http', '$routeParams', '$l
 }]);
 
 
-app.controller('roastCreateController',['$scope', '$http', '$routeParams', '$location', function($scope,$http,$location,$routeParams){
+app.controller('roastCreateController',['$scope', '$http', '$location', '$routeParams', function($scope,$http,$location,$routeParams){
 
     console.log("trending page");
 
@@ -1060,7 +1060,7 @@ app.controller('roastCreateController',['$scope', '$http', '$routeParams', '$loc
 
 
 
-app.controller('roastListController',['$scope', '$http', '$routeParams', '$location', function($scope,$http,$location,$routeParams){
+app.controller('roastListController',['$scope', '$http', '$location', '$routeParams', function($scope,$http,$location,$routeParams){
 
     $http.get('/allRoasts').success(function(data){
         console.log("inside roast list");
@@ -1079,7 +1079,7 @@ app.controller('roastListController',['$scope', '$http', '$routeParams', '$locat
 
 
 
-app.controller('QandAlistController',['$scope', '$http', '$routeParams', '$location', function($http,$scope,$location,$routeParams){
+app.controller('QandAlistController',['$scope', '$http', '$routeParams', '$location', function($scope,$http,$routeParams,$location){
 
     $http.get('/allDebates').success(function(data){
         console.log(data[0]);
@@ -1109,7 +1109,7 @@ app.controller('QandAlistController',['$scope', '$http', '$routeParams', '$locat
     }
 }])
 
-app.controller('replyCommentController',['$scope', '$http', '$routeParams', '$location', '$interval', function($scope,$http,$routeParams,$interval,$location){
+app.controller('replyCommentController',['$scope', '$http', '$routeParams', '$location', '$interval', function($scope,$http,$routeParams,$location,$interval){
 
     console.log('Its in loop');
     
@@ -1237,7 +1237,7 @@ app.controller('replyCommentController',['$scope', '$http', '$routeParams', '$lo
 }]);
 
 
-app.controller('roastCommentController',['$scope', '$http', '$routeParams', '$location', '$interval', function($scope,$http,$routeParams,$interval,$location){
+app.controller('roastCommentController',['$scope', '$http', '$routeParams', '$location', '$interval', function($scope,$http,$routeParams,$location,$interval){
 
     console.log('Its in loop');
 
@@ -1320,7 +1320,7 @@ app.controller('roastCommentController',['$scope', '$http', '$routeParams', '$lo
 }]);
 
 
-app.controller('homeController',['$scope', '$http', '$location', function($scope,$location,$http){
+app.controller('homeController',['$scope', '$location', '$http', function($scope,$location,$http){
     $scope.memberData();
     $scope.notifRead = function(value){
         window.scrollTo(0,0);

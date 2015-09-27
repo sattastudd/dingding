@@ -52,9 +52,17 @@
 		                    <i class="glyphicon glyphicon-remove pull-right hand" ng-click="cancelModal()"></i>
 		                </div>
 		                <div class="col-xs-12">
-		                    <p class="mBottom20">Login</p>
-		                    <img src="/images/googleplusLg.png" class="hand" ng-click="GoToGoogleLogin()"/>
-		                    <img src="/images/facebookLg.png" class="hand" ng-click="GoToFacebookLogin()"/>
+		                    <div class="col-xs-12">
+			                    <p class="mBottom20" align="center"><b>Login using</b></p>
+			                </div>
+			                <div class="col-xs-6 hand" style="display:table-cell;vertical-align:middle;text-align:center;border-right:1px solid;margin-top:15px" ng-click="GoToGoogleLogin()">
+			                    <img src="/images/googleplusLg.png"/>
+			                    <p>Google</p>
+			                </div>
+			                <div class="col-xs-6 hand" style="display:table-cell;vertical-align:middle;text-align:center;margin-top:15px" ng-click="GoToFacebookLogin()">
+			                    <img src="/images/facebookLg.png" />
+			                    <p>Facebook</p>
+			                </div>
 		               	</div>
 
 			      		<form name="googleLogin" action="/auth/google" method="get"></form>
