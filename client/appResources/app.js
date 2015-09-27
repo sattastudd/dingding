@@ -1,7 +1,7 @@
 var app = angular.module('roast',['ngRoute']);
 
 
-app.config(function($routeProvider,$locationProvider) {
+app.config(['$routeProvider', '$locationProvider', function($routeProvider,$locationProvider) {
         $routeProvider
 
             // route for the home page
@@ -42,6 +42,10 @@ app.config(function($routeProvider,$locationProvider) {
                 templateUrl : 'views/home.html',
                 controller  : 'homeController'
             })
+            .when('/aboutUs', {
+                templateUrl : 'views/aboutUs.html',
+                controller  : 'aboutUsController'
+            })
             .when('/404', {
                 templateUrl : 'views/404.html',
                 controller  : 'errorController'
@@ -54,10 +58,10 @@ app.config(function($routeProvider,$locationProvider) {
             
             $locationProvider.html5Mode(true);
 
-        });
+        }]);
 
 
-app.controller('roastIndexController', function($scope,$http,$location,$interval){
+app.controller('roastIndexController', ['$scope', '$http', '$location', '$interval', 'UserInfoProvider', function($scope,$http,$location,$interval,UserInfoProvider){
 
             $scope.goToCreate = function(){
                 $location.path('/create');
@@ -84,6 +88,11 @@ app.controller('roastIndexController', function($scope,$http,$location,$interval
             }
             $scope.goToQnAPage = function(){
                 $location.path('/QandAlist');
+                window.scrollTo(0,0);
+                $scope.showToolBox();
+            }
+            $scope.goToAboutUs = function(){
+                $location.path('/aboutUs');
                 window.scrollTo(0,0);
                 $scope.showToolBox();
             }
@@ -163,7 +172,7 @@ app.controller('roastIndexController', function($scope,$http,$location,$interval
                         }
                     }else if (data === '"NotLoggedIn"'){
                         $scope.isLoggedin = false;
-                        $scope.imgUserBig = '/images/user.jpg'; 
+                        $scope.imgUserBig = '/images/user.png'; 
                     }else{
                         $scope.isLoggedin = true;
                         $scope.userName = data[0].name;
@@ -249,19 +258,20 @@ app.controller('roastIndexController', function($scope,$http,$location,$interval
             }  
 
             $scope.logout = function(){
+                UserInfoProvider.logout();
                 $scope.isLoggedin = false;
                 $scope.userName = null;
-                $scope.imgUserBig = '/images/user.jpg';
+                $scope.imgUserBig = '/images/user.png';
                 $scope.imgUserSmall = null;
             }
 
 
-    });
+    }]);
 
 
 
 
-app.controller('QandApageController', function ($scope,$http,$routeParams,$location,$interval) {
+app.controller('QandApageController',['$scope', '$http', '$routeParams', '$location', '$interval', '$sce', function ($scope,$http,$routeParams,$location,$interval, $sce) {
 
 
     $scope.postBlockActive = false;
@@ -490,8 +500,24 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         var commentID = '/debateComments/' + $routeParams.id;
 
             $http.get(commentID).success(function(data){
+
                 $scope.QandA = data;
                 $scope.newDataQ.oldDate = data[0].createdOn;
+
+                angular.forEach( $scope.QandA, function( item ) {
+
+                    var tempString = '';
+
+                    for( var i=0; i<item.comment.length; i++) {
+                        if( item.comment.charCodeAt(i)== 10 ) {
+                            tempString = tempString + '<br/>';
+                        } else {
+                            tempString = tempString + item.comment.charAt( i );
+                        }
+                    }
+
+                    item.htmlSafeComment = $sce.trustAsHtml( tempString );
+                })
             }).error(function(data){
 
             });
@@ -512,6 +538,17 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
             
             angular.forEach( data.slice().reverse(), function( item ) {
                 $scope.QandA.push( item )
+                var tempString = '';
+
+                    for( var i=0; i<item.comment.length; i++) {
+                        if( item.comment.charCodeAt(i)== 10 ) {
+                            tempString = tempString + '<br/>';
+                        } else {
+                            tempString = tempString + item.comment.charAt( i );
+                        }
+                    }
+
+                    item.htmlSafeComment = $sce.trustAsHtml( tempString );
             });
         }).error(function(data){
 
@@ -590,12 +627,12 @@ app.controller('QandApageController', function ($scope,$http,$routeParams,$locat
         };
     }   
    
-});
+}]);
 
 
 
 
-app.controller('roastPageController', function ($scope,$http,$location,$routeParams,$interval){
+app.controller('roastPageController',['$scope', '$http', '$routeParams', '$location', '$interval', function ($scope,$http,$location,$routeParams,$interval){
 
     var roastID = '/roastTitle/' + $routeParams.id;
 
@@ -801,9 +838,9 @@ app.controller('roastPageController', function ($scope,$http,$location,$routePar
         };
     };
 
-});
+}]);
 
-app.controller('roastTrendingController', function($scope,$location,$http,$routeParams){
+app.controller('roastTrendingController',['$scope', '$http', '$routeParams', '$location', function($scope,$location,$http,$routeParams){
 
     $http.get('/trendingDebates').success(function(data){
         console.log(data[0]);
@@ -836,10 +873,10 @@ app.controller('roastTrendingController', function($scope,$location,$http,$route
         $location.path(debateID);
     }
 
-});
+}]);
 
 
-app.controller('roastCreateController', function($scope,$http,$location,$routeParams){
+app.controller('roastCreateController',['$scope', '$http', '$routeParams', '$location', function($scope,$http,$location,$routeParams){
 
     console.log("trending page");
 
@@ -1019,11 +1056,11 @@ app.controller('roastCreateController', function($scope,$http,$location,$routePa
         };
     };
 
-});
+}]);
 
 
 
-app.controller('roastListController', function($scope,$http,$location,$routeParams){
+app.controller('roastListController',['$scope', '$http', '$routeParams', '$location', function($scope,$http,$location,$routeParams){
 
     $http.get('/allRoasts').success(function(data){
         console.log("inside roast list");
@@ -1038,11 +1075,11 @@ app.controller('roastListController', function($scope,$http,$location,$routePara
         $location.path(roastID);
     }
     
-});
+}]);
 
 
 
-app.controller('QandAlistController', function($http,$scope,$location,$routeParams){
+app.controller('QandAlistController',['$scope', '$http', '$routeParams', '$location', function($http,$scope,$location,$routeParams){
 
     $http.get('/allDebates').success(function(data){
         console.log(data[0]);
@@ -1070,9 +1107,9 @@ app.controller('QandAlistController', function($http,$scope,$location,$routePara
         
         $location.path(debateID);
     }
-})
+}])
 
-app.controller('replyCommentController', function($scope,$http,$routeParams,$interval){
+app.controller('replyCommentController',['$scope', '$http', '$routeParams', '$location', '$interval', function($scope,$http,$routeParams,$interval,$location){
 
     console.log('Its in loop');
     
@@ -1157,12 +1194,6 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
                 $scope.repliesGot = data[0].replies;
                 $scope.repliesQ.comContent = data[0].comment;
                 $scope.repliesQ.comOwner = data[0].email;
-                //console.log(data);
-                /*if (data.length === 1){
-                    $scope.newDataQ.oldDate = data[0].createdOn;
-                }else if (data.length > 1){
-                    $scope.newDataQ.oldDate = data[data.length - 1].createdOn;
-                }*/
             }).error(function(data){
 
             });
@@ -1203,10 +1234,10 @@ app.controller('replyCommentController', function($scope,$http,$routeParams,$int
         $interval.cancel($scope.stopPromise);
    });
 
-});
+}]);
 
 
-app.controller('roastCommentController', function($scope,$http,$routeParams,$interval){
+app.controller('roastCommentController',['$scope', '$http', '$routeParams', '$location', '$interval', function($scope,$http,$routeParams,$interval,$location){
 
     console.log('Its in loop');
 
@@ -1286,10 +1317,10 @@ app.controller('roastCommentController', function($scope,$http,$routeParams,$int
         $interval.cancel($scope.stopPromise);
    });
 
-});
+}]);
 
 
-app.controller('homeController', function($scope,$location,$http){
+app.controller('homeController',['$scope', '$http', '$location', function($scope,$location,$http){
     $scope.memberData();
     $scope.notifRead = function(value){
         window.scrollTo(0,0);
@@ -1338,14 +1369,19 @@ app.controller('homeController', function($scope,$location,$http){
         $scope.notifsActive = false;
         $scope.settingsActive = true;
     }
-});
+}]);
 
 
-app.controller('errorController', function($scope){
+app.controller('aboutUsController',['$scope', function($scope){
 
-});
+}]);
 
-app.controller('loadingDataController', function($scope, $location, $http, UserInfoProvider){
+
+app.controller('errorController',['$scope', function($scope){
+
+}]);
+
+app.controller('loadingDataController',['$scope', '$location', '$http', 'UserInfoProvider', function($scope, $location, $http, UserInfoProvider){
     $http.get('/user/me').success( function(data ) {
         console.log( data );
 
@@ -1356,7 +1392,7 @@ app.controller('loadingDataController', function($scope, $location, $http, UserI
     .error( function (data ) {
         console.log( data );
     });
-})
+}]);
 
 // directives start here 
 
@@ -1383,7 +1419,7 @@ app.directive('myMaxlength', function() {
 
 // dirctive for image upload
 
-app.directive('image', function($q) {
+/*app.directive('image', function($q) {
         'use strict'
 
         var URL = window.URL || window.webkitURL;
@@ -1519,7 +1555,7 @@ app.directive('image', function($q) {
                 });
             }
         };
-    });
+    });*/
 
 
 // this for social sharing

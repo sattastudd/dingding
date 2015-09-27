@@ -26,23 +26,25 @@
                            	Replies
                         </div>
                     </div>
-                    <div class="col-xs-12 roastDiv" ng-repeat="qna in repliesGot.slice().reverse() track by $index">
+                    <div id="chatBox" schroll-bottom="messages">
+                        <div class="col-xs-12 roastDiv" ng-repeat="qna in repliesGot.slice().reverse() track by $index">
+                            <div class="row">
                                 <div class="row">
-                                    <div class="row">
-                                        <div class="col-xs-12" style="margin-bottom:10px">
-                                            <div class="row">
-                                                <div class="col-xs-12">
-                                                    <img class="userIcon" src="{{qna.imgUrl}}" /><b>{{qna.name}}</b>
-                                                    <p class="roastTime">{{qna.createdOn | date:'d MMM h:mm a'}}</p>
-                                                </div>
+                                    <div class="col-xs-12" style="margin-bottom:10px">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <img class="userIcon" src="{{qna.imgUrl}}" /><b>{{qna.name}}</b>
+                                                <p class="roastTime">{{qna.createdOn | date:'d MMM h:mm a'}}</p>
                                             </div>
                                         </div>
-                                        <div class="col-xs-12 roastText">{{qna.comment}}</div> 
-                                        <div class="col-xs-12" style="margin-top:5px;margin-bottom:-15px;color:gray">
-                                            <p class="pull-right hand" ng-click="editQReply(qna)">edit comment</p>
-                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 roastText">{{qna.comment}}</div> 
+                                    <div class="col-xs-12" style="margin-top:5px;margin-bottom:-15px;color:gray">
+                                        <p class="pull-right hand" ng-click="editQReply(qna)">edit comment</p>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">

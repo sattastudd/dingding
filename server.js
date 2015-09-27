@@ -59,6 +59,9 @@ app.get('/repliesR/:id', function(req, res){
 app.get('/home', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });
+app.get('/aboutUs', function(req, res){
+	res.sendFile(__dirname + '/client/index.html');
+});
 app.get('/404', function(req, res){
 	res.sendFile(__dirname + '/client/index.html');
 });

@@ -116,7 +116,7 @@ module.exports.debateComment = function(req, res){
 	        if(doc.length !== 0){
 	        	var comment = debateHandler.getCommentModel(collectionName);
 
-	        	var sortedComment = req.body.comment.replace(/\r?\n/g, '<br>');
+	        	var sortedComment = req.body.comment.replace(/\r?\n/g, '<br/>');
 	        	//console.log(sortedComment);
 	        	if (req.body.anonymous === "Y"){
 					var commentInfo = {
