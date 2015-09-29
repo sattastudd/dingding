@@ -225,7 +225,7 @@ a, .dropdown-menu {
 .userIcon {
     height:45px;
     border-radius: 5px;
-    margin: 0 auto;
+    float: left;
     text-align: center;
     margin-right: 5px;
 }
