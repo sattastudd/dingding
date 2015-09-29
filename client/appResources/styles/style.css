@@ -224,8 +224,6 @@ a, .dropdown-menu {
 }
 .userIcon {
     height:45px;
-    width:45px;
-    display: inline;
     border-radius: 5px;
     margin: 0 auto;
     text-align: center;
