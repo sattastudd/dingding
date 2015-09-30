@@ -399,6 +399,7 @@ app.controller('QandApageController',['$scope', '$http', '$routeParams', '$locat
 
     $scope.updateQuestion = function(){
         $scope.questionObj.question = $scope.questions.question;
+        $scope.questionObj.qImgUrl  = $scope.questions.qImgUrl;
         $scope.questionObj.yBtnValue = $scope.questions.yBtnValue;
         $scope.questionObj.nBtnValue = $scope.questions.nBtnValue;
         var questionID = '/editQuestion/' + $routeParams.id;
@@ -1644,7 +1645,7 @@ app.factory('socialLinker', [
         };
     }])
 
-    app.service('UserInfoProvider', function($http){
+    app.service('UserInfoProvider',['$http', function($http){
         this.data = null;
         var self = this;
 
@@ -1664,4 +1665,4 @@ app.factory('socialLinker', [
             $http.post('/logout');
             self.data = null;
         };
-    });
+    }]);

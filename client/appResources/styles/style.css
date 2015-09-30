@@ -442,6 +442,10 @@ textarea.form-control.textAreaActive {
 .borderBtm{
     border-bottom:1px solid grey;
 }
+.qBackImgUrl{
+    width: 100%;
+    height: 180px;
+}
 .voteBtn{
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
     text-align: center;
@@ -487,6 +491,9 @@ textarea.form-control.textAreaActive {
 @media screen and (min-width: 992px) {
     .qFont{
         font-size:22px;
+    }
+    .qBackImgUrl{
+        height: 230px;
     }
     .voteBtn{
         padding-top: 0px;
