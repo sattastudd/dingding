@@ -361,6 +361,17 @@ app.controller('QandApageController',['$scope', '$http', '$routeParams', '$locat
             $scope.questionObj.debate = $scope.questions.debate;
         }
     };
+    
+    $scope.delQ = {};
+    
+    $scope.delQuestion = function(value){
+        if(value.email === $scope.email || $scope.maiBaap === true){
+             $scope.delQ.qID = value._id;
+             $http.post('/delQuestion', $scope.delQ).success(function(data) {
+                 $location.path('/QandAlist');
+             });
+        }
+    };
 
     $scope.editY = function(){
         $scope.showtext = true;
