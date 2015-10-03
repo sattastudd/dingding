@@ -365,7 +365,7 @@ app.controller('QandApageController',['$scope', '$http', '$routeParams', '$locat
     $scope.delQ = {};
     
     $scope.delQuestion = function(value){
-        if(value.email === $scope.email || $scope.maiBaap === true){
+        if($scope.maiBaap === true){
              $scope.delQ.qID = value._id;
              $http.post('/delQuestion', $scope.delQ).success(function(data) {
                  $location.path('/QandAlist');
@@ -1100,6 +1100,17 @@ app.controller('QandAlistController',['$scope', '$http', '$routeParams', '$locat
     }).error(function(data){
         console.log(data);
     })
+    
+    $scope.delQ = {};
+    
+    $scope.delQuestion = function(value){
+        if($scope.maiBaap === true){
+             $scope.delQ.qID = value._id;
+             $http.post('/delQuestion', $scope.delQ).success(function(data) {
+                 $location.path('/QandAlist');
+             });
+        }
+    };
 
     $scope.recentActv = true;
     $scope.popularActv = false;
