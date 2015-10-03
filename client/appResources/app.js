@@ -261,6 +261,7 @@ app.controller('roastIndexController', ['$scope', '$http', '$location', '$interv
                 UserInfoProvider.logout();
                 $scope.isLoggedin = false;
                 $scope.userName = null;
+                $scope.maiBaap = false;
                 $scope.imgUserBig = '/images/user.png';
                 $scope.imgUserSmall = null;
             }
@@ -333,7 +334,7 @@ app.controller('QandApageController',['$scope', '$http', '$routeParams', '$locat
     $scope.questionObj = {};
     $scope.editQComment = function(value){
         console.log(value);
-        if(value.email === $scope.email){
+        if(value.email === $scope.email || $scope.maiBaap === true){
             $scope.editBox = true;
             $scope.showTextArea();
             $scope.comment.comment = value.comment;
@@ -354,7 +355,7 @@ app.controller('QandApageController',['$scope', '$http', '$routeParams', '$locat
     }
 
     $scope.editQuestion = function(value){
-        if(value.email === $scope.email){
+        if(value.email === $scope.email || $scope.maiBaap === true){
             $scope.editBoxQ = true;
             $scope.questionObj.slug = $scope.questions.slug;
             $scope.questionObj.id = $scope.questions._id;
