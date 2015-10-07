@@ -156,11 +156,15 @@ app.controller('roastIndexController', ['$scope', '$http', '$location', '$interv
                         if($scope.createdMember === false){
                             $http.get('/memberInit').success(function(data){
                                 if (angular.isDefined(data.google)) {
-                                    var userDataUrl = 'http://picasaweb.google.com/data/entry/api/user/' + data.google.id + '?alt=json';
+                                    var userDataUrl = 'https://www.googleapis.com/plus/v1/people/' + data.google.id + '?fields=image&key=AIzaSyAV_28zxnOc67NpTvzpkQRcAK7fPfzYUjo';
                                     $http.get(userDataUrl).success(function(data){
-                                        var imageUrl = data.entry.gphoto$thumbnail.$t;
-                                        $scope.imgUrlBig = imageUrl.replace('64-c', '100-c');
-                                        $scope.imgUrlSm = imageUrl.replace('64-c', '40-c');
+                                        var imageUrl = data.image.url;
+                                        $scope.imgUrlBig = imageUrl.replace('50', '100');
+                                        $scope.imgUrlSm = imageUrl.replace('50', '40-c');
+                                        $scope.createMember();
+                                    }).error(function(data){
+                                        $scope.imgUrlBig = '/images/user.png';
+                                        $scope.imgUrlSm = '../images/user.png';
                                         $scope.createMember();
                                     })
                                 }else if (angular.isDefined(data.facebook)) {
@@ -261,6 +265,7 @@ app.controller('roastIndexController', ['$scope', '$http', '$location', '$interv
                 UserInfoProvider.logout();
                 $scope.isLoggedin = false;
                 $scope.userName = null;
+                $scope.email = null;
                 $scope.maiBaap = false;
                 $scope.imgUserBig = '/images/user.png';
                 $scope.imgUserSmall = null;
