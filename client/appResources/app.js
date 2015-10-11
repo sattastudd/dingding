@@ -160,7 +160,7 @@ app.controller('roastIndexController', ['$scope', '$http', '$location', '$interv
                                     $http.get(userDataUrl).success(function(data){
                                         var imageUrl = data.image.url;
                                         $scope.imgUrlBig = imageUrl.replace('50', '100');
-                                        $scope.imgUrlSm = imageUrl.replace('50', '40-c');
+                                        $scope.imgUrlSm = imageUrl.replace('50', '40');
                                         $scope.createMember();
                                     }).error(function(data){
                                         $scope.imgUrlBig = '/images/user.png';
@@ -650,12 +650,27 @@ app.controller('QandApageController',['$scope', '$http', '$routeParams', '$locat
 
 
 
-app.controller('roastPageController',['$scope', '$http', '$location', '$routeParams', '$interval', function ($scope,$http,$location,$routeParams,$interval){
+app.controller('roastPageController',['$scope', '$http', '$location', '$routeParams', '$interval', '$sce', function ($scope,$http,$location,$routeParams,$interval,$sce){
 
     var roastID = '/roastTitle/' + $routeParams.id;
 
     $http.get(roastID).success(function(data){
+        $scope.roastData = data;
         $scope.roastTitle = data[0];
+        angular.forEach( roastData, function( item ) {
+
+                    var tempString = '';
+
+                    for( var i=0; i<item.comment.length; i++) {
+                        if( item.comment.charCodeAt(i)== 10 ) {
+                            tempString = tempString + '<br/>';
+                        } else {
+                            tempString = tempString + item.comment.charAt( i );
+                        }
+                    }
+
+                    item.htmlSafeComment = $sce.trustAsHtml( tempString );
+                })
     }).error(function(data){
         console.log(data);
     });
@@ -715,7 +730,25 @@ app.controller('roastPageController',['$scope', '$http', '$location', '$routePar
 
 
     $scope.editBox = false;
+    $scope.editRcontent = false;
     $scope.roastObj = {};
+
+    $scope.editRoastContent = function(){
+        $scope.editRcontent = true;
+    }
+
+    $scope.cancelRoastEdit = function(){
+        $scope.editRcontent = false;
+    }
+
+    $scope.updateRoast = function(){
+        $scope.btnDisable = true;
+        $http.post('/updateRoast', $scope.roastTitle).success(function(data){
+            $scope.editRcontent = false;
+        }).error(function(data){
+
+        });
+    }
 
     $scope.editRComment = function(value){
         $scope.editBox = true;
@@ -746,6 +779,21 @@ app.controller('roastPageController',['$scope', '$http', '$location', '$routePar
             
             $scope.roasts = data;
             $scope.newDataR.oldDate = data[0].createdOn;
+
+                angular.forEach( $scope.roasts, function( item ) {
+
+                    var tempString = '';
+
+                    for( var i=0; i<item.comment.length; i++) {
+                        if( item.comment.charCodeAt(i)== 10 ) {
+                            tempString = tempString + '<br/>';
+                        } else {
+                            tempString = tempString + item.comment.charAt( i );
+                        }
+                    }
+
+                    item.htmlSafeComment = $sce.trustAsHtml( tempString );
+                })
             
 
         }).error(function(data){
@@ -764,8 +812,20 @@ app.controller('roastPageController',['$scope', '$http', '$location', '$routePar
             if(data.length !== 0){
                 $scope.newDataR.oldDate = data[0].createdOn;
             }
-            angular.forEach( data, function( item ) {
+            
+            angular.forEach( data.slice().reverse(), function( item ) {
                 $scope.roasts.push( item )
+                var tempString = '';
+
+                    for( var i=0; i<item.comment.length; i++) {
+                        if( item.comment.charCodeAt(i)== 10 ) {
+                            tempString = tempString + '<br/>';
+                        } else {
+                            tempString = tempString + item.comment.charAt( i );
+                        }
+                    }
+
+                    item.htmlSafeComment = $sce.trustAsHtml( tempString );
             });
         }).error(function(data){
 
@@ -870,7 +930,7 @@ app.controller('roastTrendingController',['$scope', '$location', '$http', '$rout
 
     $http.get('/trendingRoasts').success(function(data){
         console.log(data[0]);
-        $scope.trending = data;
+        $scope.roastList = data;
 
     }).error(function(data){
         console.log(data);

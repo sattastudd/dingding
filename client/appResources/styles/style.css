@@ -332,12 +332,9 @@ textarea.form-control.textAreaActive {
 
 /* styles for trending page */
 .roasteeImg{
-    width: 80px;
-    height: 80px;
-    border-radius: 50px;
-    box-shadow: 0 3px 5px 1px #999;
-    display: block;
-    margin: auto;
+    width: 100%;
+    height: 140px;
+    box-shadow: 1px 1px 1px 1px gainsboro;
 }
 .trendBlock{
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
@@ -355,17 +352,20 @@ textarea.form-control.textAreaActive {
     margin-top: 6px;
     background-color: #FF9108;
 }
+.roastListFont{
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 0px;
+}
 
 @media screen and (min-width: 992px) {
     .roasteeImg {      
-      width: 125px;
-      height: 125px;
-      border-radius: 63px;
-      margin-bottom: 5px;
-      margin-top: -10px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
+      width: 100%;
+      height: 180px;
+      margin-top: -30px;
+    }
+    .roastListFont{
+      font-size: 22px;
     }
     .roasteeName{
         margin-top: -15px;
@@ -382,7 +382,7 @@ textarea.form-control.textAreaActive {
         margin-top: -15px;
     }
     .roasteeImg{
-        margin-top: -10px;
+        margin-top: -30px;
     }
 }
 /* styles for trnding page ends here */

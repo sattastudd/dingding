@@ -99,6 +99,8 @@ module.exports = function( app, passport, express ) {
 
 	app.post('/newQcomments', debateController.getNewQcomments);
 
+	app.post('/updateRoast', roastController.updateRoast);
+
 	app.post('/editQcomment/:debateID', debateController.editQcomment);
 
 	app.post('/editRcomment/:debateID', roastController.editRcomment);

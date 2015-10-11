@@ -15,6 +15,12 @@ module.exports.createRoast = function(req, res){
 						quote 		: req.body.quote,
 						slug		: slugReal + docLength,
 						views		: 1,
+						imgUrl		: req.body.imgUrl,
+						bannerUrl	: req.body.bannerUrl,
+						type		: req.body.type,
+						content		: req.body.content,
+						title		: req.body.title,
+						createdBy	: req.body.createdBy,
 						createdOn	: new Date()
 					}
 			var newRoast = new Roast(roastInfoDuplicate);
@@ -29,6 +35,10 @@ module.exports.createRoast = function(req, res){
 				quote 		: req.body.quote,
 				slug		: slugReal,
 				views		: 1,
+				imgUrl		: req.body.imgUrl,
+				content		: req.body.content,
+				title		: req.body.title,
+				createdBy	: req.body.name,
 				createdOn	: new Date()
 			}
 
@@ -70,7 +80,7 @@ module.exports.getRoasts = function(req, res){
 	
 	var roasts = roastHandler.getRoastModel();
 	
-	roasts.find({},{},{ sort: {'createdOn': -1}}, function (err, doc) {
+	roasts.find({},{'content': false},{ sort: {'createdOn': -1}}, function (err, doc) {
         res.json(doc);
 	});
 };
@@ -210,6 +220,29 @@ module.exports.editRcomment = function(req, res){
 						res.json(result);
 					});
 };
+
+
+module.exports.updateRoast = function(req, res){
+
+	var roastID = req.body.id;
+
+	var roastTitle = roastHandler.getRoastModel();
+
+	//console.log(req.body.question);
+
+	roastTitle.update({'_id':roastID},{ 'name'			: req.body.name,
+										'quote' 		: req.body.quote,
+										'views'			: 1,
+										'imgUrl'		: req.body.imgUrl,
+										'bannerUrl'		: req.body.bannerUrl,
+										'type'			: req.body.type,
+										'content'		: req.body.content,
+										'title'			: req.body.title,
+										'createdBy'		: req.body.createdBy}, function(err, result){
+					res.json(result);
+					//console.log(result);
+	})
+}
 
 
 
