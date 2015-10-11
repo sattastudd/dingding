@@ -44,38 +44,38 @@ app.get('/views/*', function( req, res, next){
 
 app.get('/', function(req, res){
 	console.log( 'Sending EJS file' );
-	res.render(__dirname + '/client/index.ejs', {title : 'You are dumb.'});
+	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
 });
 
 app.get('/roast/:id', function(req, res){
-	res.sendFile(__dirname + '/client/index.html');
+	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});	
 });
 app.get('/create', function(req, res){
-	res.sendFile(__dirname + '/client/index.html');
+	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
 });
 app.get('/roastList', function(req, res){
-	res.sendFile(__dirname + '/client/index.html');
+	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
 });
 app.get('/QandA/:id', function(req, res){
-	res.sendFile(__dirname + '/client/index.html');
+	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
 });
 app.get('/QandAlist', function(req, res){
-	res.sendFile(__dirname + '/client/index.html');
+	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
 });
 app.get('/replies/:id', function(req, res){
-	res.sendFile(__dirname + '/client/index.html');
+	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
 });
 app.get('/repliesR/:id', function(req, res){
-	res.sendFile(__dirname + '/client/index.html');
+	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
 });
 app.get('/home', function(req, res){
-	res.sendFile(__dirname + '/client/index.html');
+	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
 });
 app.get('/aboutUs', function(req, res){
-	res.sendFile(__dirname + '/client/index.html');
+	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
 });
 app.get('/404', function(req, res){
-	res.sendFile(__dirname + '/client/index.html');
+	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
 });
 
 require( './server/routers/routes' )(app, passport, express);
