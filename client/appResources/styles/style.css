@@ -334,7 +334,7 @@ textarea.form-control.textAreaActive {
 .roasteeImg{
     width: 100%;
     height: 140px;
-    box-shadow: 1px 1px 1px 1px gainsboro;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
 .trendBlock{
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);

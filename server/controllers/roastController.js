@@ -234,7 +234,7 @@ module.exports.updateRoast = function(req, res){
 
 	var roastTitle = roastHandler.getRoastModel();
 
-	//console.log(req.body.question);
+	console.log(req.body);
 
 	roastTitle.update({'_id':roastID},{ 'name'			: req.body.name,
 										'quote' 		: req.body.quote,
