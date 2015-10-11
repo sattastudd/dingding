@@ -8,7 +8,7 @@
 		            		Latest Roasts
 		            	</div>
 		            </div>
-	                <div class="col-xs-12 trendBlock hand" ng-repeat="content in roastList.slice().reverse()">
+	                <div class="col-xs-12 trendBlock hand" ng-repeat="content in roastList | orderBy:'-position'">
 	                    <div class="row" ng-click="goToRoast(content)">
 	                    	<div class="row">
 		                        <div class="col-xs-12">
@@ -16,7 +16,7 @@
 		                        </div>
 		                    </div>
 	                        <div class="col-xs-12">
-	                        	<p style="margin-top: 10px;border-bottom: 1px solid gainsboro;">{{content.type}}</p>
+	                        	<p style="margin-top:10px;border-bottom: 1px solid gainsboro;color:grey">{{content.type}}</p>
 	                        </div>
 	                        <div class="col-xs-12">
 	                        	<p class="roastListFont">{{content.title}}</p>

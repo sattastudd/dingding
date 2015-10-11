@@ -20,6 +20,8 @@ module.exports.createRoast = function(req, res){
 						type		: req.body.type,
 						content		: req.body.content,
 						title		: req.body.title,
+						position	: req.body.position,
+						batchDate	: req.body.batchDate,
 						createdBy	: req.body.createdBy,
 						createdOn	: new Date()
 					}
@@ -31,15 +33,19 @@ module.exports.createRoast = function(req, res){
 			});
         }else{
         	var roastInfo = {
-				name		: req.body.name,
-				quote 		: req.body.quote,
-				slug		: slugReal,
-				views		: 1,
-				imgUrl		: req.body.imgUrl,
-				content		: req.body.content,
-				title		: req.body.title,
-				createdBy	: req.body.name,
-				createdOn	: new Date()
+						name		: req.body.name,
+						quote 		: req.body.quote,
+						slug		: slugReal + docLength,
+						views		: 1,
+						imgUrl		: req.body.imgUrl,
+						bannerUrl	: req.body.bannerUrl,
+						type		: req.body.type,
+						content		: req.body.content,
+						title		: req.body.title,
+						position	: req.body.position,
+						batchDate	: req.body.batchDate,
+						createdBy	: req.body.createdBy,
+						createdOn	: new Date()
 			}
 
         	var newRoast = new Roast(roastInfo);
@@ -238,7 +244,10 @@ module.exports.updateRoast = function(req, res){
 										'type'			: req.body.type,
 										'content'		: req.body.content,
 										'title'			: req.body.title,
-										'createdBy'		: req.body.createdBy}, function(err, result){
+										'position'		: req.body.position,
+										'batchDate'		: req.body.batchDate,
+										'createdBy'		: req.body.createdBy,
+										'createdOn'		: new Date()}, function(err, result){
 					res.json(result);
 					//console.log(result);
 	})

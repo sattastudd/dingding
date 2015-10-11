@@ -654,26 +654,29 @@ app.controller('roastPageController',['$scope', '$http', '$location', '$routePar
 
     var roastID = '/roastTitle/' + $routeParams.id;
 
-    $http.get(roastID).success(function(data){
-        $scope.roastData = data;
-        $scope.roastTitle = data[0];
-        angular.forEach( roastData, function( item ) {
+    $scope.getRoastData = function(){
+        $http.get(roastID).success(function(data){
+            $scope.roastData = data;
+            $scope.roastTitle = data[0];
+            angular.forEach( $scope.roastData, function( item ) {
 
-                    var tempString = '';
+                        var tempString = '';
 
-                    for( var i=0; i<item.comment.length; i++) {
-                        if( item.comment.charCodeAt(i)== 10 ) {
-                            tempString = tempString + '<br/>';
-                        } else {
-                            tempString = tempString + item.comment.charAt( i );
+                        for( var i=0; i<item.content.length; i++) {
+                            if( item.content.charCodeAt(i)== 10 ) {
+                                tempString = tempString + '<br/>';
+                            } else {
+                                tempString = tempString + item.content.charAt( i );
+                            }
                         }
-                    }
 
-                    item.htmlSafeComment = $sce.trustAsHtml( tempString );
-                })
-    }).error(function(data){
-        console.log(data);
-    });
+                        item.htmlSafeComment = $sce.trustAsHtml( tempString );
+                    })
+        }).error(function(data){
+            console.log(data);
+        });
+    };
+    $scope.getRoastData();
 
     $scope.roast = {};
     $scope.newDataR = {};
@@ -735,6 +738,7 @@ app.controller('roastPageController',['$scope', '$http', '$location', '$routePar
 
     $scope.editRoastContent = function(){
         $scope.editRcontent = true;
+        $scope.btnDisable = false;
     }
 
     $scope.cancelRoastEdit = function(){
@@ -745,6 +749,7 @@ app.controller('roastPageController',['$scope', '$http', '$location', '$routePar
         $scope.btnDisable = true;
         $http.post('/updateRoast', $scope.roastTitle).success(function(data){
             $scope.editRcontent = false;
+            $scope.getRoastData();
         }).error(function(data){
 
         });

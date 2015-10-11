@@ -13,6 +13,8 @@ var roastSchema = new mongoose.Schema({
 	slug		: String,
 	views		: Number,
 	title		: String,
+	position	: String,
+	batchDate	: String,
 	content		: String,
 	createdBy	: String
 });

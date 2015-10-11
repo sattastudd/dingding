@@ -13,7 +13,7 @@
 	                            <div class="col-xs-12 roastBanner">
 	                                <div class="col-xs-12 tpad20">
 	                                    <p class="roastQoute">"{{roastTitle.quote}}"</p>
-	                                    <p class="pull-right">{{roastTitle.name}}</p>
+	                                    <p class="pull-right"> - {{roastTitle.name}}</p>
 	                                </div>
 	                            </div>
 	                        </div>
@@ -31,17 +31,21 @@
                                 <p class="pull-right">
                                     <b>{{roastTitle.views}}</b> Views
                                 </p>
-                                <p class="pull-left" ng-click="editRoastContent()">
+                                <p class="pull-left hand" ng-click="editRoastContent()">
                                     edit Roast
                                 </p>
                             </div>
                             <div class="row" style="background-color:#fff;min-height:560px;">
                                 <div ng-repeat="data in roastData">
                                     <div class="col-xs-12">
-                                        <p style="font-size:27px;font-weight:bold;">{{data.title}}</p>
+                                        <p style="font-size:27px;font-weight:bold;border-bottom:1px solid gainsboro;">{{data.title}}</p>
                                     </div>
                                     <div class="col-xs-12">
-                                        <p style="font-size:17px">{{data.content}}</p>
+                                        <p style="font-size:17px;margin-top:20px" ng-bind-html="data.htmlSafeComment"></p>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <p style="font-size:17px;margin-top:20px">Written By</p>
+                                        <p style="font-size:17px;color:grey">-{{data.createdBy}}</p>
                                     </div>
                                 </div>
                                 <div class="col-xs-12">
@@ -55,6 +59,12 @@
                                     <p class="pull-right">
                                         <b>{{roastTitle.views}}</b> Views
                                     </p>
+                                    <p class="pull-left hand" ng-click="editRoastContent()">
+                                        edit Roast
+                                    </p>
+                                </div>
+                                <div class="col-xs-12">
+                                    <p style="font-size:18px;border-bottom:1px solid gainsboro;">Comment Below</p>
                                 </div>
                                 <div ng-if="editRcontent">
                                     <div class="col-xs-12">
@@ -82,6 +92,18 @@
                                         <p><b>writer name</b></p>
                                         <input type="text" my-maxlength="100" class="form-control" ng-trim="true" ng-model="roastTitle.createdBy" placeholder="writer name" />
                                     </div>
+                                    <div class="col-xs-12">
+                                        <div class="row">    
+                                            <div class="col-xs-6">    
+                                                <p><b>Batch date</b></p>
+                                                <input type="text" my-maxlength="100" class="form-control" ng-trim="true" ng-model="roastTitle.batchDate" placeholder="Ente batch date" />
+                                            </div>
+                                            <div class="col-xs-6">    
+                                                <p><b>Roast Position</b></p>
+                                                <input type="text" my-maxlength="100" class="form-control" ng-trim="true" ng-model="roastTitle.position" placeholder="Enter position" />
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div ng-if="waiting">
                                         <img src="../images/loader.gif" class="loader" />
                                     </div>
@@ -92,7 +114,7 @@
                                     </div>
                                     <div class="col-xs-12">
                                         <p><b>Write the content</b></p>
-                                        <textarea type="text" style="width:100%;height:80px;" ng-trim="true" my-maxlength="5000" ng-model="roastTitle.content" class="form-control" placeholder="Write your content here"></textarea>
+                                        <textarea type="text" style="width:100%;height:150px;margin-bottom:10px" ng-trim="true" my-maxlength="5000" ng-model="roastTitle.content" class="form-control" placeholder="Write your content here"></textarea>
                                     </div>
                                     <div class="col-xs-12">
                                         <button type="button" ng-click="updateRoast()" class="btn btn-place-primary" ng-disabled="btnDisable">Create Roast</button>

@@ -68,6 +68,18 @@
                             <p><b>writer name</b></p>
                             <input type="text" my-maxlength="100" class="form-control" ng-trim="true" ng-model="roast.createdBy" placeholder="writer name" />
                         </div>
+                        <div class="col-xs-12">
+                            <div class="row">    
+                                <div class="col-xs-6">    
+                                    <p><b>Batch date</b></p>
+                                    <input type="text" my-maxlength="100" class="form-control" ng-trim="true" ng-model="roast.batchDate" placeholder="Ente batch date" />
+                                </div>
+                                <div class="col-xs-6">    
+                                    <p><b>Roast Position</b></p>
+                                    <input type="text" my-maxlength="100" class="form-control" ng-trim="true" ng-model="roast.position" placeholder="Enter position" />
+                                </div>
+                            </div>
+                        </div>
                         <div ng-if="waiting">
                             <img src="../images/loader.gif" class="loader" />
                         </div>
@@ -78,7 +90,7 @@
                         </div>
                         <div class="col-xs-12">
                             <p><b>Write the content</b></p>
-                            <textarea type="text" style="width:100%;height:80px;" ng-trim="true" my-maxlength="5000" ng-model="roast.content" class="form-control" placeholder="Write your content here"></textarea>
+                            <textarea type="text" style="width:100%;height:150px;margin-bottom:10px" ng-trim="true" my-maxlength="5000" ng-model="roast.content" class="form-control" placeholder="Write your content here"></textarea>
                         </div>
                         <div class="col-xs-12">
                             <button type="button" ng-click="postRoast()" class="btn btn-place-primary" ng-disabled="btnDisable">Create Roast</button>
