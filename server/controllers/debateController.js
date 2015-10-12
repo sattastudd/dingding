@@ -78,18 +78,20 @@ module.exports.createDebate = function(req, res){
 };
 
 
-var getDebate = function( collectionName, response ) {
+var getDebate = function( collectionName, responseOrCallback ) {
 	var debate = debateHandler.getDebateModel();
 	
 	debate.find({'collectionID' : collectionName}, function (err, doc) {       
         
-        if(response ){
-        	response.json( doc );
+        if(typeof responseOrCallback === 'object' ){
+        	responseOrCallback.json( doc );
         } else {
-        	return doc;
+        	responseOrCallback( doc );
         }        
     });
 }
+
+module.exports.getDebateForRoute = getDebate;
 
 
 module.exports.getDebate = function(req, res){

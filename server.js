@@ -57,7 +57,21 @@ app.get('/roastList', function(req, res){
 	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
 });
 app.get('/QandA/:id', function(req, res){
-	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
+
+	debateController.getDebateForRoute( req.params.id, function( data ){
+		var obj = {};
+
+		if( data.length > 0 ) {
+			data = data[0];
+			var obj = {
+				title : data.question,
+				imgUrl : data.qImgUrl,
+				url : req.protocol + '://' + req.get('host') + req.originalUrl
+			};
+		}
+
+		res.render(__dirname + '/client/index.ejs', obj);
+	});
 });
 app.get('/QandAlist', function(req, res){
 	res.render(__dirname + '/client/index.ejs', {title : 'Title.'});
