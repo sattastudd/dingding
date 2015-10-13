@@ -13,7 +13,7 @@ module.exports.createRoast = function(req, res){
         	var roastInfoDuplicate = {
 						name		: req.body.name,
 						quote 		: req.body.quote,
-						slug		: slugReal + docLength,
+						slug		: slugReal + docLenRogth,
 						views		: 1,
 						imgUrl		: req.body.imgUrl,
 						bannerUrl	: req.body.bannerUrl,
@@ -60,6 +60,16 @@ module.exports.createRoast = function(req, res){
 	});
 	
 };
+
+var getRoastForRoute = function( collectionName, callback ) {
+	var roast = roastHandler.getRoastModel();
+
+	roast.find({'slug' : collectionName }, function( err, doc ) {
+		callback( doc );
+	});
+}
+
+module.exports.getRoastForRoute = getRoastForRoute;
 
 
 module.exports.getRoast = function(req, res){
