@@ -13,7 +13,7 @@ module.exports.createRoast = function(req, res){
         	var roastInfoDuplicate = {
 						name		: req.body.name,
 						quote 		: req.body.quote,
-						slug		: slugReal + docLenRogth,
+						slug		: slugReal + docLength,
 						views		: 1,
 						imgUrl		: req.body.imgUrl,
 						bannerUrl	: req.body.bannerUrl,
