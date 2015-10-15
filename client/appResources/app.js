@@ -756,11 +756,14 @@ app.controller('roastPageController',['$scope', '$http', '$location', '$routePar
     }
 
     $scope.editRComment = function(value){
-        $scope.editBox = true;
-        $scope.showTextArea();
-        $scope.rComment.comment = value.comment;
-        console.log(value);
-        $scope.roastObj.id = value._id;
+    	
+    	if(value.email === $scope.email || $scope.maiBaap === true){
+    		$scope.editBox = true;
+            $scope.showTextArea();
+            $scope.rComment.comment = value.comment;
+            //console.log(value);
+            $scope.roastObj.id = value._id;
+        }
     };
 
     $scope.btnDisable = false;
