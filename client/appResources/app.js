@@ -690,6 +690,7 @@ app.controller('roastPageController',['$scope', '$http', '$location', '$routePar
         $scope.rComment.comment = null;
         $scope.postR = false;
         $scope.rComment.anonymous = null;
+        $scope.editBox = false;
     }
     $scope.showTextArea = function () {
         $scope.postBlockActive = true;
@@ -775,6 +776,7 @@ app.controller('roastPageController',['$scope', '$http', '$location', '$routePar
             $scope.hideTextArea();
             $scope.fetchRComments();
             $scope.btnDisable = false;
+            $scope.editBox = false;
         }).error(function(data){
 
         })
